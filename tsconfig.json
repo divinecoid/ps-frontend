@@ -5,7 +5,8 @@
       "@/*": ["./*"],
       "@/lib/*": ["./packages/lib/*"],
       "@/components/*": ["./packages/components/*"],
-      "@/utils/*": ["./packages/lib/utils/*"]
+      "@/utils/*": ["./packages/lib/utils/*"],
+      "@/services": ["./packages/services/index"],
     },
     "target": "esnext",
     "module": "esnext",
@@ -21,6 +22,6 @@
   },
   "include": [
     "src/**/*",
-    "packages/**/*"
+    "packages/**/*",
   ]
 }

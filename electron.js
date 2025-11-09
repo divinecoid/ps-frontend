@@ -9,6 +9,8 @@ function createWindow() {
     height: 768,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      autoplayPolicy: "no-user-gesture-required",
+      disableBlinkFeatures: "Autofill,PasswordManager"
     }
   });
 
