@@ -22,8 +22,12 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
 
-  const login = async () => {
-    Auth.login('a','b')
+  const login = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const username = form.username.value;
+    const password = form.password.value;
+    await Auth.login(username, password)
   }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -38,11 +42,12 @@ export function LoginForm({
           <form onSubmit={login}>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="username">Username</FieldLabel>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="user.example"
                   required
                 />
               </Field>
@@ -51,12 +56,13 @@ export function LoginForm({
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                   <a
                     href="#"
+                    tabIndex={1}
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" required placeholder="password.example.123" />
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
@@ -64,7 +70,7 @@ export function LoginForm({
                   Login with Google
                 </Button> */}
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <Link to="/register">Sign up</Link>
+                  Don&apos;t have an account? <Link tabIndex={2} to="/register">Sign up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

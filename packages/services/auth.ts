@@ -1,9 +1,9 @@
 import { POST } from "./api"
 
 const URL = {
-    LOGIN: "/api/auth/login",
-    LOGOUT: "/api/auth/logout",
-    REFRESH: "/api/auth/refresh"
+    LOGIN: "auth/login",
+    LOGOUT: "auth/logout",
+    REFRESH: "auth/refresh"
 }
 
 export const login = async (username: string, password: string) => {
@@ -11,5 +11,6 @@ export const login = async (username: string, password: string) => {
         username: username,
         password: password,
     }
+    console.log(body)
     return await POST(URL.LOGIN, body)
 }

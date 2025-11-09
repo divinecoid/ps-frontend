@@ -6,6 +6,10 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
     try {
         const result = await fetch(input, {
             ...init,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
             signal: controller.signal
         });
         clearTimeout(timeoutId);
