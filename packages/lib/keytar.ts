@@ -11,3 +11,9 @@ async function getToken() {
 async function deleteToken() {
     await keytar.deletePassword("ps-frontend", "token");
 }
+
+module.exports = {
+  getToken,
+  saveToken,
+  deleteToken,
+};

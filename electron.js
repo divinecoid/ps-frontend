@@ -1,5 +1,6 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
+const { getToken, setToken } = require(path.join(__dirname, "packages/lib/keytar.ts"));
 
 let win = null;
 function createWindow() {
@@ -15,29 +16,80 @@ function createWindow() {
 }
 
 const template = [
+  ...(process.platform === 'darwin'
+    ? [
+      {
+        label: 'App',
+        submenu: [
+          { role: 'about' },
+          { type: 'separator' },
+          { role: 'services' },
+          { type: 'separator' },
+          { role: 'hide' },
+          { role: 'hideOthers' },
+          { role: 'unhide' },
+          { type: 'separator' },
+          { role: 'quit' }
+        ]
+      }
+    ]
+    : []),
   {
     label: 'File',
     submenu: [
-      {
-        label: 'Quit',
-        accelerator: 'CmdOrCtrl+Q',
-        click: () => app.quit()
-      }
+      process.platform === 'darwin' ? { role: 'close' } : { role: 'quit' }
     ]
   },
   {
-    label: 'Help',
+    label: 'Edit',
+    submenu: [
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      ...(process.platform === 'darwin'
+        ? [{ role: 'pasteAndMatchStyle' }]
+        : []),
+      { role: 'delete' },
+      { role: 'selectAll' }
+    ]
+  },
+  {
+    label: 'View',
+    submenu: [
+      { role: 'reload' },
+      { role: 'forceReload' },
+      { role: 'toggleDevTools' },
+      { type: 'separator' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
+  },
+
+  {
+    label: 'Window',
+    submenu: [
+      { role: 'minimize' },
+      { role: 'zoom' },
+      ...(process.platform === 'darwin'
+        ? [{ type: 'separator' }, { role: 'front' }]
+        : [{ role: 'close' }])
+    ]
+  },
+  {
+    role: 'help',
     submenu: [
       {
-        label: 'About',
-        accelerator: 'F1',
-        click: () => win.webContents.executeJavaScript(`alert('PS Frontend');`)
-      },
-      {
-        label: 'Toggle Developer Tools',
-        accelerator: 'F12',
+        label: 'Learn More',
         click: () => {
-          win.webContents.isDevToolsOpened() ? win.webContents.closeDevTools() : win.webContents.openDevTools();
+          require('electron').shell.openExternal(
+            'https://www.electronjs.org'
+          );
         }
       }
     ]
@@ -52,3 +104,12 @@ app.whenReady().then(() => {
 
 });
 
+ipcMain.handle("get-token", async () => {
+  const token = await getToken();
+  return token || null;
+});
+
+ipcMain.handle("save-token", async () => {
+  await setToken();
+  return true;
+});
