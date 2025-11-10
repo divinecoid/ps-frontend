@@ -14,6 +14,14 @@ export const login = async (username: string, password: string) => {
     return await POST(URL.LOGIN, body)
 }
 
+export const refresh = async () => {
+    const refresh_token = await window.electronAPI.getRefreshToken();
+    const body = {
+        refresh_token: refresh_token,
+    }
+    return await POST(URL.REFRESH, body)
+}
+
 export const logout = async () => {
     const refresh_token = await window.electronAPI.getRefreshToken();
     const body = {
