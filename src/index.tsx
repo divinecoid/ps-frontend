@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { ThemeProvider } from '@/provider/theme-provider';
 
 const initialToken = await window.electronAPI.getToken();
 
@@ -9,7 +10,12 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App initialToken={initialToken} />
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem>
+      <App initialToken={initialToken} />
+    </ThemeProvider>
   </React.StrictMode>
 );
 

@@ -2,12 +2,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
       "@/lib/*": ["./packages/lib/*"],
       "@/components/*": ["./packages/components/*"],
       "@/utils/*": ["./packages/lib/utils/*"],
       "@/hooks/*": ["./packages/hooks/*"],
-      "@/services": ["./packages/services/index"],
+      "@/provider/*": ["./packages/provider/*"],
+      "@/services": ["./packages/services"],
     },
     "target": "esnext",
     "module": "esnext",
