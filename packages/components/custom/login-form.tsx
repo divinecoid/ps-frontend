@@ -27,7 +27,18 @@ export function LoginForm({
     const form = event.currentTarget;
     const username = form.username.value;
     const password = form.password.value;
-    await Auth.login(username, password)
+    try {
+      const res = await Auth.login(username, password);
+      if (res.status) {
+        const json = await res.json();
+        const token = json["token"];
+        const refresh_token = json["refresh_token"];
+        await window.electronAPI.saveToken(token);
+        await window.electronAPI.saveRefreshToken(refresh_token);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

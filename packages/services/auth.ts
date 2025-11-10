@@ -11,6 +11,5 @@ export const login = async (username: string, password: string) => {
         username: username,
         password: password,
     }
-    console.log(body)
     return await POST(URL.LOGIN, body)
 }

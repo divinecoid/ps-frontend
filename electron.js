@@ -1,6 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
-const { getToken, setToken } = require(path.join(__dirname, "packages/lib/keytar.ts"));
+const { getToken, saveToken, getRefreshToken, saveRefreshToken, deleteToken, deleteRefreshToken } = require(path.join(__dirname, "packages/lib/keytar.ts"));
 
 let win = null;
 function createWindow() {
@@ -111,7 +111,27 @@ ipcMain.handle("get-token", async () => {
   return token || null;
 });
 
-ipcMain.handle("save-token", async () => {
-  await setToken();
+ipcMain.handle("save-token", async (_, token) => {
+  await saveToken(token);
   return true;
+});
+
+
+ipcMain.handle("get-refresh-token", async () => {
+  const token = await getRefreshToken();
+  return token || null;
+});
+
+ipcMain.handle("save-refresh-token", async (_, refreshToken) => {
+  await saveRefreshToken(refreshToken);
+  return true;
+});
+
+ipcMain.handle("delete-token", async () => {
+  const token = await deleteToken();
+  return token || null;
+});
+ipcMain.handle("delete-refresh-token", async () => {
+  const token = await deleteRefreshToken();
+  return token || null;
 });
