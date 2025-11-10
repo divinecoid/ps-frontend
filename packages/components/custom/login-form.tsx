@@ -14,7 +14,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Link } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 import { Auth } from "@/services"
 
 export function LoginForm({
@@ -35,6 +35,7 @@ export function LoginForm({
         const refresh_token = json["refresh_token"];
         await window.electronAPI.saveToken(token);
         await window.electronAPI.saveRefreshToken(refresh_token);
+        return <Navigate to="/" replace />
       }
     } catch (error) {
       console.log(error);

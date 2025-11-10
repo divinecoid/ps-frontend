@@ -6,6 +6,7 @@
       "@/lib/*": ["./packages/lib/*"],
       "@/components/*": ["./packages/components/*"],
       "@/utils/*": ["./packages/lib/utils/*"],
+      "@/hooks/*": ["./packages/hooks/*"],
       "@/services": ["./packages/services/index"],
     },
     "target": "esnext",
