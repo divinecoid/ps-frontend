@@ -6,6 +6,7 @@
       "@/components/*": ["./packages/components/*"],
       "@/utils/*": ["./packages/lib/utils/*"],
       "@/hooks/*": ["./packages/hooks/*"],
+      "@/config/*": ["./packages/config/*"],
       "@/provider/*": ["./packages/provider/*"],
       "@/services": ["./packages/services"],
     },

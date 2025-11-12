@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { ThemeProvider } from '@/provider/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 
 const initialToken = await window.electronAPI.getToken();
 
@@ -15,6 +16,7 @@ root.render(
       defaultTheme="system"
       enableSystem>
       <App initialToken={initialToken} />
+      <Toaster position='top-right' swipeDirections={['left', 'right']} className='select-none' />
     </ThemeProvider>
   </React.StrictMode>
 );
