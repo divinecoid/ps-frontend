@@ -11,10 +11,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@/components': path.resolve(__dirname, 'packages/components'),
-      '@/lib': path.resolve(__dirname, 'packages/lib'),
-      '@/hooks': path.resolve(__dirname, 'packages/hooks'),
-      '@/utils': path.resolve(__dirname, 'packages/lib/utils'),
       '@/config': path.resolve(__dirname, 'packages/config'),
+      '@/hooks': path.resolve(__dirname, 'packages/hooks'),
+      '@/lib': path.resolve(__dirname, 'packages/lib'),
+      '@/interfaces': path.resolve(__dirname, 'packages/interfaces'),
       '@/provider': path.resolve(__dirname, 'packages/provider'),
       '@/services': path.resolve(__dirname, 'packages/services')
     }

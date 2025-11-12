@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { ModeToggle } from "@/components/ui/mode-toggle"
+import React from "react"
 
 export default function NavigationLayout() {
   const location = useLocation();
@@ -37,20 +38,23 @@ export default function NavigationLayout() {
                   const fullPath = "/" + path.slice(0, index + 1).join("/");
                   const isLast = index === path.length - 1;
                   return (
-                    <BreadcrumbItem key={segment}>
-                      {!isLast ? (
-                        <BreadcrumbLink asChild>
-                          <Link to={fullPath}>{segment}</Link>
-                        </BreadcrumbLink>
-                      ) : (
-                        <BreadcrumbPage>{segment}</BreadcrumbPage>
-                      )}
+                    <React.Fragment key={segment}>
+                      <BreadcrumbItem>
+                        {!isLast ? (
+                          <BreadcrumbLink asChild>
+                            <Link to={fullPath}>{segment}</Link>
+                          </BreadcrumbLink>
+                        ) : (
+                          <BreadcrumbPage>{segment}</BreadcrumbPage>
+                        )}
+                      </BreadcrumbItem>
                       {!isLast && <BreadcrumbSeparator />}
-                    </BreadcrumbItem>
+                    </React.Fragment>
                   );
                 })}
               </BreadcrumbList>
             </Breadcrumb>
+
           </div>
           <div className="px-5">
             <ModeToggle />

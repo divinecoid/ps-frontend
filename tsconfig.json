@@ -2,11 +2,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/lib/*": ["./packages/lib/*"],
       "@/components/*": ["./packages/components/*"],
-      "@/utils/*": ["./packages/lib/utils/*"],
-      "@/hooks/*": ["./packages/hooks/*"],
       "@/config/*": ["./packages/config/*"],
+      "@/hooks/*": ["./packages/hooks/*"],
+      "@/interfaces/*": ["./packages/interfaces/*"],
+      "@/lib/*": ["./packages/lib/*"],
       "@/provider/*": ["./packages/provider/*"],
       "@/services": ["./packages/services"],
     },
