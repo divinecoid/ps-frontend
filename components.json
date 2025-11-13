@@ -12,13 +12,14 @@
   },
   "aliases": {
     "components": "@/packages/components",
-    "config": "@/packages/config",
-    "hooks": "@/packages/hooks",
-    "interfaces": "@/packages/interfaces",
-    "lib": "@/packages/lib",
-    "utils": "@/packages/lib/utils",
-    "provider": "@/packages/provider",
-    "services": "@/packages/services"
+    "ui": "@/components/ui",
+    "config": "@/config",
+    "hooks": "@/hooks",
+    "interfaces": "@/interfaces",
+    "lib": "@/lib",
+    "utils": "@/lib/utils",
+    "provider": "@/provider",
+    "services": "@/services"
   },
   "iconLibrary": "lucide"
 }
