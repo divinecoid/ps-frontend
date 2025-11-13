@@ -31,6 +31,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import DatatablePagination from "./datatable-pagination"
 
 interface DataTableProps<TData, TValue> {
@@ -40,9 +47,12 @@ interface DataTableProps<TData, TValue> {
   perPage: number;
   onPageChange: (page: number) => void;
   count: number;
+  onPageSizeChange: (size: number) => void;
 }
 
-export default function DataTable<TData, TValue>({ data, columns, currentPage, perPage, onPageChange, count }: DataTableProps<TData, TValue>) {
+const pageSizes = [10, 20, 50, 100];
+
+export default function DataTable<TData, TValue>({ data, columns, currentPage, perPage, onPageChange, count, onPageSizeChange }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -74,7 +84,7 @@ export default function DataTable<TData, TValue>({ data, columns, currentPage, p
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
+          placeholder="Search..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
@@ -171,6 +181,18 @@ export default function DataTable<TData, TValue>({ data, columns, currentPage, p
               {count} row(s) selected.
             </>
           }
+        </div>
+        <div>
+          <Select defaultValue={`${pageSizes[0]}`} onValueChange={value => onPageSizeChange(Number(value))}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {pageSizes.map((pageSize) => (
+                <SelectItem key={pageSize} value={`${pageSize}`}>{pageSize}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="space-x-2">
           <DatatablePagination currentPage={currentPage} totalPages={Math.ceil(count / perPage)} onPageChange={onPageChange} />

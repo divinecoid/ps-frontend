@@ -44,9 +44,17 @@ const response = {
 
 export default function Master_Racks() {
     const [page, setPage] = useState(response.page);
+    const [pageSize, setPageSize] = useState(10);
     return <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
         <div className="px-4 lg:px-6">
-            <Datatable data={data} count={response.count} columns={columns} currentPage={page} perPage={response.perPage} onPageChange={setPage} />
+            <Datatable
+                data={data}
+                count={response.count}
+                columns={columns}
+                currentPage={page}
+                perPage={response.perPage}
+                onPageChange={setPage}
+                onPageSizeChange={setPageSize} />
         </div>
     </div>
 
