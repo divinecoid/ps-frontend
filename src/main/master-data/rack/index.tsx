@@ -1,60 +1,54 @@
 import Datatable from "@/components/custom/datatable";
 import { columns } from "./column";
-import { Rack } from "@/interfaces/rack";
-import { useState } from "react";
-
-const data: Rack[] = [
-    {
-        id: "m5gr84i9",
-        amount: 316,
-        status: "success",
-        email: "ken99@example.com",
-    },
-    {
-        id: "3u1reuv4",
-        amount: 242,
-        status: "success",
-        email: "Abe45@example.com",
-    },
-    {
-        id: "derv1ws0",
-        amount: 837,
-        status: "processing",
-        email: "Monserrat44@example.com",
-    },
-    {
-        id: "5kma53ae",
-        amount: 874,
-        status: "success",
-        email: "Silas22@example.com",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 721,
-        status: "failed",
-        email: "carmella@example.com",
-    },
-]
-const response = {
-    data: data,
-    page: 1,
-    perPage: 10,
-    count: 80
-}
+import { Rack, RackResponse } from "@/interfaces/rack";
+import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { MasterRack } from "@/services";
 
 export default function Master_Racks() {
-    const [page, setPage] = useState(response.page);
+    const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);
+    const [count, setCount] = useState(0);
+    const [filter, setFilter] = useState<string>();
+    const [data, setData] = useState<Rack[]>();
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const result = await MasterRack.index();
+                if (result.ok) {
+                    const json: RackResponse = (await result.json());
+                    setData(json.data);
+                    setPage(json.pagination.current_page);
+                    setPageSize(json.pagination.per_page);
+                    setCount(json.pagination.total);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        getData();
+    }, [page, pageSize, filter]);
+
     return <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
         <div className="px-4 lg:px-6">
             <Datatable
-                data={data}
-                count={response.count}
+                data={data??[]}
                 columns={columns}
                 currentPage={page}
-                perPage={response.perPage}
+                count={count}
+                perPage={pageSize}
                 onPageChange={setPage}
-                onPageSizeChange={setPageSize} />
+                onPageSizeChange={setPageSize}
+                selectable
+                filterComponents={
+                    <Input
+                        placeholder="Search..."
+                        value={filter}
+                        onChange={e => setFilter(e.target.value)}
+                        className="max-w-sm"
+                    />
+
+                } />
         </div>
     </div>
 

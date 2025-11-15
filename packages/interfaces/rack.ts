@@ -1,6 +1,12 @@
-export type Rack = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
+import { BaseResponse } from "./base"
+
+export interface Rack {
+  id: number
+  code: string
+  name: string
+  warehouse_id: number
+}
+
+export interface RackResponse extends BaseResponse {
+  data: Rack[]
 }

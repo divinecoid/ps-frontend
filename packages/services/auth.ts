@@ -11,7 +11,15 @@ export const login = async (username: string, password: string) => {
         username: username,
         password: password,
     }
-    return await POST(URL.LOGIN, body)
+    const result = await POST(URL.LOGIN, body)
+    if (result.ok) {
+        const json = await result.json();
+        const token = json["token"];
+        const refresh_token = json["refresh_token"];
+        await window.electronAPI.saveToken(token);
+        await window.electronAPI.saveRefreshToken(refresh_token);
+    }
+    return result;
 }
 
 export const refresh = async () => {
@@ -19,7 +27,13 @@ export const refresh = async () => {
     const body = {
         refresh_token: refresh_token,
     }
-    return await POST(URL.REFRESH, body)
+    const result = await POST(URL.REFRESH, body)
+    if (result.ok) {
+        const json = await result.json();
+        const token = json["token"];
+        await window.electronAPI.saveToken(token);
+    }
+    return result;
 }
 
 export const logout = async () => {
@@ -28,7 +42,7 @@ export const logout = async () => {
         refresh_token: refresh_token,
     }
     const result = await POST(URL.LOGOUT, body);
-    if (result.status) {
+    if (result.ok) {
         await window.electronAPI.deleteRefreshToken();
         await window.electronAPI.deleteToken();
     }

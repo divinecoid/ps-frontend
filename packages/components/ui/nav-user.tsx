@@ -44,10 +44,8 @@ export function NavUser({
 
   const logout = async () => {
     try {
-      const res = await Auth.logout();
-      if (res.status) {
-        await window.electronAPI.deleteToken();
-        await window.electronAPI.deleteRefreshToken();
+      const result = await Auth.logout();
+      if (result.ok) {
         navigate('/login');
       }
     } catch (error) {

@@ -39,20 +39,33 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import DatatablePagination from "./datatable-pagination"
+import SortHeader from "./sort-header"
+import { Checkbox } from "@/components/ui/checkbox"
 
 interface DataTableProps<TData, TValue> {
   data: TData[],
   columns: ColumnDef<TData, TValue>[];
-  currentPage: number;
-  perPage: number;
+  currentPage?: number;
+  perPage?: number;
   onPageChange: (page: number) => void;
-  count: number;
-  onPageSizeChange: (size: number) => void;
+  count?: number;
+  onPageSizeChange?: (size: number) => void;
+  filterComponents?: React.ReactNode;
+  selectable?: boolean;
 }
 
 const pageSizes = [10, 20, 50, 100];
 
-export default function DataTable<TData, TValue>({ data, columns, currentPage, perPage, onPageChange, count, onPageSizeChange }: DataTableProps<TData, TValue>) {
+export default function DataTable<TData, TValue>({
+  data,
+  columns,
+  currentPage,
+  perPage,
+  onPageChange,
+  count,
+  onPageSizeChange,
+  filterComponents,
+  selectable }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -83,14 +96,7 @@ export default function DataTable<TData, TValue>({ data, columns, currentPage, p
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Search..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        {filterComponents}
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="select-none">
             <Button variant="outline" className="ml-auto">
@@ -123,15 +129,32 @@ export default function DataTable<TData, TValue>({ data, columns, currentPage, p
           <TableHeader className="select-none">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
+                {selectable && (
+                  <TableHead>
+                    <Checkbox
+                      checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() ? "indeterminate" : false)
+                      }
+                      onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                      aria-label="Select all"
+                    />
+                  </TableHead>
+                )}
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        : header.column.columnDef.enableSorting ?
+                          <SortHeader column={header.column}>{flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}</SortHeader>
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}
@@ -145,6 +168,15 @@ export default function DataTable<TData, TValue>({ data, columns, currentPage, p
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
+                  {selectable && (
+                    <TableCell>
+                      <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(value) => row.toggleSelected(!!value)}
+                        aria-label="Select row"
+                      />
+                    </TableCell>
+                  )}
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(

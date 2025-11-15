@@ -30,12 +30,7 @@ export function LoginForm({
     const password = form.password.value;
     try {
       const res = await Auth.login(username, password);
-      if (res.status) {
-        const json = await res.json();
-        const token = json["token"];
-        const refresh_token = json["refresh_token"];
-        await window.electronAPI.saveToken(token);
-        await window.electronAPI.saveRefreshToken(refresh_token);
+      if (res.ok) {
         navigate('/home');
       }
     } catch (error) {
