@@ -12,13 +12,6 @@ export const login = async (username: string, password: string) => {
         password: password,
     }
     const result = await POST(URL.LOGIN, body)
-    if (result.ok) {
-        const json = await result.json();
-        const token = json["token"];
-        const refresh_token = json["refresh_token"];
-        await window.electronAPI.saveToken(token);
-        await window.electronAPI.saveRefreshToken(refresh_token);
-    }
     return result;
 }
 

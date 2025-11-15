@@ -8,18 +8,15 @@ import Example from './main/example';
 import Master_Racks from './main/master-data/rack';
 import Master_Warehouse from './main/master-data/warehouse';
 import { EmptyPage } from '@/components/custom/empty-page';
-import { useEffect, useState } from 'react';
+import { useAuth } from '@/provider/auth-provider';
 
-function App({ initialToken }) {
-  const [token, setToken] = useState(initialToken);
-  useEffect(() => {
-    window.electronAPI.getToken().then(value => setToken(value));
-  }, []);
+function App() {
+  const { token } = useAuth();
 
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" element={initialToken ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} />
+        <Route path="/" element={token ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={token ? <NavigationLayout /> : <Navigate to="/login" replace />}>

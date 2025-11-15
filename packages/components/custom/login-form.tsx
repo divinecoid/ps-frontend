@@ -15,22 +15,23 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Link, useNavigate } from "react-router-dom"
-import { Auth } from "@/services"
+import { useAuth } from "@/provider/auth-provider"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
+   const { login } = useAuth();
 
-  const login = async (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     const username = form.username.value;
     const password = form.password.value;
     try {
-      const res = await Auth.login(username, password);
-      if (res.ok) {
+      const response = await login(username, password);
+      if (response) {
         navigate('/home');
       }
     } catch (error) {
@@ -47,7 +48,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={login}>
+          <form onSubmit={onSubmit}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="username">Username</FieldLabel>
