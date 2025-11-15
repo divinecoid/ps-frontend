@@ -1,5 +1,5 @@
-import { Auth } from "@/services";
-import { createContext, useContext, useState } from "react";
+import { Auth, setTokenRefreshListener } from "@/services";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null);
 
@@ -21,9 +21,23 @@ export function AuthProvider({ initialToken, children }) {
     };
 
     const logout = async () => {
-        await Auth.logout();
-        setToken(null);
+        const result = await Auth.logout();
+        if (result.ok) {
+            setToken(null);
+            return true;
+        }
+        return false;
     };
+
+    useEffect(() => {
+        const listener = (newToken: string) => {
+            setToken((oldToken) => (oldToken !== newToken ? newToken : oldToken));
+        };
+        setTokenRefreshListener(listener);
+        return () => {
+            setTokenRefreshListener(null);
+        };
+    }, []);
 
     return (
         <AuthContext.Provider value={{ token, login, logout }}>

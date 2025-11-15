@@ -2,6 +2,12 @@ import { logout, refresh } from "./auth";
 
 const timeout = 5000;
 
+let onTokenRefreshed: ((token: string) => void) | null = null;
+
+export const setTokenRefreshListener = (callback: (token: string) => void) => {
+    onTokenRefreshed = callback;
+};
+
 const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?: RequestInit, count = 0): Promise<Response> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -20,12 +26,20 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
         if (result.status === 401 && token) {
             if (count <= 1) {
                 const refreshResult = await refresh();
-                if (!refreshResult.ok) {
-                    return await logout();
+                if (refreshResult.ok) {
+                    const json = await refreshResult.json();
+                    const newToken = json["token"];
+                    await window.electronAPI.saveToken(newToken);
+                    onTokenRefreshed?.(newToken);
+                    return await fetchWithTimeout(input, init, count + 1);
+                } else {
+                    await logout();
+                    throw new Error("Unauthorized: Token refresh failed");
                 }
-                return await fetchWithTimeout(input, init, count + 1);
+            } else {
+                await logout();
+                throw new Error("Too many refresh attempts");
             }
-            return await logout();
         }
         return result;
     } catch (error) {

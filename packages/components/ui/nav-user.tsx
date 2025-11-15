@@ -45,8 +45,10 @@ export function NavUser({
 
   const onLogout = async () => {
     try {
-      await logout();
-      navigate('/login');
+      const success = await logout();
+      if (success) {
+        navigate('/login');
+      }
     } catch (error) {
       console.log(error);
     }
