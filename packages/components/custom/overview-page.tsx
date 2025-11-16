@@ -1,25 +1,28 @@
-import Datatable from "@/components/custom/datatable";
-import { columns } from "./column";
-import { Rack, RackResponse } from "@/interfaces/rack";
 import { useEffect, useState } from "react";
+import DataTable from "@/components/custom/datatable";
+import { ColumnDef } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
-import { MasterRack } from "@/services";
-import { Button } from "@/components/ui/button";
-import { Plus, RefreshCw } from "lucide-react";
-import ModalAddRack from "./modal-add";
 
-export default function Master_Racks() {
+interface OverviewProps<TData, TValue> {
+    source: (page: number, per_page: number) => Promise<Response>;
+    columns: ColumnDef<TData, TValue>[];
+    selectable?: boolean;
+    actions?: React.ReactNode[];
+}
+
+export default function OverviewPage<TData, TValue>({ source, columns, selectable, actions }: OverviewProps<TData, TValue>) {
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);
     const [count, setCount] = useState(0);
     const [filter, setFilter] = useState<string>();
-    const [data, setData] = useState<Rack[]>();
+    const [data, setData] = useState<TData[]>();
+
     useEffect(() => {
         const getData = async () => {
             try {
-                const result = await MasterRack.index(page, pageSize);
+                const result = await source(page, pageSize);
                 if (result.ok) {
-                    const json: RackResponse = (await result.json());
+                    const json = (await result.json());
                     setData(json.data);
                     setPage(json.pagination.current_page);
                     setPageSize(json.pagination.per_page);
@@ -34,7 +37,7 @@ export default function Master_Racks() {
 
     return <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
         <div className="px-4 lg:px-6">
-            <Datatable
+            <DataTable
                 data={data ?? []}
                 columns={columns}
                 currentPage={page}
@@ -42,10 +45,8 @@ export default function Master_Racks() {
                 perPage={pageSize}
                 onPageChange={setPage}
                 onPageSizeChange={setPageSize}
-                selectable
-                actions={[
-                    <ModalAddRack/>,
-                ]}
+                selectable={selectable}
+                actions={actions}
                 filterComponents={
                     <Input
                         placeholder="Search..."
@@ -53,9 +54,7 @@ export default function Master_Racks() {
                         onChange={e => setFilter(e.target.value)}
                         className="max-w-sm"
                     />
-
                 } />
         </div>
     </div>
-
 }

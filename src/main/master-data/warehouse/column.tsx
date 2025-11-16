@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Rack } from "@/interfaces/rack"
+import { Warehouse } from "@/interfaces/warehouse"
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 
-export const columns: ColumnDef<Rack>[] = [
+export const columns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: "code",
     header: "Code",
@@ -13,6 +13,11 @@ export const columns: ColumnDef<Rack>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "priority",
+    header: "Priority",
     enableSorting: true,
   },
   {

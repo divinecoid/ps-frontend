@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import {
   ColumnDef,
@@ -22,7 +20,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -52,6 +49,7 @@ interface DataTableProps<TData, TValue> {
   onPageSizeChange?: (size: number) => void;
   filterComponents?: React.ReactNode;
   selectable?: boolean;
+  actions?: React.ReactNode[];
 }
 
 const pageSizes = [10, 20, 50, 100];
@@ -65,7 +63,8 @@ export default function DataTable<TData, TValue>({
   count,
   onPageSizeChange,
   filterComponents,
-  selectable }: DataTableProps<TData, TValue>) {
+  selectable,
+  actions }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -97,32 +96,39 @@ export default function DataTable<TData, TValue>({
     <div className="w-full">
       <div className="flex items-center py-4">
         {filterComponents}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild className="select-none">
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="gap-2 ml-auto flex">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="select-none">
+              <Button variant="outline">
+                Columns <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {actions && actions.map((item, key) => {
+            if (React.isValidElement(item)) {
+              return React.cloneElement(item, { key });
+            }
+          })}
+        </div>
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
@@ -130,7 +136,7 @@ export default function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {selectable && (
-                  <TableHead>
+                  <TableHead className="w-0">
                     <Checkbox
                       checked={
                         table.getIsAllPageRowsSelected() ||
@@ -215,7 +221,7 @@ export default function DataTable<TData, TValue>({
           }
         </div>
         <div>
-          <Select defaultValue={`${pageSizes[0]}`} onValueChange={value => onPageSizeChange(Number(value))}>
+          <Select defaultValue={`${perPage}`} onValueChange={value => onPageSizeChange(Number(value))}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
