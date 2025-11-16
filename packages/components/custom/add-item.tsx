@@ -5,7 +5,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { FieldValues, Path, SubmitErrorHandler, SubmitHandler, UseFormReturn } from "react-hook-form";
 import z from "zod";
 import { ZodTypeAny } from "zod/v3";
-import DynamicInput, { InputType } from "@/components/custom/dynamic-input";
+import DynamicInput, { InputMeta } from "@/components/custom/dynamic-input";
 
 interface ModalAddRackProps<T extends FieldValues> {
     title?: string;
@@ -18,21 +18,7 @@ interface ModalAddRackProps<T extends FieldValues> {
     schema?: z.ZodObject;
 }
 
-interface FieldDescription {
-    label?: string;
-    description?: string;
-    placeholder?: string;
-    type?: InputType;
-}
-
-export interface FieldMeta {
-    label: string;
-    description?: string;
-    placeholder?: string;
-    type?: InputType;
-}
-
-export function withMeta<T extends z.ZodTypeAny>(schema: T, meta: FieldMeta) {
+export function withMeta<T extends z.ZodTypeAny>(schema: T, meta: InputMeta) {
     return schema.describe(JSON.stringify(meta));
 }
 
@@ -51,42 +37,41 @@ export default function ModalAddItem<T extends FieldValues>({
                 <Button variant="outline"><Plus />Create</Button>
             </DialogTrigger>
 
-            <DialogContent>
-                <DialogHeader>
+            <DialogContent className="flex flex-col max-h-[90vh] p-0">
+                <DialogHeader className="px-6 pt-6">
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
                 </DialogHeader>
-
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit, onError)} className="space-y-8">
-                        {children}
-                        {Object.entries(schema.shape as Record<string, ZodTypeAny>).map(([key, value]) => {
-                            const fieldDescription: FieldDescription = JSON.parse(value.description ?? "{}");
-                            return <FormField
-                                control={form.control}
-                                key={key}
-                                name={key as Path<T>}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{fieldDescription.label}</FormLabel>
-                                        <FormControl>
-                                            <DynamicInput placeholder={fieldDescription.placeholder} type={fieldDescription.type} {...field} />
-                                        </FormControl>
-                                        <FormDescription>{fieldDescription.description}</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        })}
-                        <DialogFooter className="sm:justify-end">
-                            <DialogClose asChild>
-                                <Button variant="outline">Cancel</Button>
-                            </DialogClose>
-
-                            <Button type="submit">Submit</Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit, onError)} className="flex flex-col flex-1 h-0">
+                            <div className="flex-1 space-y-8 overflow-y-auto px-6">
+                            {Object.entries(schema.shape as Record<string, ZodTypeAny>).map(([key, value]) => {
+                                const fieldDescription: InputMeta = JSON.parse(value.description ?? "{}");
+                                return <FormField
+                                    control={form.control}
+                                    key={key}
+                                    name={key as Path<T>}
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{fieldDescription.label}</FormLabel>
+                                            <FormControl>
+                                                <DynamicInput meta={fieldDescription} field={field} />
+                                            </FormControl>
+                                            <FormDescription>{fieldDescription.description}</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            })}
+                            </div>
+                            <DialogFooter className="sm:justify-end px-6 pb-6">
+                                <DialogClose asChild>
+                                    <Button variant="outline">Cancel</Button>
+                                </DialogClose>
+                                <Button type="submit">Submit</Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
             </DialogContent>
         </Dialog>
     );

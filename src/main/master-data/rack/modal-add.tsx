@@ -21,27 +21,54 @@ const formSchema = z.object({
     warehouse_id: withMeta(z.string(), {
         label: "Warehouse",
         description: "This is your public display name.",
-        placeholder: "",
+        placeholder: "WarehouseNumber",
         type: "number"
     }),
-    d: withMeta(z.string(), {
-        label: "Warehouse",
+    d: withMeta(z.array(z.number()).length(1), {
+        label: "Color",
         description: "This is your public display name.",
         placeholder: "",
-        type: "email"
+        type: "range",
+        max: 100,
+        defaultValue: [3],
+        step: 1
     }),
     e: withMeta(z.string(), {
         label: "Warehouse",
-        description: "This is your public display name.",
+        description: "This is your select.",
         placeholder: "",
-        type: "select"
+        type: "select",
+        options: {
+            a: "a",
+            b: "b",
+            c: "cCCCCCc"
+        },
+        defaultValue: "a"
     }),
     f: withMeta(z.string(), {
         label: "Warehouse",
-        description: "This is your public display name.",
+        description: "This is your radio.",
         placeholder: "",
-        type: "select"
-    })
+        type: "radio",
+        options: {
+            a: "a",
+            b: "b",
+            c: "c"
+        },
+        defaultValue: "a"
+    }),
+    g: withMeta(z.boolean(), {
+        label: "Warehouse",
+        description: "This is your select.",
+        placeholder: "DICK",
+        type: "switch",
+    }),
+    h: withMeta(z.boolean(), {
+        label: "Warehouse",
+        description: "This is your select.",
+        placeholder: "DICK",
+        type: "checkbox",
+    }),
 })
 type FormValues = z.infer<typeof formSchema>;
 
@@ -53,11 +80,16 @@ export default function ModalAddRack({ id }: { id?: string }) {
             code: "",
             name: "",
             warehouse_id: "",
+            d: [0],
+            e: "c",
+            f: "b",
+            g: false,
+            h: true
         },
     });
 
     const onSubmit: SubmitHandler<FormValues> = (values) => {
-        console.log(values)
+        console.log(JSON.stringify(values))
     };
 
     const onError: SubmitErrorHandler<FormValues> = (errors) => {
@@ -66,7 +98,7 @@ export default function ModalAddRack({ id }: { id?: string }) {
     return <ModalAddItem
         form={form}
         title="Add Rack"
-        description="x"
+        description="Add new rack"
         onSubmit={onSubmit}
         onError={onError}
         schema={formSchema} />
