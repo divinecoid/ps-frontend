@@ -1,9 +1,10 @@
+import { BaseApiCallProps } from "@/interfaces/base";
 import { GET } from "./api"
 
 const URL = {
     RACK: "rack"
 }
 
-export const index = async (page: number, per_page: number) => {
-    return await GET(`${URL.RACK}?page=${page}&per_page=${per_page}`);
+export const index: BaseApiCallProps = async (page, per_page, search) => {
+    return await GET(URL.RACK, { page, per_page, search });
 }

@@ -1,4 +1,4 @@
-import { AudioWaveform, BookOpen, Bot, Command, Frame, GalleryVerticalEnd, Map, PieChart, Settings2, SquareTerminal } from "lucide-react";
+import { AudioWaveform, BookOpen, Bot, Command, Construction, Frame, GalleryVerticalEnd, Map, PieChart, Settings2, SquareTerminal } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -252,6 +252,13 @@ export const Menu = {
       name: "Travel",
       url: "#",
       icon: Map,
+    },
+  ],
+  tests: [
+    {
+      name: "Basic CRUD",
+      url: "/example",
+      icon: Construction,
     },
   ],
 }

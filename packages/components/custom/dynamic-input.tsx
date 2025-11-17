@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import { DynamicCombobox } from "./dynamic-combobox";
+import { BaseApiCallProps } from "@/interfaces/base";
 
 export interface InputMeta {
     label?: string;
@@ -17,6 +19,9 @@ export interface InputMeta {
     defaultValue?: string | number | (string | number)[];   //radio, select, checkbox, slider, input, textarea
     max?: number;                                           //slider
     step?: number;                                          //slider
+    source?: BaseApiCallProps;
+    keyId?: string;
+    keyLabel?: string;
 }
 interface DynamicInputProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>;
@@ -27,7 +32,7 @@ export default function DynamicInput<T extends FieldValues>({
     field,
     meta
 }: DynamicInputProps<T>) {
-    const { type, placeholder, options, defaultValue, max, step } = meta;
+    const { type, placeholder, options, defaultValue, max, step, source, keyId, keyLabel } = meta;
     switch (type) {
         case 'text':
         case 'password':
@@ -67,6 +72,14 @@ export default function DynamicInput<T extends FieldValues>({
             return <Checkbox
                 checked={!!field.value}
                 onCheckedChange={field.onChange} />
+        case 'combobox':
+            return <DynamicCombobox
+                id={keyId}
+                label={keyLabel}
+                placeholder={placeholder}
+                source={source}
+                value={field.value}
+                onValueChange={field.onChange} />
         case 'radio':
             return <RadioGroup
                 value={field.value ?? defaultValue}

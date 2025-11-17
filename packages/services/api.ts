@@ -55,10 +55,18 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
     }
 }
 
-export const GET = async (path: string, params?: string) => {
-    return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path + "?" + params, {
-        method: 'GET',
-    })
+export const GET = async (path: string, params?: Record<string, any>) => {
+    const url = new URL(import.meta.env.VITE_APP_BASE_URL + path);
+    if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== "") {
+                url.searchParams.append(key, String(value));
+            }
+        });
+    }
+    return await fetchWithTimeout(url.toString(), {
+        method: "GET",
+    });
 }
 
 export const POST = async (path: string, body: {}) => {

@@ -1,4 +1,8 @@
 export { setTokenRefreshListener } from './api';
-export * as Auth from './auth';
-export * as MasterRack from './master-rack';
-export * as MasterWarehouse from './master-warehouse';
+import * as Auth from './auth';
+import * as MasterRack from './master-rack';
+import * as MasterWarehouse from './master-warehouse';
+
+const Services = { Auth, MasterRack, MasterWarehouse };
+
+export default Services;

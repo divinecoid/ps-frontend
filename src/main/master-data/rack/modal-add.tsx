@@ -23,52 +23,7 @@ const formSchema = z.object({
         description: "This is your public display name.",
         placeholder: "WarehouseNumber",
         type: "number"
-    }),
-    d: withMeta(z.array(z.number()).length(1), {
-        label: "Color",
-        description: "This is your public display name.",
-        placeholder: "",
-        type: "range",
-        max: 100,
-        defaultValue: [3],
-        step: 1
-    }),
-    e: withMeta(z.string(), {
-        label: "Warehouse",
-        description: "This is your select.",
-        placeholder: "",
-        type: "select",
-        options: {
-            a: "a",
-            b: "b",
-            c: "cCCCCCc"
-        },
-        defaultValue: "a"
-    }),
-    f: withMeta(z.string(), {
-        label: "Warehouse",
-        description: "This is your radio.",
-        placeholder: "",
-        type: "radio",
-        options: {
-            a: "a",
-            b: "b",
-            c: "c"
-        },
-        defaultValue: "a"
-    }),
-    g: withMeta(z.boolean(), {
-        label: "Warehouse",
-        description: "This is your select.",
-        placeholder: "DICK",
-        type: "switch",
-    }),
-    h: withMeta(z.boolean(), {
-        label: "Warehouse",
-        description: "This is your select.",
-        placeholder: "DICK",
-        type: "checkbox",
-    }),
+    })
 })
 type FormValues = z.infer<typeof formSchema>;
 
@@ -79,12 +34,7 @@ export default function ModalAddRack({ id }: { id?: string }) {
         defaultValues: {
             code: "",
             name: "",
-            warehouse_id: "",
-            d: [0],
-            e: "c",
-            f: "b",
-            g: false,
-            h: true
+            warehouse_id: ""
         },
     });
 

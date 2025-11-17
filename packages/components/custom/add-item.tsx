@@ -33,18 +33,18 @@ export default function ModalAddItem<T extends FieldValues>({
 }: ModalAddRackProps<T>) {
     return (
         <Dialog>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild className="select-none">
                 <Button variant="outline"><Plus />Create</Button>
             </DialogTrigger>
-
-            <DialogContent className="flex flex-col max-h-[90vh] p-0">
+            <DialogContent className="flex flex-col max-h-[90vh] p-0 select-none">
                 <DialogHeader className="px-6 pt-6">
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
                 </DialogHeader>
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit, onError)} className="flex flex-col flex-1 h-0">
-                            <div className="flex-1 space-y-8 overflow-y-auto px-6">
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit, onError)} className="flex flex-col flex-1 h-0 select-none">
+                        <div className="flex-1 space-y-8 overflow-y-auto px-6">
+                            {children}
                             {Object.entries(schema.shape as Record<string, ZodTypeAny>).map(([key, value]) => {
                                 const fieldDescription: InputMeta = JSON.parse(value.description ?? "{}");
                                 return <FormField
@@ -63,15 +63,15 @@ export default function ModalAddItem<T extends FieldValues>({
                                     )}
                                 />
                             })}
-                            </div>
-                            <DialogFooter className="sm:justify-end px-6 pb-6">
-                                <DialogClose asChild>
-                                    <Button variant="outline">Cancel</Button>
-                                </DialogClose>
-                                <Button type="submit">Submit</Button>
-                            </DialogFooter>
-                        </form>
-                    </Form>
+                        </div>
+                        <DialogFooter className="sm:justify-end px-6 pb-6">
+                            <DialogClose asChild>
+                                <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <Button type="submit">Submit</Button>
+                        </DialogFooter>
+                    </form>
+                </Form>
             </DialogContent>
         </Dialog>
     );

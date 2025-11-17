@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import DataTable from "@/components/custom/datatable";
 import { ColumnDef } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
+import { BaseApiCallProps } from "@/interfaces/base";
 
 interface OverviewProps<TData, TValue> {
-    source: (page: number, per_page: number) => Promise<Response>;
+    source: BaseApiCallProps;
     columns: ColumnDef<TData, TValue>[];
     selectable?: boolean;
     actions?: React.ReactNode[];
@@ -14,13 +15,13 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);
     const [count, setCount] = useState(0);
-    const [filter, setFilter] = useState<string>();
+    const [filter, setFilter] = useState<string>("");
     const [data, setData] = useState<TData[]>();
 
     useEffect(() => {
         const getData = async () => {
             try {
-                const result = await source(page, pageSize);
+                const result = await source(page, pageSize, filter);
                 if (result.ok) {
                     const json = (await result.json());
                     setData(json.data);
