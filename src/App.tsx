@@ -1,4 +1,6 @@
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { EmptyPage } from '@/components/custom/empty-page';
+import { useAuth } from '@/provider/auth-provider';
 import "../globals.css";
 import Login from './auth/login';
 import Register from './auth/register';
@@ -7,8 +9,9 @@ import Home from './main/home';
 import Example from './main/example';
 import MasterRacks from './main/master-data/rack';
 import MasterWarehouse from './main/master-data/warehouse';
-import { EmptyPage } from '@/components/custom/empty-page';
-import { useAuth } from '@/provider/auth-provider';
+import MasterCMTs from './main/master-data/cmt';
+import MasterInventories from './main/master-data/inventory';
+import MasterProducts from './main/master-data/product';
 
 function App() {
   const { token } = useAuth();
@@ -24,6 +27,9 @@ function App() {
           <Route path="/example" element={<Example />} />
           <Route path="/master-data/rack" element={<MasterRacks />} />
           <Route path="/master-data/warehouse" element={<MasterWarehouse />} />
+          <Route path="/master-data/cmt" element={<MasterCMTs />} />
+          <Route path="/master-data/inventory" element={<MasterInventories />} />
+          <Route path="/master-data/product" element={<MasterProducts />} />
 
 
 

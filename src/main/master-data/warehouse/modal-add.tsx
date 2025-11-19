@@ -29,7 +29,7 @@ export default function ModalAddWarehouse({ id }: { id?: string }) {
                 type: "text",
                 schema: z.string(),
                 label: "Name",
-                description: "Input warehouse' name.",
+                description: "Input warehouse's name.",
                 placeholder: "Warehouse name",
             },
             {

@@ -166,8 +166,16 @@ export const Menu = {
           url: "/master-data/warehouse",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "CMT",
+          url: "/master-data/cmt",
+        },
+        {
+          title: "Inventory",
+          url: "/master-data/inventory",
+        },
+        {
+          title: "Product",
+          url: "/master-data/product",
         },
       ],
     },

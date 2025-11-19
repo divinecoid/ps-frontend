@@ -1,8 +1,7 @@
 import ModalAddItem from "@/components/custom/add-item";
-import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddRack({ id }: { id?: string }) {
+export default function ModalAddInventory({ id }: { id?: string }) {
 
     const onSubmit = (values) => {
         console.log(JSON.stringify(values))
@@ -12,8 +11,8 @@ export default function ModalAddRack({ id }: { id?: string }) {
         console.log(errors);
     };
     return <ModalAddItem
-        title="Add Rack"
-        description="Add new rack"
+        title="Add Inventory"
+        description="Add new inventory"
         onSubmit={onSubmit}
         onError={onError}
         formShape={[
@@ -24,7 +23,7 @@ export default function ModalAddRack({ id }: { id?: string }) {
                     message: "Code must be at least 2 characters.",
                 }),
                 label: "Code",
-                description: "Input rack's code.",
+                description: "Input inventory's code.",
                 placeholder: "R001",
             },
             {
@@ -32,19 +31,8 @@ export default function ModalAddRack({ id }: { id?: string }) {
                 type: "text",
                 schema: z.string(),
                 label: "Name",
-                description: "Input rack's name.",
-                placeholder: "Item rack name",
-            },
-            {
-                key: "warehouse_id",
-                type: "combobox",
-                schema: z.string(),
-                label: "Warehouse",
-                description: "This is your public display name.",
-                placeholder: "Warehouse",
-                keyId: "id",
-                keyLabel: "name",
-                source: Services.MasterRack.index
+                description: "Input inventory's name.",
+                placeholder: "Item inventory name",
             },
         ]} />
 }
