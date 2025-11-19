@@ -92,7 +92,7 @@ export default function ModalAddItem<T extends FieldValues>({
         defaultValues
     });
     return (
-        <Dialog>
+        <Dialog onOpenChange={(open) => {open && form.reset(defaultValues)}}>
             <DialogTrigger asChild className="select-none">
                 <Button variant="outline"><Plus /> Create</Button>
             </DialogTrigger>
