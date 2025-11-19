@@ -20,10 +20,11 @@ import { BaseApiCallProps } from "@/interfaces/base"
 
 interface DynamicComboboxProps {
   source: BaseApiCallProps;
+  // source: (msg: string) => void
   id: string;
   label: string;
   placeholder?: string;
-  value: string;
+  value: string | number | (string | number)[];
   onValueChange: (...event: any[]) => void;
 }
 
@@ -40,12 +41,11 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
   React.useEffect(() => {
     const getData = async () => {
       try {
-        console.log(source)
         const result = await source(1, 10, filter);
         if (result.ok) {
           const json = (await result.json());
           const mapped = json.data.map((item: any) => ({
-            value: item[id],
+            value: String(item[id]),
             label: item[label]
           }))
           setOptions(mapped);
@@ -73,7 +73,7 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0">
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput placeholder="Search..." className="h-9" value={filter} onValueChange={setFilter} />
           <CommandList>
             <CommandEmpty>No data found.</CommandEmpty>
@@ -82,8 +82,8 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
                 <CommandItem
                   key={item.value}
                   value={item.value}
-                  onSelect={(currentValue) => {
-                    onValueChange(currentValue === value ? "" : currentValue)
+                  onSelect={() => {
+                    onValueChange(item.value)
                     setOpen(false)
                   }}
                 >

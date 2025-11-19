@@ -1,13 +1,10 @@
 import ModalAddItem from "@/components/custom/add-item";
-import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddRack({ id }: { id?: string }) {
-
+export default function ModalAddWarehouse({ id }: { id?: string }) {
     const onSubmit = (values) => {
         console.log(JSON.stringify(values))
     };
-
     const onError = (errors) => {
         console.log(errors);
     };
@@ -24,27 +21,26 @@ export default function ModalAddRack({ id }: { id?: string }) {
                     message: "Code must be at least 2 characters.",
                 }),
                 label: "Code",
-                description: "Input rack's code.",
-                placeholder: "R001",
+                description: "Input warehouse's code.",
+                placeholder: "WH001",
             },
             {
                 key: "name",
                 type: "text",
                 schema: z.string(),
                 label: "Name",
-                description: "Input racks' name.",
-                placeholder: "Item rack name",
+                description: "Input warehouse' name.",
+                placeholder: "Warehouse name",
             },
             {
-                key: "warehouse_id",
-                type: "combobox",
-                schema: z.string(),
-                label: "Warehouse",
-                description: "This is your public display name.",
-                placeholder: "Warehouse",
-                keyId: "id",
-                keyLabel: "name",
-                source: Services.MasterRack.index
+                key: "priority",
+                type: "number",
+                schema: z.number().min(1, {
+                    message: "Number must be positive"
+                }),
+                label: "Priority",
+                description: "Warehouse's priority",
+                placeholder: "1"
             },
         ]} />
 }

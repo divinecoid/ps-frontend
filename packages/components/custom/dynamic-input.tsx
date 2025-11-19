@@ -14,25 +14,26 @@ export interface InputMeta {
     label?: string;
     description?: string;
     placeholder?: string;
-    type?: React.HTMLInputTypeAttribute;
+    type?: React.HTMLInputTypeAttribute | "combobox";
     options?: Record<string, string>;                       //radio, select
     defaultValue?: string | number | (string | number)[];   //radio, select, checkbox, slider, input, textarea
     max?: number;                                           //slider
     step?: number;                                          //slider
-    source?: BaseApiCallProps;
     keyId?: string;
     keyLabel?: string;
 }
 interface DynamicInputProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>;
     meta: InputMeta;
+    source?: BaseApiCallProps | null;
 }
 
 export default function DynamicInput<T extends FieldValues>({
     field,
-    meta
+    meta,
+    source
 }: DynamicInputProps<T>) {
-    const { type, placeholder, options, defaultValue, max, step, source, keyId, keyLabel } = meta;
+    const { type, placeholder, options, defaultValue, max, step, keyId, keyLabel } = meta;
     switch (type) {
         case 'text':
         case 'password':
@@ -78,12 +79,12 @@ export default function DynamicInput<T extends FieldValues>({
                 label={keyLabel}
                 placeholder={placeholder}
                 source={source}
-                value={field.value}
+                value={field.value ?? defaultValue}
                 onValueChange={field.onChange} />
         case 'radio':
             return <RadioGroup
-                value={field.value ?? defaultValue}
-                {...field}>
+                value={String(field.value ?? defaultValue ?? "")}
+                onValueChange={field.onChange}>
                 {Object.entries(options).map(([value, label]) => {
                     return <div
                         className="flex items-center gap-3"
@@ -99,9 +100,10 @@ export default function DynamicInput<T extends FieldValues>({
             </RadioGroup>
         case 'select':
             return <Select
-                value={field.value ?? defaultValue}
+                value={String(field.value ?? defaultValue ?? "")}
                 onValueChange={field.onChange}
-                {...field}>
+                name={field.name}
+                >
                 <SelectTrigger>
                     <SelectValue
                         placeholder={placeholder} />
