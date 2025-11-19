@@ -17,6 +17,7 @@ import MasterSizes from './main/master-data/size';
 import MasterColors from './main/master-data/color';
 import MasterFactories from './main/master-data/factory';
 import MasterOnlineStores from './main/master-data/online-store';
+import MasterMarketplaces from './main/master-data/marketplace';
 
 function App() {
   const { token } = useAuth();
@@ -40,6 +41,7 @@ function App() {
           <Route path="/master-data/color" element={<MasterColors />} />
           <Route path="/master-data/factory" element={<MasterFactories />} />
           <Route path="/master-data/online-store" element={<MasterOnlineStores />} />
+          <Route path="/master-data/marketplace" element={<MasterMarketplaces />} />
 
 
 

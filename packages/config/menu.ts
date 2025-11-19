@@ -197,6 +197,10 @@ export const Menu = {
           title: "Online Store",
           url: "/master-data/online-store",
         },
+        {
+          title: "Marketplace",
+          url: "/master-data/marketplace",
+        },
       ],
     },
   ],

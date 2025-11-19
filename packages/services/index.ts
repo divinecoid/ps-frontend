@@ -10,6 +10,7 @@ import * as MasterSize from './master-size';
 import * as MasterColor from './master-color';
 import * as MasterFactory from './master-factory';
 import * as MasterOnlineStore from './master-online-store';
+import * as MasterMarketplace from './master-marketplace';
 
 const Services = {
     Auth,
@@ -22,7 +23,8 @@ const Services = {
     MasterSize,
     MasterColor,
     MasterFactory,
-    MasterOnlineStore
+    MasterOnlineStore,
+    MasterMarketplace
 };
 
 export default Services;
