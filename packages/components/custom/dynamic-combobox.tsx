@@ -20,7 +20,6 @@ import { BaseApiCallProps } from "@/interfaces/base"
 
 interface DynamicComboboxProps {
   source: BaseApiCallProps;
-  // source: (msg: string) => void
   id: string;
   label: string;
   placeholder?: string;

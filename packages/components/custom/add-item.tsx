@@ -1,12 +1,23 @@
 import { Button } from "@/components/ui/button";
 import {
-    Dialog, DialogClose, DialogContent, DialogDescription,
-    DialogFooter, DialogHeader, DialogTitle, DialogTrigger
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import {
-    Form, FormControl, FormDescription, FormField,
-    FormItem, FormLabel, FormMessage
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
 } from "@/components/ui/form";
 import { FieldValues, Path, SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
@@ -46,10 +57,8 @@ export function generateSchema(fields: FormShape[]) {
     const sources: Record<string, BaseApiCallProps | null> = {};
     const meta: Record<string, InputMeta> = {};
     const defaultValues: Record<string, any> = {};
-
     for (const field of fields) {
         shape[field.key] = field.schema;
-
         meta[field.key] = {
             label: field.label,
             description: field.description,
@@ -62,14 +71,11 @@ export function generateSchema(fields: FormShape[]) {
             keyId: field.keyId,
             keyLabel: field.keyLabel
         };
-
         defaultValues[field.key] = field.defaultValue ?? "";
-
         if (field.source) {
             sources[field.key] = field.source;
         }
     }
-
     return {
         schema: z.object(shape),
         meta,
@@ -92,7 +98,7 @@ export default function ModalAddItem<T extends FieldValues>({
         defaultValues
     });
     return (
-        <Dialog onOpenChange={(open) => {open && form.reset(defaultValues)}}>
+        <Dialog onOpenChange={(open) => { open && form.reset(defaultValues) }}>
             <DialogTrigger asChild className="select-none">
                 <Button variant="outline"><Plus /> Create</Button>
             </DialogTrigger>
@@ -117,7 +123,6 @@ export default function ModalAddItem<T extends FieldValues>({
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>{fieldMeta.label}</FormLabel>
-
                                                 <FormControl>
                                                     <DynamicInput
                                                         field={field}
@@ -125,7 +130,6 @@ export default function ModalAddItem<T extends FieldValues>({
                                                         source={fieldSource ?? undefined}
                                                     />
                                                 </FormControl>
-
                                                 <FormDescription>{fieldMeta.description}</FormDescription>
                                                 <FormMessage />
                                             </FormItem>
