@@ -12,6 +12,11 @@ import MasterWarehouse from './main/master-data/warehouse';
 import MasterCMTs from './main/master-data/cmt';
 import MasterInventories from './main/master-data/inventory';
 import MasterProducts from './main/master-data/product';
+import MasterProductModels from './main/master-data/product-model';
+import MasterSizes from './main/master-data/size';
+import MasterColors from './main/master-data/color';
+import MasterFactories from './main/master-data/factory';
+import MasterOnlineStores from './main/master-data/online-store';
 
 function App() {
   const { token } = useAuth();
@@ -30,8 +35,11 @@ function App() {
           <Route path="/master-data/cmt" element={<MasterCMTs />} />
           <Route path="/master-data/inventory" element={<MasterInventories />} />
           <Route path="/master-data/product" element={<MasterProducts />} />
-
-
+          <Route path="/master-data/product-model" element={<MasterProductModels />} />
+          <Route path="/master-data/size" element={<MasterSizes />} />
+          <Route path="/master-data/color" element={<MasterColors />} />
+          <Route path="/master-data/factory" element={<MasterFactories />} />
+          <Route path="/master-data/online-store" element={<MasterOnlineStores />} />
 
 
 

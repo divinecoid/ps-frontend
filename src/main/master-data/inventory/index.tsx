@@ -9,7 +9,7 @@ export default function MasterInventories() {
         source={Services.MasterInventory.index}
         selectable
         actions={[
-            <ModalAddInventory/>,
+            <ModalAddInventory />,
         ]} />
 
 }

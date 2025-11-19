@@ -9,7 +9,7 @@ export default function MasterRacks() {
         source={Services.MasterRack.index}
         selectable
         actions={[
-            <ModalAddRack/>,
+            <ModalAddRack />,
         ]} />
 
 }

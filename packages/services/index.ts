@@ -5,6 +5,11 @@ import * as MasterWarehouse from './master-warehouse';
 import * as MasterCMT from './master-cmt';
 import * as MasterInventory from './master-inventory';
 import * as MasterProduct from './master-product';
+import * as MasterProductModel from './master-product-model';
+import * as MasterSize from './master-size';
+import * as MasterColor from './master-color';
+import * as MasterFactory from './master-factory';
+import * as MasterOnlineStore from './master-online-store';
 
 const Services = {
     Auth,
@@ -12,7 +17,12 @@ const Services = {
     MasterWarehouse,
     MasterCMT,
     MasterInventory,
-    MasterProduct
+    MasterProduct,
+    MasterProductModel,
+    MasterSize,
+    MasterColor,
+    MasterFactory,
+    MasterOnlineStore
 };
 
 export default Services;

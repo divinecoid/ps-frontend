@@ -177,70 +177,25 @@ export const Menu = {
           title: "Product",
           url: "/master-data/product",
         },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Product Model",
+          url: "/master-data/product-model",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Size",
+          url: "/master-data/size",
         },
         {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
+          title: "Color",
+          url: "/master-data/color",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Factory",
+          url: "/master-data/factory",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Online Store",
+          url: "/master-data/online-store",
         },
       ],
     },

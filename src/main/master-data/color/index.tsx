@@ -1,15 +1,15 @@
 import { columns } from "./column";
 import Services from "@/services";
-import ModalAddProduct from "./modal-add";
+import ModalAddColor from "./modal-add";
 import OverviewPage from "@/components/custom/overview-page";
 
-export default function MasterProducts() {
+export default function MasterColors() {
     return <OverviewPage
         columns={columns}
-        source={Services.MasterProduct.index}
+        source={Services.MasterColor.index}
         selectable
         actions={[
-            <ModalAddProduct />,
+            <ModalAddColor />,
         ]} />
 
 }
