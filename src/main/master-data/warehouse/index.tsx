@@ -8,7 +8,7 @@ export default function MasterWarehouse() {
         columns={columns}
         source={Services.MasterWarehouse.index}
         selectable
-        actions={[
-            <ModalAddWarehouse />,
+        actions={({ refresh }) => [
+            <ModalAddWarehouse onSubmit={refresh} />,
         ]} />
 }

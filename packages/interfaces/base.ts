@@ -14,3 +14,5 @@ export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: 
 
 export type BaseApiCallCreateProps = (value: any) => Promise<Response>;
 export type BaseApiCallUpdateProps = (id: string, value: any) => Promise<Response>;
+
+export type BaseForm = { onSubmit: () => void, id?: string };

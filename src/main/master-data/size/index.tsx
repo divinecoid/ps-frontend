@@ -8,8 +8,8 @@ export default function MasterSizes() {
         columns={columns}
         source={Services.MasterSize.index}
         selectable
-        actions={[
-            <ModalAddSize />,
+        actions={({ refresh }) => [
+            <ModalAddSize onSubmit={refresh} />,
         ]} />
 
 }

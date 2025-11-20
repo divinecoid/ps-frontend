@@ -1,14 +1,16 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { BaseForm } from "@/interfaces/base";
 import { Warehouse } from "@/interfaces/warehouse";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddWarehouse({ id }: { id?: string }) {
+export default function ModalAddWarehouse({ onSubmit, id }: BaseForm) {
     return <ModalAddItem<Warehouse>
         title="Add Rack"
         description="Add new rack"
         onCreate={Services.MasterWarehouse.store}
         onUpdate={Services.MasterWarehouse.update}
+        afterSubmit={onSubmit}
         formShape={[
             {
                 key: "code",

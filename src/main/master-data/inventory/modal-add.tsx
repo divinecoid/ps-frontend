@@ -1,14 +1,16 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { BaseForm } from "@/interfaces/base";
 import { Inventory } from "@/interfaces/inventory";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddInventory({ id }: { id?: string }) {
+export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
     return <ModalAddItem<Inventory>
         title="Add Inventory"
         description="Add new inventory"
         onCreate={Services.MasterInventory.store}
         onUpdate={Services.MasterInventory.update}
+        afterSubmit={onSubmit}
         formShape={[
             {
                 key: "serial_number",

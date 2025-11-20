@@ -8,8 +8,8 @@ export default function MasterInventories() {
         columns={columns}
         source={Services.MasterInventory.index}
         selectable
-        actions={[
-            <ModalAddInventory />,
+        actions={({ refresh }) => [
+            <ModalAddInventory onSubmit={refresh} />,
         ]} />
 
 }

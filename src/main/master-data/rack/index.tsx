@@ -8,8 +8,8 @@ export default function MasterRacks() {
         columns={columns}
         source={Services.MasterRack.index}
         selectable
-        actions={[
-            <ModalAddRack />,
+        actions={({ refresh }) => [
+            <ModalAddRack onSubmit={refresh} />,
         ]} />
 
 }

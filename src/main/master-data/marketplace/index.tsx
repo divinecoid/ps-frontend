@@ -8,8 +8,8 @@ export default function MasterMarketplaces() {
         columns={columns}
         source={Services.MasterMarketplace.index}
         selectable
-        actions={[
-            <ModalAddMarketplace />,
+        actions={({ refresh }) => [
+            <ModalAddMarketplace onSubmit={refresh} />,
         ]} />
 
 }

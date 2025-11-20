@@ -1,14 +1,16 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { BaseForm } from "@/interfaces/base";
 import { OnlineStore } from "@/interfaces/online-store";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddOnlineStore({ id }: { id?: string }) {
+export default function ModalAddOnlineStore({ onSubmit, id }: BaseForm) {
     return <ModalAddItem<OnlineStore>
         title="Add Online Store"
         description="Add new online store"
         onCreate={Services.MasterOnlineStore.store}
         onUpdate={Services.MasterOnlineStore.update}
+        afterSubmit={onSubmit}
         formShape={[
             {
                 key: "marketplace_id",

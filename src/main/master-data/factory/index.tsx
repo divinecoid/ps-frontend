@@ -8,8 +8,8 @@ export default function MasterFactories() {
         columns={columns}
         source={Services.MasterFactory.index}
         selectable
-        actions={[
-            <ModalAddFactory />,
+        actions={({ refresh }) => [
+            <ModalAddFactory onSubmit={refresh} />,
         ]} />
 
 }

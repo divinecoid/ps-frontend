@@ -12,21 +12,21 @@ export default function Example() {
     const [count, setCount] = useState(0);
     const [filter, setFilter] = useState<string>();
     const [data, setData] = useState<Rack[]>();
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const result = await Services.MasterRack.index(page, pageSize, filter);
-                if (result.ok) {
-                    const json: RackResponse = (await result.json());
-                    setData(json.data);
-                    setPage(json.pagination.current_page);
-                    setPageSize(json.pagination.per_page);
-                    setCount(json.pagination.total);
-                }
-            } catch (error) {
-                console.error(error);
+    const getData = async () => {
+        try {
+            const result = await Services.MasterRack.index(page, pageSize, filter);
+            if (result.ok) {
+                const json: RackResponse = (await result.json());
+                setData(json.data);
+                setPage(json.pagination.current_page);
+                setPageSize(json.pagination.per_page);
+                setCount(json.pagination.total);
             }
+        } catch (error) {
+            console.error(error);
         }
+    }
+    useEffect(() => {
         getData();
     }, [page, pageSize, filter]);
 
@@ -42,7 +42,7 @@ export default function Example() {
                 onPageSizeChange={setPageSize}
                 selectable
                 actions={[
-                    <ModalAddExample />,
+                    <ModalAddExample onSubmit={getData} />,
                 ]}
                 filterComponents={
                     <Input

@@ -8,8 +8,8 @@ export default function MasterCMTs() {
         columns={columns}
         source={Services.MasterCMT.index}
         selectable
-        actions={[
-            <ModalAddCMT/>,
+        actions={({ refresh }) => [
+            <ModalAddCMT onSubmit={refresh} />,
         ]} />
 
 }

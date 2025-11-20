@@ -4,13 +4,14 @@ import Services from "@/services";
 
 const testing = false;
 
-export default function ModalAddExample({ id }: { id?: string }) {
+export default function ModalAddExample({ onSubmit, id }: { onSubmit: () => Promise<void>, id?: string }) {
 
     const test = <ModalAddItem
         title="Add Rack"
         description="Add new rack"
         onCreate={Services.MasterRack.store}
         onUpdate={Services.MasterRack.update}
+        afterSubmit={onSubmit}
         formShape={[
             {
                 key: "code",
@@ -110,6 +111,7 @@ export default function ModalAddExample({ id }: { id?: string }) {
         description="Add new rack"
         onCreate={Services.MasterRack.store}
         onUpdate={Services.MasterRack.update}
+        afterSubmit={onSubmit}
         formShape={[
             {
                 key: "code",

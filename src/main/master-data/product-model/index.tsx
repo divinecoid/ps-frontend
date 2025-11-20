@@ -8,8 +8,8 @@ export default function MasterProductModels() {
         columns={columns}
         source={Services.MasterProductModel.index}
         selectable
-        actions={[
-            <ModalAddProductModel />,
+        actions={({ refresh }) => [
+            <ModalAddProductModel onSubmit={refresh} />,
         ]} />
 
 }

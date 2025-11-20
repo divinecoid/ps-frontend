@@ -8,8 +8,8 @@ export default function MasterColors() {
         columns={columns}
         source={Services.MasterColor.index}
         selectable
-        actions={[
-            <ModalAddColor />,
+        actions={({ refresh }) => [
+            <ModalAddColor onSubmit={refresh} />,
         ]} />
 
 }

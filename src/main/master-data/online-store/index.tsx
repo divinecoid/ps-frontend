@@ -8,8 +8,8 @@ export default function MasterOnlineStores() {
         columns={columns}
         source={Services.MasterOnlineStore.index}
         selectable
-        actions={[
-            <ModalAddOnlineStore />,
+        actions={({ refresh }) => [
+            <ModalAddOnlineStore onSubmit={refresh} />,
         ]} />
 
 }

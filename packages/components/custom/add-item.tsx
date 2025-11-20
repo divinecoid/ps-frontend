@@ -54,6 +54,7 @@ interface ModalAddRackProps<T extends FieldValues> {
     footer?: React.ReactNode;
     onCreate?: BaseApiCallCreateProps;
     onUpdate?: BaseApiCallUpdateProps;
+    afterSubmit: () => void;
     onError?: SubmitErrorHandler<T>;
     formShape: FormShape<T>[];
 }
@@ -101,6 +102,7 @@ export default function ModalAddItem<T extends FieldValues>({
     children,
     onCreate,
     onUpdate,
+    afterSubmit,
     onError,
     formShape
 }: ModalAddRackProps<T>) {
@@ -115,7 +117,7 @@ export default function ModalAddItem<T extends FieldValues>({
             const res = await (id ? onUpdate(id, values) : onCreate(values));
             const json = await res.json();
             if (res.ok) {
-                // return json;
+                afterSubmit();
                 setOpen(false);
             } else {
                 toast.error(String(json.message), { richColors: true });
