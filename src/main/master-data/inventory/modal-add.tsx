@@ -30,7 +30,7 @@ export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
                 }),
                 source: {
                     id: "id",
-                    label: "name",
+                    label: "sku",
                     api: Services.MasterProduct.index,
                 },
                 label: "Product",

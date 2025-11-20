@@ -53,7 +53,7 @@ export default function ModalAddMarketplace({ onSubmit, id }: BaseForm) {
             {
                 key: "is_need_checker",
                 type: "switch",
-                schema: z.boolean(),
+                schema: z.coerce.boolean(),
                 label: "Need checker",
                 description: "Is marketplace need checker.",
                 placeholder: "Marketplace need checker state",

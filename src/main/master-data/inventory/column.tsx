@@ -6,13 +6,13 @@ import { MoreHorizontal } from "lucide-react"
 
 export const columns: ColumnDef<Inventory>[] = [
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: "serial_number",
+    header: "Serial number",
     enableSorting: true,
   },
   {
-    accessorKey: "product.name",
-    header: "Product name",
+    accessorKey: "product.sku",
+    header: "Product SKU",
     enableSorting: true,
   },
   {

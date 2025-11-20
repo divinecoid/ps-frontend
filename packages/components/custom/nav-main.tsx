@@ -15,7 +15,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
+import { useCallback } from "react"
 
 export function NavMain({
   items,
@@ -31,6 +32,10 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const path = useLocation().pathname;
+  const checkActive = useCallback((url: string) => {
+    return path === url ? true : false;
+  }, [path])
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -54,7 +59,7 @@ export function NavMain({
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
+                      <SidebarMenuSubButton asChild isActive={checkActive(subItem.url)}>
                         <Link to={subItem.url}>
                           <span>{subItem.title}</span>
                         </Link>
