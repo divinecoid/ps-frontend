@@ -9,7 +9,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
+import { useCallback } from "react"
 
 export function NavTests({
   tests,
@@ -20,14 +21,15 @@ export function NavTests({
     icon: LucideIcon
   }[]
 }) {
-
+  const path = useLocation().pathname;
+  const checkActive = useCallback((url: string) => path === url ? true : false, [path])
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden text-yellow-600">
       <SidebarGroupLabel>Tests</SidebarGroupLabel>
       <SidebarMenu>
         {tests.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild isActive={checkActive(item.url)}>
               <Link to={item.url}>
                 <item.icon />
                 <span>{item.name}</span>

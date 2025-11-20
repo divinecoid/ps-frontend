@@ -22,7 +22,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
+import { useCallback } from "react"
 
 export function NavProjects({
   projects,
@@ -34,14 +35,15 @@ export function NavProjects({
   }[]
 }) {
   const { isMobile } = useSidebar()
-
+  const path = useLocation().pathname;
+  const checkActive = useCallback((url: string) => path === url ? true : false, [path])
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Projects</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild isActive={checkActive(item.url)}>
               <Link to={item.url}>
                 <item.icon />
                 <span>{item.name}</span>

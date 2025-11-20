@@ -33,9 +33,7 @@ export function NavMain({
   }[]
 }) {
   const path = useLocation().pathname;
-  const checkActive = useCallback((url: string) => {
-    return path === url ? true : false;
-  }, [path])
+  const checkActive = useCallback((url: string) => path === url ? true : false, [path])
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
