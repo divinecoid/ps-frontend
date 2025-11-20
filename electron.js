@@ -5,6 +5,7 @@ const { getToken, saveToken, getRefreshToken, saveRefreshToken, deleteToken, del
 let win = null;
 function createWindow() {
   win = new BrowserWindow({
+    title: "PS Frontend",
     width: 1366,
     height: 768,
     webPreferences: {

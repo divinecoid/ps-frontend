@@ -1,5 +1,12 @@
 {
   "name": "ps-frontend-main",
+  "productName": "PS Frontend",
+  "description": "PS Frontend",
+  "author": {
+    "email": "email@example.com",
+    "name": "Author",
+    "url": "https://www.example.com"
+  },
   "version": "0.1.0",
   "private": true,
   "main": "electron.js",
@@ -45,7 +52,8 @@
     "dev": "concurrently \"vite\" \"npm run electron\"",
     "electron": "electron .",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:mac": "electron-builder --mac"
   },
   "eslintConfig": {
     "extends": [
@@ -69,7 +77,24 @@
     "@vitejs/plugin-react": "^5.1.0",
     "concurrently": "^9.2.1",
     "electron": "^38.5.0",
+    "electron-builder": "^26.0.12",
     "typescript": "^5.9.3",
     "vite": "^7.2.1"
+  },
+  "build": {
+    "productName": "PS Frontend",
+    "appId": "com.ps.frontend",
+    "mac": {
+      "icon": "./public/logo512.png",
+      "category": "public.app-category.utilities"
+    },
+    "asarUnpack": [
+      "node_modules/keytar/**"
+    ],
+    "files": [
+      "dist/**",
+      "electron.js",
+      "preload.js"
+    ]
   }
 }
