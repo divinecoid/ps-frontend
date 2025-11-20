@@ -53,12 +53,12 @@ export default function ModalAddInventory({ id }: { id?: string }) {
             {
                 key: "quantity",
                 type: "number",
-                schema: z.number().positive({
+                schema: z.coerce.number().positive({
                     message: "Quantity must be positive.",
                 }),
                 label: "Code",
-                description: "Input inventory's serial number.",
-                placeholder: "IVT-001",
+                description: "Input inventory's quantity.",
+                placeholder: "150",
             },
             {
                 key: "cmt_id",

@@ -31,7 +31,7 @@ export default function ModalAddWarehouse({ id }: { id?: string }) {
             {
                 key: "priority",
                 type: "number",
-                schema: z.number().min(1, {
+                schema: z.coerce.number().min(1, {
                     message: "Number must be positive"
                 }),
                 label: "Priority",

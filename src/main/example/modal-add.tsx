@@ -41,7 +41,7 @@ export default function ModalAddExample({ id }: { id?: string }) {
             {
                 key: "d",
                 type: "range",
-                schema: z.array(z.number()).length(1),
+                schema: z.array(z.coerce.number()).length(1),
                 label: "Color",
                 description: "This is your public display name.",
                 max: 100,

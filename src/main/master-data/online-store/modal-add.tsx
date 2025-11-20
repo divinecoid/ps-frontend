@@ -23,7 +23,7 @@ export default function ModalAddOnlineStore({ id }: { id?: string }) {
                 },
                 label: "Marketplace",
                 description: "Input online store's marketplace.",
-                placeholder: "Online store's marketplace",
+                placeholder: "MKP-001",
             },
             {
                 key: "store_code",
@@ -33,7 +33,7 @@ export default function ModalAddOnlineStore({ id }: { id?: string }) {
                 }),
                 label: "Store code",
                 description: "Input online store's code.",
-                placeholder: "Online store code",
+                placeholder: "OLS-001",
             },
             {
                 key: "store_name",
@@ -43,7 +43,7 @@ export default function ModalAddOnlineStore({ id }: { id?: string }) {
                 }),
                 label: "Store name",
                 description: "Input online store's name.",
-                placeholder: "Online store name",
+                placeholder: "Online store's name",
             },
             {
                 key: "api_key",
@@ -53,7 +53,7 @@ export default function ModalAddOnlineStore({ id }: { id?: string }) {
                 }),
                 label: "API key",
                 description: "Input online store's API key.",
-                placeholder: "Online store's API key",
+                placeholder: "1020281",
             },
             {
                 key: "client_id",
@@ -63,7 +63,7 @@ export default function ModalAddOnlineStore({ id }: { id?: string }) {
                 }),
                 label: "Client id",
                 description: "Input online store's name.",
-                placeholder: "Online store's name",
+                placeholder: "qwawjd-9f3101-31n1w1-dq0apw",
             },
             {
                 key: "client_secret",
@@ -73,7 +73,7 @@ export default function ModalAddOnlineStore({ id }: { id?: string }) {
                 }),
                 label: "Client secret",
                 description: "Input online store's client secret.",
-                placeholder: "Online store's client secret",
+                placeholder: "09ewiOhihajkAOpasmQU12BE2902adwj2",
             },
             {
                 key: "store_url",
@@ -85,7 +85,7 @@ export default function ModalAddOnlineStore({ id }: { id?: string }) {
                 }),
                 label: "Store URL",
                 description: "Input online store's URL.",
-                placeholder: "Online store's URL",
+                placeholder: "https://www.example.com/officialstore",
             },
             {
                 key: "is_active",
@@ -105,7 +105,7 @@ export default function ModalAddOnlineStore({ id }: { id?: string }) {
                 }),
                 label: "Redirect URL",
                 description: "Input online store's redirect URL.",
-                placeholder: "Online store's redirect URL",
+                placeholder: "https://www.example.com/callback?",
             },
         ]} />
 }
