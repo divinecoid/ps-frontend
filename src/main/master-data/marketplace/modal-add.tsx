@@ -1,9 +1,10 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { Marketplace } from "@/interfaces/marketplace";
 import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddMarketplace({ id }: { id?: string }) {
-    return <ModalAddItem
+    return <ModalAddItem<Marketplace>
         title="Add Marketplace"
         description="Add new marketplace"
         onCreate={Services.MasterMarketplace.store}

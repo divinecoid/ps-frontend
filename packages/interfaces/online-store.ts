@@ -3,6 +3,7 @@ import { BaseResponse } from "./base"
 export interface OnlineStore {
   id: number
   marketplace_id: string
+  store_code: string
   store_name: string
   api_key: string
   client_id: string

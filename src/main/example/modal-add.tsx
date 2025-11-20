@@ -97,9 +97,11 @@ export default function ModalAddExample({ id }: { id?: string }) {
                 label: "Combobox",
                 description: "Combobox",
                 placeholder: "COMBO",
-                keyId: "id",
-                keyLabel: "name",
-                source: Services.MasterRack.index
+                source: {
+                    id: "id",
+                    label: "name",
+                    api: Services.MasterRack.index
+                }
             },
         ]} />
 
@@ -136,9 +138,11 @@ export default function ModalAddExample({ id }: { id?: string }) {
                 label: "Warehouse",
                 description: "This is your public display name.",
                 placeholder: "Warehouse",
-                keyId: "id",
-                keyLabel: "name",
-                source: Services.MasterWarehouse.index
+                source: {
+                    id: "id",
+                    label: "name",
+                    api: Services.MasterWarehouse.index
+                }
             },
         ]} />
 

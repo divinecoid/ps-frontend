@@ -1,9 +1,10 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { Warehouse } from "@/interfaces/warehouse";
 import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddWarehouse({ id }: { id?: string }) {
-    return <ModalAddItem
+    return <ModalAddItem<Warehouse>
         title="Add Rack"
         description="Add new rack"
         onCreate={Services.MasterWarehouse.store}

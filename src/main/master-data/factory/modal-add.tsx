@@ -1,9 +1,10 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { Factory } from "@/interfaces/factory";
 import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddFactory({ id }: { id?: string }) {
-    return <ModalAddItem
+    return <ModalAddItem<Factory>
         title="Add Factory"
         description="Add new factory"
         onCreate={Services.MasterFactory.store}

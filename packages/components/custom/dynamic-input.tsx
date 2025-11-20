@@ -10,30 +10,34 @@ import { Switch } from "@/components/ui/switch";
 import { DynamicCombobox } from "./dynamic-combobox";
 import { BaseApiCallIndexProps } from "@/interfaces/base";
 
+export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "switch";
+
 export interface InputMeta {
     label?: string;
     description?: string;
     placeholder?: string;
-    type?: React.HTMLInputTypeAttribute | "combobox";
+    type?: InputTypes;
     options?: Record<string, string>;                       //radio, select
     defaultValue?: string | number | (string | number)[];   //radio, select, checkbox, slider, input, textarea
     max?: number;                                           //slider
     step?: number;                                          //slider
-    keyId?: string;
-    keyLabel?: string;
+    source: {
+        id: string;
+        label: string;
+    }
 }
 interface DynamicInputProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>;
     meta: InputMeta;
-    source?: BaseApiCallIndexProps | null;
+    api?: BaseApiCallIndexProps | null;
 }
 
 export default function DynamicInput<T extends FieldValues>({
     field,
     meta,
-    source
+    api
 }: DynamicInputProps<T>) {
-    const { type, placeholder, options, defaultValue, max, step, keyId, keyLabel } = meta;
+    const { type, placeholder, options, defaultValue, max, step, source } = meta;
     switch (type) {
         case 'text':
         case 'password':
@@ -75,10 +79,10 @@ export default function DynamicInput<T extends FieldValues>({
                 onCheckedChange={field.onChange} />
         case 'combobox':
             return <DynamicCombobox
-                id={keyId}
-                label={keyLabel}
+                id={source.id}
+                label={source.label}
                 placeholder={placeholder}
-                source={source}
+                source={api}
                 value={field.value ?? defaultValue}
                 onValueChange={field.onChange} />
         case 'radio':

@@ -23,14 +23,14 @@ import { FieldValues, Path, SubmitErrorHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { z, ZodTypeAny } from "zod/v3";
 import { zodResolver } from "@hookform/resolvers/zod";
-import DynamicInput, { InputMeta } from "@/components/custom/dynamic-input";
+import DynamicInput, { InputMeta, InputTypes } from "@/components/custom/dynamic-input";
 import { BaseApiCallIndexProps, BaseApiCallCreateProps, BaseApiCallUpdateProps } from "@/interfaces/base";
 import { toast } from "sonner";
 import { useState } from "react";
 
-interface FormShape {
-    key: string;
-    type: React.HTMLInputTypeAttribute | "combobox";
+interface FormShape<T> {
+    key: keyof T & string;
+    type: InputTypes;
     schema: z.ZodTypeAny;
     label?: string;
     description?: string;
@@ -38,10 +38,12 @@ interface FormShape {
     max?: number;
     step?: number;
     options?: Record<string, string>;
-    source?: BaseApiCallIndexProps | null;
+    source?: {
+        id: string;
+        label: string;
+        api: BaseApiCallIndexProps | null;
+    },
     defaultValue?: string | number | (string | number)[];
-    keyId?: string;
-    keyLabel?: string;
 }
 
 interface ModalAddRackProps<T extends FieldValues> {
@@ -53,12 +55,12 @@ interface ModalAddRackProps<T extends FieldValues> {
     onCreate?: BaseApiCallCreateProps;
     onUpdate?: BaseApiCallUpdateProps;
     onError?: SubmitErrorHandler<T>;
-    formShape: FormShape[];
+    formShape: FormShape<T>[];
 }
 
-export function generateSchema(fields: FormShape[]) {
+export function generateSchema<T>(fields: FormShape<T>[]) {
     const shape: Record<string, ZodTypeAny> = {};
-    const sources: Record<string, BaseApiCallIndexProps | null> = {};
+    const api: Record<string, BaseApiCallIndexProps | null> = {};
     const meta: Record<string, InputMeta> = {};
     const defaultValues: Record<string, any> = {};
     for (const field of fields) {
@@ -72,19 +74,23 @@ export function generateSchema(fields: FormShape[]) {
             defaultValue: field.defaultValue,
             max: field.max,
             step: field.step,
-            keyId: field.keyId,
-            keyLabel: field.keyLabel
+            ...(field.source && {
+                source: {
+                    id: field.source.id,
+                    label: field.source.label
+                }
+            })
         };
         defaultValues[field.key] = field.defaultValue ?? "";
         if (field.source) {
-            sources[field.key] = field.source;
+            api[field.key] = field.source.api;
         }
     }
     return {
         schema: z.object(shape),
         meta,
         defaultValues,
-        sources
+        api
     };
 }
 
@@ -98,7 +104,7 @@ export default function ModalAddItem<T extends FieldValues>({
     onError,
     formShape
 }: ModalAddRackProps<T>) {
-    const { schema, meta, defaultValues, sources } = generateSchema(formShape);
+    const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
     const [open, setOpen] = useState(false);
     const form = useForm({
         resolver: zodResolver(schema),
@@ -112,7 +118,7 @@ export default function ModalAddItem<T extends FieldValues>({
                 // return json;
                 setOpen(false);
             } else {
-                toast.error(String(json.message), {richColors: true});
+                toast.error(String(json.message), { richColors: true });
             }
         } catch (error) {
             console.log(error)
@@ -135,7 +141,7 @@ export default function ModalAddItem<T extends FieldValues>({
                             {children}
                             {Object.entries((schema as z.ZodObject<any>).shape).map(([key]) => {
                                 const fieldMeta = meta[key];
-                                const fieldSource = sources[key];
+                                const fieldSource = api[key];
                                 return (
                                     <FormField
                                         key={key}
@@ -148,7 +154,7 @@ export default function ModalAddItem<T extends FieldValues>({
                                                     <DynamicInput
                                                         field={field}
                                                         meta={fieldMeta}
-                                                        source={fieldSource ?? undefined}
+                                                        api={fieldSource ?? undefined}
                                                     />
                                                 </FormControl>
                                                 <FormDescription>{fieldMeta.description}</FormDescription>

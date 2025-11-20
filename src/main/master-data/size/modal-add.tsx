@@ -1,9 +1,10 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { Size } from "@/interfaces/size";
 import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddSize({ id }: { id?: string }) {
-    return <ModalAddItem
+    return <ModalAddItem<Size>
         title="Add Size"
         description="Add new size"
         onCreate={Services.MasterSize.store}

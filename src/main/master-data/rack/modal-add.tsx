@@ -1,9 +1,10 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { Rack } from "@/interfaces/rack";
 import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddRack({ id }: { id?: string }) {
-    return <ModalAddItem
+    return <ModalAddItem<Rack>
         title="Add Rack"
         description="Add new rack"
         onCreate={Services.MasterRack.store}
@@ -34,9 +35,11 @@ export default function ModalAddRack({ id }: { id?: string }) {
                 label: "Warehouse",
                 description: "The location where this rack placed.",
                 placeholder: "Warehouse",
-                keyId: "id",
-                keyLabel: "name",
-                source: Services.MasterWarehouse.index
+                source: {
+                    id: "id",
+                    label: "name",
+                    api: Services.MasterWarehouse.index
+                }
             },
         ]} />
 }

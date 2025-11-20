@@ -1,9 +1,10 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { Color } from "@/interfaces/color";
 import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddColor({ id }: { id?: string }) {
-    return <ModalAddItem
+    return <ModalAddItem<Color>
         title="Add Color"
         description="Add new color"
         onCreate={Services.MasterColor.store}

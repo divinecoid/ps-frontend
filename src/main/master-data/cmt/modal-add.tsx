@@ -1,9 +1,10 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { CMT } from "@/interfaces/cmt";
 import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddCMT({ id }: { id?: string }) {
-    return <ModalAddItem
+    return <ModalAddItem<CMT>
         title="Add CMT"
         description="Add new CMT"
         onCreate={Services.MasterCMT.store}

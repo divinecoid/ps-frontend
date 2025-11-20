@@ -1,9 +1,10 @@
 import ModalAddItem from "@/components/custom/add-item";
+import { ProductModel } from "@/interfaces/product-model";
 import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddProductModel({ id }: { id?: string }) {
-    return <ModalAddItem
+    return <ModalAddItem<ProductModel>
         title="Add Product Model"
         description="Add new product model"
         onCreate={Services.MasterProductModel.store}
