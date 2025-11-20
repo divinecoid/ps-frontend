@@ -64,7 +64,7 @@ export default function ModalAddInventory({ id }: { id?: string }) {
                 key: "cmt_id",
                 type: "combobox",
                 schema: z.string().nonempty({
-                    message: "Factory is required"
+                    message: "CMT is required"
                 }),
                 source: {
                     id: "id",
@@ -73,7 +73,7 @@ export default function ModalAddInventory({ id }: { id?: string }) {
                 },
                 label: "CMT",
                 description: "CMT type.",
-                placeholder: "Factory source",
+                placeholder: "CMT source",
             },
             {
                 key: "rack_id",
