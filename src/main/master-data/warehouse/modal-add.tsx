@@ -20,7 +20,7 @@ export default function ModalAddWarehouse({ onSubmit, id }: BaseForm) {
                 }),
                 label: "Code",
                 description: "Input warehouse's code.",
-                placeholder: "WH001",
+                placeholder: "WH-001",
             },
             {
                 key: "name",

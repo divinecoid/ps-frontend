@@ -20,7 +20,7 @@ export default function ModalAddProductModel({ onSubmit, id }: BaseForm) {
                 }),
                 label: "Code",
                 description: "Input product model's code.",
-                placeholder: "R001",
+                placeholder: "PRD-001",
             },
             {
                 key: "name",

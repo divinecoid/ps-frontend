@@ -21,7 +21,7 @@ export default function ModalAddExample({ onSubmit, id }: { onSubmit: () => Prom
                 }),
                 label: "Code",
                 description: "Input rack's code.",
-                placeholder: "R001",
+                placeholder: "EX-001",
             },
             {
                 key: "name",

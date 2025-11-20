@@ -20,7 +20,7 @@ export default function ModalAddSize({ onSubmit, id }: BaseForm) {
                 }),
                 label: "Code",
                 description: "Input size's code.",
-                placeholder: "R001",
+                placeholder: "SZ-001",
             },
             {
                 key: "name",

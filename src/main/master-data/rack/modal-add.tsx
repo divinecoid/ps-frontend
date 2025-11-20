@@ -20,7 +20,7 @@ export default function ModalAddRack({ onSubmit, id }: BaseForm) {
                 }),
                 label: "Code",
                 description: "Input rack's code.",
-                placeholder: "R001",
+                placeholder: "RC-001",
             },
             {
                 key: "name",
