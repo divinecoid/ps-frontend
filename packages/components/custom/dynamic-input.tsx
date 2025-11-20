@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { DynamicCombobox } from "./dynamic-combobox";
 import { BaseApiCallIndexProps } from "@/interfaces/base";
 
-export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "switch";
+export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "switch" | "textarea";
 
 export interface InputMeta {
     label?: string;

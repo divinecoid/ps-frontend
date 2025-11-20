@@ -9,6 +9,18 @@ export interface Inventory {
   cmt_id: number
   rack_id: number
   barcode_group: string
+  product: {
+    name: string
+  }
+  factory: {
+    name: string
+  }
+  cmt: {
+    name: string
+  }
+  rack: {
+    name: string
+  }
 }
 
 export interface InventoryResponse extends BaseResponse {

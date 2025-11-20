@@ -28,5 +28,33 @@ export default function ModalAddMarketplace({ id }: { id?: string }) {
                 description: "Input marketplace's name.",
                 placeholder: "Marketplace name",
             },
+            {
+                key: "base_api_url",
+                type: "text",
+                schema: z.string().url({
+                    message: "Base API URL not valid"
+                }).min(2, {
+                    message: "Base API URL must be at least 2 characters."
+                }),
+                label: "Base API URL",
+                description: "Input marketplace's base API URL.",
+                placeholder: "https://api.example.com/rest",
+            },
+            {
+                key: "description",
+                type: "textarea",
+                schema: z.string(),
+                label: "Description",
+                description: "Input marketplace's description.",
+                placeholder: "Marketplace description",
+            },
+            {
+                key: "is_need_checker",
+                type: "switch",
+                schema: z.boolean(),
+                label: "Need checker",
+                description: "Is marketplace need checker.",
+                placeholder: "Marketplace need checker state",
+            },
         ]} />
 }

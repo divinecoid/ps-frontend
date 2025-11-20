@@ -11,6 +11,9 @@ export interface OnlineStore {
   store_url: string
   is_active: boolean
   redirect_uri: string
+  marketplace: {
+    name: string
+  }
 }
 
 export interface OnlineStoreResponse extends BaseResponse {

@@ -16,6 +16,11 @@ export const columns: ColumnDef<Rack>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "warehouse.name",
+    header: "Warehouse name",
+    enableSorting: true,
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {

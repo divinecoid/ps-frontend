@@ -5,6 +5,9 @@ export interface Rack {
   code: string
   name: string
   warehouse_id: number
+  warehouse: {
+    name: string
+  }
 }
 
 export interface RackResponse extends BaseResponse {

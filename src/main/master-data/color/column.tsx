@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Rack } from "@/interfaces/rack"
+import { Color } from "@/interfaces/color"
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 
-export const columns: ColumnDef<Rack>[] = [
+export const columns: ColumnDef<Color>[] = [
   {
     accessorKey: "code",
     header: "Code",
