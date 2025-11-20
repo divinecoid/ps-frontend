@@ -10,4 +10,7 @@ export interface BaseResponse {
   message: string
   pagination: Pagination
 }
-export type BaseApiCallProps = (page?: number, per_page?: number, search?: string) => Promise<Response>;
+export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: string) => Promise<Response>;
+
+export type BaseApiCallCreateProps = (value: any) => Promise<Response>;
+export type BaseApiCallUpdateProps = (id: string, value: any) => Promise<Response>;

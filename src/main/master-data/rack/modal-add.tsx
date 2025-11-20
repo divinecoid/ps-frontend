@@ -3,19 +3,11 @@ import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddRack({ id }: { id?: string }) {
-
-    const onSubmit = (values) => {
-        console.log(JSON.stringify(values))
-    };
-
-    const onError = (errors) => {
-        console.log(errors);
-    };
     return <ModalAddItem
         title="Add Rack"
         description="Add new rack"
-        onSubmit={onSubmit}
-        onError={onError}
+        onCreate={Services.MasterRack.store}
+        onUpdate={Services.MasterRack.update}
         formShape={[
             {
                 key: "code",
@@ -33,18 +25,18 @@ export default function ModalAddRack({ id }: { id?: string }) {
                 schema: z.string(),
                 label: "Name",
                 description: "Input rack's name.",
-                placeholder: "Item rack name",
+                placeholder: "Rack name",
             },
             {
                 key: "warehouse_id",
                 type: "combobox",
                 schema: z.string(),
                 label: "Warehouse",
-                description: "This is your public display name.",
+                description: "The location where this rack placed.",
                 placeholder: "Warehouse",
                 keyId: "id",
                 keyLabel: "name",
-                source: Services.MasterRack.index
+                source: Services.MasterWarehouse.index
             },
         ]} />
 }

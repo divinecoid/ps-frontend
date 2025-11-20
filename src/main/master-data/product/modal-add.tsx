@@ -1,20 +1,13 @@
 import ModalAddItem from "@/components/custom/add-item";
+import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddProduct({ id }: { id?: string }) {
-
-    const onSubmit = (values) => {
-        console.log(JSON.stringify(values))
-    };
-
-    const onError = (errors) => {
-        console.log(errors);
-    };
     return <ModalAddItem
         title="Add Product"
         description="Add new product"
-        onSubmit={onSubmit}
-        onError={onError}
+        onCreate={Services.MasterProduct.store}
+        onUpdate={Services.MasterProduct.update}
         formShape={[
             {
                 key: "code",
@@ -32,7 +25,7 @@ export default function ModalAddProduct({ id }: { id?: string }) {
                 schema: z.string(),
                 label: "Name",
                 description: "Input product's name.",
-                placeholder: "Item Product name",
+                placeholder: "Product name",
             },
         ]} />
 }

@@ -1,20 +1,13 @@
 import ModalAddItem from "@/components/custom/add-item";
+import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddSize({ id }: { id?: string }) {
-
-    const onSubmit = (values) => {
-        console.log(JSON.stringify(values))
-    };
-
-    const onError = (errors) => {
-        console.log(errors);
-    };
     return <ModalAddItem
         title="Add Size"
         description="Add new size"
-        onSubmit={onSubmit}
-        onError={onError}
+        onCreate={Services.MasterSize.store}
+        onUpdate={Services.MasterSize.update}
         formShape={[
             {
                 key: "code",
@@ -32,7 +25,7 @@ export default function ModalAddSize({ id }: { id?: string }) {
                 schema: z.string(),
                 label: "Name",
                 description: "Input size's name.",
-                placeholder: "Item size name",
+                placeholder: "Size name",
             },
         ]} />
 }

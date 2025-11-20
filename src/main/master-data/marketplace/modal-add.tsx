@@ -1,20 +1,13 @@
 import ModalAddItem from "@/components/custom/add-item";
+import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddMarketplace({ id }: { id?: string }) {
-
-    const onSubmit = (values) => {
-        console.log(JSON.stringify(values))
-    };
-
-    const onError = (errors) => {
-        console.log(errors);
-    };
     return <ModalAddItem
         title="Add Marketplace"
         description="Add new marketplace"
-        onSubmit={onSubmit}
-        onError={onError}
+        onCreate={Services.MasterMarketplace.store}
+        onUpdate={Services.MasterMarketplace.update}
         formShape={[
             {
                 key: "code",
@@ -24,7 +17,7 @@ export default function ModalAddMarketplace({ id }: { id?: string }) {
                 }),
                 label: "Code",
                 description: "Input marketplace's code.",
-                placeholder: "R001",
+                placeholder: "MKP-001",
             },
             {
                 key: "name",
@@ -32,7 +25,7 @@ export default function ModalAddMarketplace({ id }: { id?: string }) {
                 schema: z.string(),
                 label: "Name",
                 description: "Input marketplace's name.",
-                placeholder: "Item marketplace name",
+                placeholder: "Marketplace name",
             },
         ]} />
 }

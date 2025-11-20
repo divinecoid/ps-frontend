@@ -2,20 +2,15 @@ import ModalAddItem from "@/components/custom/add-item";
 import { z } from "zod/v3";
 import Services from "@/services";
 
-export default function ModalAddExample({ id }: { id?: string }) {
-    const onSubmit = (values) => {
-        console.log(JSON.stringify(values))
-    };
+const testing = false;
 
-    const onError = (errors) => {
-        console.log(errors);
-    };
-    
-    return <ModalAddItem
+export default function ModalAddExample({ id }: { id?: string }) {
+
+    const test = <ModalAddItem
         title="Add Rack"
         description="Add new rack"
-        onSubmit={onSubmit}
-        onError={onError}
+        onCreate={Services.MasterRack.store}
+        onUpdate={Services.MasterRack.update}
         formShape={[
             {
                 key: "code",
@@ -107,4 +102,45 @@ export default function ModalAddExample({ id }: { id?: string }) {
                 source: Services.MasterRack.index
             },
         ]} />
+
+    const rack = <ModalAddItem
+        title="Add Rack"
+        description="Add new rack"
+        onCreate={Services.MasterRack.store}
+        onUpdate={Services.MasterRack.update}
+        formShape={[
+            {
+                key: "code",
+                type: "text",
+                schema: z.string().min(2, {
+                    message: "Code must be at least 2 characters.",
+                }),
+                label: "Code",
+                description: "Input rack's code.",
+                placeholder: "R001",
+            },
+            {
+                key: "name",
+                type: "text",
+                schema: z.string(),
+                label: "Name",
+                description: "Input rack's name.",
+                placeholder: "Item rack name",
+            },
+            {
+                key: "warehouse_id",
+                type: "combobox",
+                schema: z.string().nonempty(
+                    "Warehouse is required!"
+                ),
+                label: "Warehouse",
+                description: "This is your public display name.",
+                placeholder: "Warehouse",
+                keyId: "id",
+                keyLabel: "name",
+                source: Services.MasterWarehouse.index
+            },
+        ]} />
+
+    return testing ? test : rack;
 }

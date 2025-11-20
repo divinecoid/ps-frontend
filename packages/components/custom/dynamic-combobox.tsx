@@ -16,10 +16,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { BaseApiCallProps } from "@/interfaces/base"
+import { BaseApiCallIndexProps } from "@/interfaces/base"
 
 interface DynamicComboboxProps {
-  source: BaseApiCallProps;
+  source: BaseApiCallIndexProps;
   id: string;
   label: string;
   placeholder?: string;

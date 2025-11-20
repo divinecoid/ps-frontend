@@ -19,12 +19,14 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form";
-import { FieldValues, Path, SubmitErrorHandler, SubmitHandler } from "react-hook-form";
+import { FieldValues, Path, SubmitErrorHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { z, ZodTypeAny } from "zod/v3";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DynamicInput, { InputMeta } from "@/components/custom/dynamic-input";
-import { BaseApiCallProps } from "@/interfaces/base";
+import { BaseApiCallIndexProps, BaseApiCallCreateProps, BaseApiCallUpdateProps } from "@/interfaces/base";
+import { toast } from "sonner";
+import { useState } from "react";
 
 interface FormShape {
     key: string;
@@ -36,25 +38,27 @@ interface FormShape {
     max?: number;
     step?: number;
     options?: Record<string, string>;
-    source?: BaseApiCallProps | null;
+    source?: BaseApiCallIndexProps | null;
     defaultValue?: string | number | (string | number)[];
     keyId?: string;
     keyLabel?: string;
 }
 
 interface ModalAddRackProps<T extends FieldValues> {
+    id?: string;
     title?: string;
     description?: string;
     children?: React.ReactNode;
     footer?: React.ReactNode;
-    onSubmit?: SubmitHandler<T>;
+    onCreate?: BaseApiCallCreateProps;
+    onUpdate?: BaseApiCallUpdateProps;
     onError?: SubmitErrorHandler<T>;
     formShape: FormShape[];
 }
 
 export function generateSchema(fields: FormShape[]) {
     const shape: Record<string, ZodTypeAny> = {};
-    const sources: Record<string, BaseApiCallProps | null> = {};
+    const sources: Record<string, BaseApiCallIndexProps | null> = {};
     const meta: Record<string, InputMeta> = {};
     const defaultValues: Record<string, any> = {};
     for (const field of fields) {
@@ -85,20 +89,37 @@ export function generateSchema(fields: FormShape[]) {
 }
 
 export default function ModalAddItem<T extends FieldValues>({
+    id,
     title,
     description,
     children,
-    onSubmit,
+    onCreate,
+    onUpdate,
     onError,
     formShape
 }: ModalAddRackProps<T>) {
     const { schema, meta, defaultValues, sources } = generateSchema(formShape);
+    const [open, setOpen] = useState(false);
     const form = useForm({
         resolver: zodResolver(schema),
         defaultValues
     });
+    const submitForm = async (values) => {
+        try {
+            const res = await (id ? onUpdate(id, values) : onCreate(values));
+            const json = await res.json();
+            if (res.ok) {
+                // return json;
+                setOpen(false);
+            } else {
+                toast.error(String(json.message), {richColors: true});
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
-        <Dialog onOpenChange={(open) => { open && form.reset(defaultValues) }}>
+        <Dialog open={open} onOpenChange={(open) => { setOpen(open); open && form.reset(defaultValues); }}>
             <DialogTrigger asChild className="select-none">
                 <Button variant="outline"><Plus /> Create</Button>
             </DialogTrigger>
@@ -108,7 +129,7 @@ export default function ModalAddItem<T extends FieldValues>({
                     <DialogDescription>{description}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit, onError)}
+                    <form onSubmit={form.handleSubmit(submitForm, onError)}
                         className="flex flex-col flex-1 h-0 select-none">
                         <div className="flex-1 space-y-8 overflow-y-auto px-6">
                             {children}

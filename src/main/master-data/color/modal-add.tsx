@@ -1,20 +1,13 @@
 import ModalAddItem from "@/components/custom/add-item";
+import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddColor({ id }: { id?: string }) {
-
-    const onSubmit = (values) => {
-        console.log(JSON.stringify(values))
-    };
-
-    const onError = (errors) => {
-        console.log(errors);
-    };
     return <ModalAddItem
         title="Add Color"
         description="Add new color"
-        onSubmit={onSubmit}
-        onError={onError}
+        onCreate={Services.MasterColor.store}
+        onUpdate={Services.MasterColor.update}
         formShape={[
             {
                 key: "code",
@@ -24,7 +17,7 @@ export default function ModalAddColor({ id }: { id?: string }) {
                 }),
                 label: "Code",
                 description: "Input color's code.",
-                placeholder: "R001",
+                placeholder: "COL-001",
             },
             {
                 key: "name",
@@ -32,7 +25,7 @@ export default function ModalAddColor({ id }: { id?: string }) {
                 schema: z.string(),
                 label: "Name",
                 description: "Input color's name.",
-                placeholder: "Item color name",
+                placeholder: "Color name",
             },
         ]} />
 }

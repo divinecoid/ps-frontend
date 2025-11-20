@@ -1,20 +1,13 @@
 import ModalAddItem from "@/components/custom/add-item";
+import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddCMT({ id }: { id?: string }) {
-
-    const onSubmit = (values) => {
-        console.log(JSON.stringify(values))
-    };
-
-    const onError = (errors) => {
-        console.log(errors);
-    };
     return <ModalAddItem
         title="Add CMT"
         description="Add new CMT"
-        onSubmit={onSubmit}
-        onError={onError}
+        onCreate={Services.MasterCMT.store}
+        onUpdate={Services.MasterCMT.update}
         formShape={[
             {
                 key: "code",
@@ -24,7 +17,7 @@ export default function ModalAddCMT({ id }: { id?: string }) {
                 }),
                 label: "Code",
                 description: "Input CMT's code.",
-                placeholder: "R001",
+                placeholder: "CMT-001",
             },
             {
                 key: "name",
@@ -32,7 +25,7 @@ export default function ModalAddCMT({ id }: { id?: string }) {
                 schema: z.string(),
                 label: "Name",
                 description: "Input CMT's name.",
-                placeholder: "Item CMT name",
+                placeholder: "CMT name",
             },
         ]} />
 }

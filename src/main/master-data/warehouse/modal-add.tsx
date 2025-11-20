@@ -1,18 +1,13 @@
 import ModalAddItem from "@/components/custom/add-item";
+import Services from "@/services";
 import { z } from "zod/v3";
 
 export default function ModalAddWarehouse({ id }: { id?: string }) {
-    const onSubmit = (values) => {
-        console.log(JSON.stringify(values))
-    };
-    const onError = (errors) => {
-        console.log(errors);
-    };
     return <ModalAddItem
         title="Add Rack"
         description="Add new rack"
-        onSubmit={onSubmit}
-        onError={onError}
+        onCreate={Services.MasterWarehouse.store}
+        onUpdate={Services.MasterWarehouse.update}
         formShape={[
             {
                 key: "code",

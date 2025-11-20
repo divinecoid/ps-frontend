@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { DynamicCombobox } from "./dynamic-combobox";
-import { BaseApiCallProps } from "@/interfaces/base";
+import { BaseApiCallIndexProps } from "@/interfaces/base";
 
 export interface InputMeta {
     label?: string;
@@ -25,7 +25,7 @@ export interface InputMeta {
 interface DynamicInputProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>;
     meta: InputMeta;
-    source?: BaseApiCallProps | null;
+    source?: BaseApiCallIndexProps | null;
 }
 
 export default function DynamicInput<T extends FieldValues>({

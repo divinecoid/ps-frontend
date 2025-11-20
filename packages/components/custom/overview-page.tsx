@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import DataTable from "@/components/custom/datatable";
 import { ColumnDef } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
-import { BaseApiCallProps } from "@/interfaces/base";
+import { BaseApiCallIndexProps } from "@/interfaces/base";
 
 interface OverviewProps<TData, TValue> {
-    source: BaseApiCallProps;
+    source: BaseApiCallIndexProps;
     columns: ColumnDef<TData, TValue>[];
     selectable?: boolean;
     actions?: React.ReactNode[];
