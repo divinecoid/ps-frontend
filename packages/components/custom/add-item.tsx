@@ -57,6 +57,7 @@ interface ModalAddRackProps<T extends FieldValues> {
     afterSubmit: () => void;
     onError?: SubmitErrorHandler<T>;
     formShape: FormShape<T>[];
+    buttonTrigger?: React.ReactNode;
 }
 
 export function generateSchema<T>(fields: FormShape<T>[]) {
@@ -104,7 +105,8 @@ export default function ModalAddItem<T extends FieldValues>({
     onUpdate,
     afterSubmit,
     onError,
-    formShape
+    formShape,
+    buttonTrigger
 }: ModalAddRackProps<T>) {
     const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
     const [open, setOpen] = useState(false);
@@ -129,7 +131,9 @@ export default function ModalAddItem<T extends FieldValues>({
     return (
         <Dialog open={open} onOpenChange={(open) => { setOpen(open); open && form.reset(defaultValues); }}>
             <DialogTrigger asChild className="select-none">
-                <Button variant="outline"><Plus /> Create</Button>
+                {buttonTrigger ? buttonTrigger :
+                    <Button variant="outline"><Plus /> Create</Button>
+                }
             </DialogTrigger>
             <DialogContent className="flex flex-col max-h-[90vh] p-0 select-none">
                 <DialogHeader className="px-6 pt-6">

@@ -17,3 +17,7 @@ export const store = async (values: CMT) => {
 export const update = async (id: string, values: CMT) => {
     return await PATCH(`${URL.CMT}/${id}`, values);
 }
+
+export const show = async (id: string) => {
+    return await GET(`${URL.CMT}/${id}`);
+}

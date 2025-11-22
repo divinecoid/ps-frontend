@@ -17,3 +17,7 @@ export const store = async (values: Color) => {
 export const update = async (id: string, values: Color) => {
     return await PATCH(`${URL.COLOR}/${id}`, values);
 }
+
+export const show = async (id: string) => {
+    return await GET(`${URL.COLOR}/${id}`);
+}

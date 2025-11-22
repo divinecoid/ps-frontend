@@ -17,3 +17,7 @@ export const store = async (values: Inventory) => {
 export const update = async (id: string, values: Inventory) => {
     return await PATCH(`${URL.INVENTORY}/${id}`, values);
 }
+
+export const show = async (id: string) => {
+    return await GET(`${URL.INVENTORY}/${id}`);
+}

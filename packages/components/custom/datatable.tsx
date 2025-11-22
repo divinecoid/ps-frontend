@@ -5,7 +5,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
+  // getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -50,6 +50,7 @@ interface DataTableProps<TData, TValue> {
   filterComponents?: React.ReactNode;
   selectable?: boolean;
   actions?: React.ReactNode[];
+  rowActions?: (cell: { row: TData }) => React.ReactNode;
 }
 
 const pageSizes = [10, 20, 50, 100];
@@ -64,7 +65,8 @@ export default function DataTable<TData, TValue>({
   onPageSizeChange,
   filterComponents,
   selectable,
-  actions }: DataTableProps<TData, TValue>) {
+  actions,
+  rowActions }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -130,81 +132,92 @@ export default function DataTable<TData, TValue>({
           })}
         </div>
       </div>
-      <div className="overflow-hidden rounded-md border">
-        <Table>
-          <TableHeader className="select-none">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {selectable && (
-                  <TableHead className="w-0">
-                    <Checkbox
-                      checked={
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() ? "indeterminate" : false)
-                      }
-                      onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                      aria-label="Select all"
-                    />
-                  </TableHead>
-                )}
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : header.column.columnDef.enableSorting ?
-                          <SortHeader column={header.column}>{flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}</SortHeader>
-                          : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+      <div className="flex">
+        <div className="flex-1 w-0 overflow-hidden rounded-md border">
+          <Table>
+            <TableHeader className="select-none">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
                   {selectable && (
-                    <TableCell>
+                    <TableHead className="w-0">
                       <Checkbox
-                        checked={row.getIsSelected()}
-                        onCheckedChange={(value) => row.toggleSelected(!!value)}
-                        aria-label="Select row"
+                        checked={
+                          table.getIsAllPageRowsSelected() ||
+                          (table.getIsSomePageRowsSelected() ? "indeterminate" : false)
+                        }
+                        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                        aria-label="Select all"
                       />
-                    </TableCell>
+                    </TableHead>
                   )}
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : header.column.columnDef.enableSorting ?
+                            <SortHeader column={header.column}>{flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}</SortHeader>
+                            : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    )
+                  })}
+                  {rowActions && (
+                    <TableHead className="w-0" />
+                  )}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    className="group"
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {selectable && (
+                      <TableCell>
+                        <Checkbox
+                          checked={row.getIsSelected()}
+                          onCheckedChange={(value) => row.toggleSelected(!!value)}
+                          aria-label="Select row"
+                        />
+                      </TableCell>
+                    )}
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                    {rowActions && (
+                      <TableCell className="w-0 sticky right-0 opacity-0 group-hover:opacity-100 backdrop-blur-md">
+                        {rowActions({ row: row.original })}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-12 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="select-none text-muted-foreground flex-1 text-sm">

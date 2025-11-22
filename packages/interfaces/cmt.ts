@@ -1,4 +1,4 @@
-import { BaseResponse } from "./base"
+import { BaseResponse, IndexResponse } from "./base"
 
 export interface CMT {
   id: number
@@ -6,6 +6,10 @@ export interface CMT {
   name: string
 }
 
-export interface CMTResponse extends BaseResponse {
+export interface CMTResponse extends IndexResponse {
   data: CMT[]
+}
+
+export interface CMTViewResponse extends BaseResponse {
+  data: CMT
 }

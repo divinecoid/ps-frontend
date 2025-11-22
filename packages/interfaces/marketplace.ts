@@ -1,4 +1,4 @@
-import { BaseResponse } from "./base"
+import { BaseResponse, IndexResponse } from "./base"
 
 export interface Marketplace {
   id: number
@@ -9,6 +9,10 @@ export interface Marketplace {
   is_need_checker: string
 }
 
-export interface MarketplaceResponse extends BaseResponse {
+export interface MarketplaceResponse extends IndexResponse {
   data: Marketplace[]
+}
+
+export interface MarketplaceViewResponse extends BaseResponse {
+  data: Marketplace
 }

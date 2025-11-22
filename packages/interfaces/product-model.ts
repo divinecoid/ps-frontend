@@ -1,4 +1,4 @@
-import { BaseResponse } from "./base"
+import { BaseResponse, IndexResponse } from "./base"
 
 export interface ProductModel {
   id: number
@@ -6,6 +6,10 @@ export interface ProductModel {
   name: string
 }
 
-export interface ProductModelResponse extends BaseResponse {
+export interface ProductModelResponse extends IndexResponse {
   data: ProductModel[]
+}
+
+export interface ProductModelViewResponse extends BaseResponse {
+  data: ProductModel
 }

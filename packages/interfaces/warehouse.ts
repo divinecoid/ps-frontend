@@ -1,4 +1,4 @@
-import { BaseResponse } from "./base"
+import { BaseResponse, IndexResponse } from "./base"
 
 export interface Warehouse {
   id: number
@@ -7,6 +7,10 @@ export interface Warehouse {
   priority: number
 }
 
-export interface WarehouseResponse extends BaseResponse {
+export interface WarehouseResponse extends IndexResponse {
   data: Warehouse[]
+}
+
+export interface WarehouseViewResponse extends BaseResponse {
+  data: Warehouse
 }

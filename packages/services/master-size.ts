@@ -17,3 +17,7 @@ export const store = async (values: Size) => {
 export const update = async (id: string, values: Size) => {
     return await PATCH(`${URL.SIZE}/${id}`, values);
 }
+
+export const show = async (id: string) => {
+    return await GET(`${URL.SIZE}/${id}`);
+}

@@ -17,3 +17,7 @@ export const store = async (values: OnlineStore) => {
 export const update = async (id: string, values: OnlineStore) => {
     return await PATCH(`${URL.ONLINE_STORE}/${id}`, values);
 }
+
+export const show = async (id: string) => {
+    return await GET(`${URL.ONLINE_STORE}/${id}`);
+}

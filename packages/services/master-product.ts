@@ -17,3 +17,7 @@ export const store = async (values: Product) => {
 export const update = async (id: string, values: Product) => {
     return await PATCH(`${URL.PRODUCT}/${id}`, values);
 }
+
+export const show = async (id: string) => {
+    return await GET(`${URL.PRODUCT}/${id}`);
+}
