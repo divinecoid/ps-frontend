@@ -1,18 +1,13 @@
 import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { CMT } from "@/interfaces/cmt";
-import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalCMT({ onSubmit, isEdit, id, setId }: BaseForm) {
+export default function ModalCMT(props: BaseForm) {
     return <ModalItem<CMT>
-        title={isEdit ? "Edit CMT" : "Add CMT"}
-        description={isEdit ? "Edit CMT" : "Add new CMT"}
-        services={Services.MasterCMT}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit CMT" : "Add CMT"}
+        description={props.isEdit ? "Edit CMT" : "Add new CMT"}
+        {...props}
         formShape={[
             {
                 key: "code",

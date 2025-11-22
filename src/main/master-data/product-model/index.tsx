@@ -12,7 +12,7 @@ export default function MasterMarketplaces() {
     const [editRow, setEditRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterMarketplace.index}
+        source={Services.MasterMarketplace}
         selectable
         actions={(props) => [
             <ModalMarketplace {...props} />,

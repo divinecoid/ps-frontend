@@ -1,18 +1,13 @@
 import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { Color } from "@/interfaces/color";
-import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalColor({ onSubmit, isEdit, id, setId }: BaseForm) {
+export default function ModalColor(props: BaseForm) {
     return <ModalItem<Color>
-        title={isEdit ? "Edit Color" : "Add Color"}
-        description={isEdit ? "Edit Color" : "Add new color"}
-        services={Services.MasterColor}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit Color" : "Add Color"}
+        description={props.isEdit ? "Edit Color" : "Add new color"}
+        {...props}
         formShape={[
             {
                 key: "code",

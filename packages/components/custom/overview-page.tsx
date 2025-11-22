@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import DataTable from "@/components/custom/datatable";
 import { ColumnDef } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
-import { BaseApiCallIndexProps } from "@/interfaces/base";
+import { BaseApiCallProps } from "@/interfaces/base";
 
 interface OverviewProps<TData, TValue> {
-    source: BaseApiCallIndexProps;
+    source: BaseApiCallProps;
     columns: ColumnDef<TData, TValue>[];
     selectable?: boolean;
-    actions?: (utils: { onSubmit: () => void }) => React.ReactNode[];
+    actions?: (utils: { services: BaseApiCallProps, onSubmit: () => void }) => React.ReactNode[];
     rowActions?: (cell: { row: TData, id: number, setId: React.Dispatch<React.SetStateAction<number>> }) => React.ReactNode;
 }
 
@@ -21,7 +21,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     const [id, setId] = useState<number>();
     const getData = async () => {
         try {
-            const result = await source(page, pageSize, filter);
+            const result = await source.index(page, pageSize, filter);
             if (result.ok) {
                 const json = (await result.json());
                 setData(json.data);
@@ -48,7 +48,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 onPageChange={setPage}
                 onPageSizeChange={setPageSize}
                 selectable={selectable}
-                actions={actions ? actions({ onSubmit: getData }) : []}
+                actions={actions ? actions({ services: source, onSubmit: getData }) : []}
                 rowActions={rowActions ? ({ row }) => (
                     rowActions({ row, id, setId })
                 ): undefined}

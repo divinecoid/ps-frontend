@@ -1,18 +1,13 @@
 import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { Size } from "@/interfaces/size";
-import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalSize({ onSubmit, isEdit, id, setId }: BaseForm) {
+export default function ModalSize(props: BaseForm) {
     return <ModalItem<Size>
-        title={isEdit ? "Edit Size" : "Add Size"}
-        description={isEdit ? "Edit size" : "Add new size"}
-        services={Services.MasterSize}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit Size" : "Add Size"}
+        description={props.isEdit ? "Edit size" : "Add new size"}
+        {...props}
         formShape={[
             {
                 key: "code",

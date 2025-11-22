@@ -1,18 +1,13 @@
 import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { ProductModel } from "@/interfaces/product-model";
-import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalProductModel({ onSubmit, isEdit, id, setId }: BaseForm) {
+export default function ModalProductModel(props: BaseForm) {
     return <ModalItem<ProductModel>
-        title={isEdit ? "Edit Product Model" : "Add Product Model"}
-        description={isEdit ? "Edit product model" : "Add new product model"}
-        services={Services.MasterProductModel}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit Product Model" : "Add Product Model"}
+        description={props.isEdit ? "Edit product model" : "Add new product model"}
+        {...props}
         formShape={[
             {
                 key: "code",

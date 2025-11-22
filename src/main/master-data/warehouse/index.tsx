@@ -11,7 +11,7 @@ export default function MasterWarehouse() {
     const [editRow, setEditRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterWarehouse.index}
+        source={Services.MasterWarehouse}
         selectable
         actions={(props) => [
             <ModalWarehouse {...props} />,

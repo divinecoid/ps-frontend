@@ -55,7 +55,7 @@ interface ModalItemProps<T extends FieldValues> {
     children?: React.ReactNode;
     footer?: React.ReactNode;
     services?: BaseApiCallProps;
-    afterSubmit: () => void;
+    onSubmit: () => void;
     onError?: SubmitErrorHandler<T>;
     formShape: FormShape<T>[];
 }
@@ -104,11 +104,12 @@ export default function ModalItem<T extends FieldValues>({
     description,
     children,
     services,
-    afterSubmit,
+    onSubmit,
     onError,
     formShape,
 }: ModalItemProps<T>) {
     const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
+    const [open, setOpen] = React.useState<boolean>(false);
     const form = useForm({
         resolver: zodResolver(schema),
         defaultValues
@@ -135,8 +136,9 @@ export default function ModalItem<T extends FieldValues>({
             const res = await (id ? services.update(id, values) : services.store(values));
             const json = await res.json();
             if (res.ok) {
-                afterSubmit();
+                onSubmit();
                 isEdit && setId(undefined);
+                setOpen(false);
             } else {
                 toast.error(String(json.message), { richColors: true });
             }
@@ -145,7 +147,7 @@ export default function ModalItem<T extends FieldValues>({
         }
     }
     return (
-        <Dialog open={isEdit ? id ? true : false : undefined} onOpenChange={(open) => { setId && setId(undefined); open && form.reset(defaultValues); }}>
+        <Dialog open={isEdit ? id ? true : false : open} onOpenChange={(open) => { setId && setId(undefined); setOpen(open); open && form.reset(defaultValues); }}>
             {!isEdit && (
                 <DialogTrigger asChild className="select-none">
                     <Button variant="outline"><Plus /> Create</Button>

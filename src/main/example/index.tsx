@@ -13,7 +13,7 @@ export default function MasterRacks() {
         <>
             <OverviewPage
                 columns={columns}
-                source={Services.MasterRack.index}
+                source={Services.MasterRack}
                 selectable
                 actions={(props) => [
                     <ModalRack {...props} />,

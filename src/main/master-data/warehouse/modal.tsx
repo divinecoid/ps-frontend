@@ -1,18 +1,13 @@
 import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { Warehouse } from "@/interfaces/warehouse";
-import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalWarehouse({ onSubmit, isEdit, id, setId }: BaseForm) {
+export default function ModalWarehouse(props: BaseForm) {
     return <ModalItem<Warehouse>
-        title={isEdit ? "Edit Warehouse" : "Add Warehouse"}
-        description={isEdit ? "Edit Warehouse" : "Add new warehouse"}
-        services={Services.MasterWarehouse}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit Warehouse" : "Add Warehouse"}
+        description={props.isEdit ? "Edit Warehouse" : "Add new warehouse"}
+        {...props}
         formShape={[
             {
                 key: "code",

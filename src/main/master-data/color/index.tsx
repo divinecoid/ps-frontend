@@ -11,7 +11,7 @@ export default function MasterColors() {
     const [editRow, setEditRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterColor.index}
+        source={Services.MasterColor}
         selectable
         actions={(props) => [
             <ModalColor {...props} />,

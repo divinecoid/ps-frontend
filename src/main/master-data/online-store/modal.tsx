@@ -4,15 +4,11 @@ import { OnlineStore } from "@/interfaces/online-store"
 import Services from "@/services"
 import { z } from "zod/v3"
 
-export default function ModalOnlineStore({ onSubmit, isEdit, id, setId }: BaseForm) {
+export default function ModalOnlineStore(props: BaseForm) {
     return <ModalItem<OnlineStore>
-        title={isEdit ? "Edit Online Store" : "Add Online Store"}
-        description={isEdit ? "Edit Online Store" : "Add new online store"}
-        services={Services.MasterOnlineStore}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit Online Store" : "Add Online Store"}
+        description={props.isEdit ? "Edit Online Store" : "Add new online store"}
+        {...props}
         formShape={[
             {
                 key: "marketplace_id",
@@ -94,7 +90,7 @@ export default function ModalOnlineStore({ onSubmit, isEdit, id, setId }: BaseFo
             {
                 key: "is_active",
                 type: "switch",
-                schema: z.boolean(),
+                schema: z.coerce.boolean(),
                 label: "Is active",
                 description: "Online store's state.",
                 placeholder: "Online store's state",

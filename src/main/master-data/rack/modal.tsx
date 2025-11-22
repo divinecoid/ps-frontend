@@ -4,15 +4,11 @@ import { Rack } from "@/interfaces/rack";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalRack({ onSubmit, isEdit, id, setId }: BaseForm) {
+export default function ModalRack(props: BaseForm) {
     return <ModalItem<Rack>
-        title={isEdit ? "Edit Rack" : "Add Rack"}
-        description={isEdit ? "Edit Rack" : "Add new rack"}
-        services={Services.MasterRack}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit Rack" : "Add Rack"}
+        description={props.isEdit ? "Edit Rack" : "Add new rack"}
+        {...props}
         formShape={[
             {
                 key: "code",

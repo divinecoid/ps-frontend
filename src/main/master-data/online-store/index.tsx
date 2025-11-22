@@ -1,21 +1,21 @@
 import { columns } from "./column";
 import Services from "@/services";
-import ModalMarketplace from "./modal";
+import ModalOnlineStore from "./modal";
 import OverviewPage from "@/components/custom/overview-page";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 
-export default function MasterMarketplaces() {
+export default function MasterOnlineStores() {
     const [editRow, setEditRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterMarketplace.index}
+        source={Services.MasterOnlineStore}
         selectable
         actions={(props) => [
-            <ModalMarketplace {...props} />,
-            <ModalMarketplace {...props} isEdit id={editRow} setId={setEditRow} />
+            <ModalOnlineStore {...props} />,
+            <ModalOnlineStore {...props} isEdit id={editRow} setId={setEditRow} />
         ]}
         rowActions={({ row }) => (
             <DropdownMenu>

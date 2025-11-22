@@ -11,7 +11,7 @@ export default function MasterCMTs() {
     const [editRow, setEditRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterCMT.index}
+        source={Services.MasterCMT}
         selectable
         actions={(props) => [
             <ModalCMT {...props} />,

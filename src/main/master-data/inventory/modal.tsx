@@ -4,15 +4,11 @@ import { Inventory } from "@/interfaces/inventory";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalInventory({ onSubmit, isEdit, id, setId }: BaseForm) {
+export default function ModalInventory(props: BaseForm) {
     return <ModalItem<Inventory>
-        title={isEdit ? "Edit Inventory" : "Add Inventory"}
-        description={isEdit ? "Edit inventory" : "Add new inventory"}
-        services={Services.MasterInventory}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit Inventory" : "Add Inventory"}
+        description={props.isEdit ? "Edit inventory" : "Add new inventory"}
+        {...props}
         formShape={[
             {
                 key: "serial_number",

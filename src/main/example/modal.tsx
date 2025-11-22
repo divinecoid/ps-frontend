@@ -6,16 +6,12 @@ import { z } from "zod/v3";
 
 const testing = false;
 
-export default function ModalRack({ onSubmit, isEdit, id, setId }: BaseForm) {
+export default function ModalRack(props: BaseForm) {
 
     const test = <ModalItem
-        title={isEdit ? "Edit Rack" : "Add Rack"}
-        description={isEdit ? "Edit Rack" : "Add new rack"}
-        services={Services.MasterRack}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit Rack" : "Add Rack"}
+        description={props.isEdit ? "Edit Rack" : "Add new rack"}
+        {...props}
         formShape={[
             {
                 key: "code",
@@ -82,7 +78,7 @@ export default function ModalRack({ onSubmit, isEdit, id, setId }: BaseForm) {
             {
                 key: "g",
                 type: "switch",
-                schema: z.boolean(),
+                schema: z.coerce.boolean(),
                 label: "Warehouse",
                 description: "This is your switch.",
                 placeholder: "DICK",
@@ -90,7 +86,7 @@ export default function ModalRack({ onSubmit, isEdit, id, setId }: BaseForm) {
             {
                 key: "h",
                 type: "checkbox",
-                schema: z.boolean(),
+                schema: z.coerce.boolean(),
                 label: "Warehouse",
                 description: "This is your checkbox.",
                 placeholder: "DICK",
@@ -110,13 +106,9 @@ export default function ModalRack({ onSubmit, isEdit, id, setId }: BaseForm) {
             },
         ]} />
     const rack = <ModalItem<Rack>
-        title={isEdit ? "Edit Rack" : "Add Rack"}
-        description={isEdit ? "Edit Rack" : "Add new rack"}
-        services={Services.MasterRack}
-        isEdit={isEdit}
-        id={id}
-        setId={setId}
-        afterSubmit={onSubmit}
+        title={props.isEdit ? "Edit Rack" : "Add Rack"}
+        description={props.isEdit ? "Edit Rack" : "Add new rack"}
+        {...props}
         formShape={[
             {
                 key: "code",

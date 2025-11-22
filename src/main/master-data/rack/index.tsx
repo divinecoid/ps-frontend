@@ -11,7 +11,7 @@ export default function MasterRacks() {
     const [editRow, setEditRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterRack.index}
+        source={Services.MasterRack}
         selectable
         actions={(props) => [
             <ModalRack {...props} />,

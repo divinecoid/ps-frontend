@@ -11,7 +11,7 @@ export default function MasterSizes() {
     const [editRow, setEditRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterSize.index}
+        source={Services.MasterSize}
         selectable
         actions={(props) => [
             <ModalSize {...props} />,

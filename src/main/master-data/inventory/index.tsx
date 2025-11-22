@@ -11,7 +11,7 @@ export default function MasterInventories() {
     const [editRow, setEditRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterInventory.index}
+        source={Services.MasterInventory}
         selectable
         actions={(props) => [
             <ModalInventory {...props} />,

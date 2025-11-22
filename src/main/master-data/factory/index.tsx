@@ -11,7 +11,7 @@ export default function MasterFactories() {
     const [editRow, setEditRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterFactory.index}
+        source={Services.MasterFactory}
         selectable
         actions={(props) => [
             <ModalFactory {...props} />,
