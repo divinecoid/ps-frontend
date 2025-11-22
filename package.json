@@ -9,7 +9,7 @@
   },
   "version": "0.1.0",
   "private": true,
-  "main": "electron.js",
+  "main": "electron.cjs",
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-avatar": "^1.1.11",
