@@ -8,9 +8,7 @@ export default function ModalMarketplace({ onSubmit, isEdit, id, setId }: BaseFo
     return <ModalItem<Marketplace>
         title={isEdit ? "Edit Marketplace" : "Add Marketplace"}
         description={isEdit ? "Edit Marketplace" : "Add new marketplace"}
-        onCreate={Services.MasterMarketplace.store}
-        onUpdate={Services.MasterMarketplace.update}
-        onView={Services.MasterMarketplace.show}
+        services={Services.MasterMarketplace}
         isEdit={isEdit}
         id={id}
         setId={setId}

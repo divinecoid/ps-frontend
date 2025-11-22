@@ -8,9 +8,7 @@ export default function ModalColor({ onSubmit, isEdit, id, setId }: BaseForm) {
     return <ModalItem<Color>
         title={isEdit ? "Edit Color" : "Add Color"}
         description={isEdit ? "Edit Color" : "Add new color"}
-        onCreate={Services.MasterColor.store}
-        onUpdate={Services.MasterColor.update}
-        onView={Services.MasterColor.show}
+        services={Services.MasterColor}
         isEdit={isEdit}
         id={id}
         setId={setId}

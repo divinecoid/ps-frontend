@@ -8,9 +8,7 @@ export default function ModalSize({ onSubmit, isEdit, id, setId }: BaseForm) {
     return <ModalItem<Size>
         title={isEdit ? "Edit Size" : "Add Size"}
         description={isEdit ? "Edit size" : "Add new size"}
-        onCreate={Services.MasterSize.store}
-        onUpdate={Services.MasterSize.update}
-        onView={Services.MasterSize.show}
+        services={Services.MasterSize}
         isEdit={isEdit}
         id={id}
         setId={setId}

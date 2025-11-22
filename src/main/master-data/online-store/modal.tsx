@@ -8,9 +8,7 @@ export default function ModalOnlineStore({ onSubmit, isEdit, id, setId }: BaseFo
     return <ModalItem<OnlineStore>
         title={isEdit ? "Edit Online Store" : "Add Online Store"}
         description={isEdit ? "Edit Online Store" : "Add new online store"}
-        onCreate={Services.MasterOnlineStore.store}
-        onUpdate={Services.MasterOnlineStore.update}
-        onView={Services.MasterOnlineStore.show}
+        services={Services.MasterOnlineStore}
         isEdit={isEdit}
         id={id}
         setId={setId}

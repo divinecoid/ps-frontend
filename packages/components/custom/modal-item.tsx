@@ -24,7 +24,7 @@ import { useForm } from "react-hook-form";
 import { z, ZodTypeAny } from "zod/v3";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DynamicInput, { InputMeta, InputTypes } from "@/components/custom/dynamic-input";
-import { BaseApiCallIndexProps, BaseApiCallCreateProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
+import { BaseApiCallIndexProps, BaseApiCallProps } from "@/interfaces/base";
 import { toast } from "sonner";
 import React from "react";
 
@@ -54,9 +54,7 @@ interface ModalItemProps<T extends FieldValues> {
     description?: string;
     children?: React.ReactNode;
     footer?: React.ReactNode;
-    onCreate?: BaseApiCallCreateProps;
-    onUpdate?: BaseApiCallUpdateProps;
-    onView?: BaseApiCallViewProps;
+    services?: BaseApiCallProps;
     afterSubmit: () => void;
     onError?: SubmitErrorHandler<T>;
     formShape: FormShape<T>[];
@@ -105,9 +103,7 @@ export default function ModalItem<T extends FieldValues>({
     title,
     description,
     children,
-    onCreate,
-    onUpdate,
-    onView,
+    services,
     afterSubmit,
     onError,
     formShape,
@@ -121,7 +117,7 @@ export default function ModalItem<T extends FieldValues>({
         const viewData = async () => {
             try {
                 if (isEdit && id) {
-                    const res = await onView(id);
+                    const res = await services.show(id);
                     if (res.ok) {
                         const json = await res.json();
                         form.reset(json.data);
@@ -136,7 +132,7 @@ export default function ModalItem<T extends FieldValues>({
 
     const submitForm = async (values) => {
         try {
-            const res = await (id ? onUpdate(id, values) : onCreate(values));
+            const res = await (id ? services.update(id, values) : services.store(values));
             const json = await res.json();
             if (res.ok) {
                 afterSubmit();

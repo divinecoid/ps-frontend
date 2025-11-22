@@ -8,9 +8,7 @@ export default function ModalWarehouse({ onSubmit, isEdit, id, setId }: BaseForm
     return <ModalItem<Warehouse>
         title={isEdit ? "Edit Warehouse" : "Add Warehouse"}
         description={isEdit ? "Edit Warehouse" : "Add new warehouse"}
-        onCreate={Services.MasterWarehouse.store}
-        onUpdate={Services.MasterWarehouse.update}
-        onView={Services.MasterWarehouse.show}
+        services={Services.MasterWarehouse}
         isEdit={isEdit}
         id={id}
         setId={setId}

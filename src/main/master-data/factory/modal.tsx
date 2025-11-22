@@ -8,9 +8,7 @@ export default function ModalFactory({ onSubmit, isEdit, id, setId }: BaseForm) 
     return <ModalItem<Factory>
         title={isEdit ? "Edit Factory" : "Add Factory"}
         description={isEdit ? "Edit factory" : "Add new factory"}
-        onCreate={Services.MasterFactory.store}
-        onUpdate={Services.MasterFactory.update}
-        onView={Services.MasterFactory.show}
+        services={Services.MasterFactory}
         isEdit={isEdit}
         id={id}
         setId={setId}

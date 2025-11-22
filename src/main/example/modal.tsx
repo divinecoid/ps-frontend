@@ -11,9 +11,7 @@ export default function ModalRack({ onSubmit, isEdit, id, setId }: BaseForm) {
     const test = <ModalItem
         title={isEdit ? "Edit Rack" : "Add Rack"}
         description={isEdit ? "Edit Rack" : "Add new rack"}
-        onCreate={Services.MasterRack.store}
-        onUpdate={Services.MasterRack.update}
-        onView={Services.MasterRack.show}
+        services={Services.MasterRack}
         isEdit={isEdit}
         id={id}
         setId={setId}
@@ -114,9 +112,7 @@ export default function ModalRack({ onSubmit, isEdit, id, setId }: BaseForm) {
     const rack = <ModalItem<Rack>
         title={isEdit ? "Edit Rack" : "Add Rack"}
         description={isEdit ? "Edit Rack" : "Add new rack"}
-        onCreate={Services.MasterRack.store}
-        onUpdate={Services.MasterRack.update}
-        onView={Services.MasterRack.show}
+        services={Services.MasterRack}
         isEdit={isEdit}
         id={id}
         setId={setId}

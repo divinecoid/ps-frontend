@@ -8,9 +8,7 @@ export default function ModalCMT({ onSubmit, isEdit, id, setId }: BaseForm) {
     return <ModalItem<CMT>
         title={isEdit ? "Edit CMT" : "Add CMT"}
         description={isEdit ? "Edit CMT" : "Add new CMT"}
-        onCreate={Services.MasterCMT.store}
-        onUpdate={Services.MasterCMT.update}
-        onView={Services.MasterCMT.show}
+        services={Services.MasterCMT}
         isEdit={isEdit}
         id={id}
         setId={setId}

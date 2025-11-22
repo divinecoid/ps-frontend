@@ -9,32 +9,28 @@ import { useState } from "react";
 
 export default function MasterRacks() {
     const [editRow, setEditRow] = useState<number>();
-    return (
-        <>
-            <OverviewPage
-                columns={columns}
-                source={Services.MasterRack.index}
-                selectable
-                actions={(props) => [
-                    <ModalRack {...props} />,
-                    <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />
-                ]}
-                rowActions={({ row }) => (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                )}
-            />
-        </>
-    );
+    return <OverviewPage
+        columns={columns}
+        source={Services.MasterRack.index}
+        selectable
+        actions={(props) => [
+            <ModalRack {...props} />,
+            <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />
+        ]}
+        rowActions={({ row }) => (
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
+                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        )}
+    />
 }

@@ -8,9 +8,7 @@ export default function ModalInventory({ onSubmit, isEdit, id, setId }: BaseForm
     return <ModalItem<Inventory>
         title={isEdit ? "Edit Inventory" : "Add Inventory"}
         description={isEdit ? "Edit inventory" : "Add new inventory"}
-        onCreate={Services.MasterInventory.store}
-        onUpdate={Services.MasterInventory.update}
-        onView={Services.MasterInventory.show}
+        services={Services.MasterInventory}
         isEdit={isEdit}
         id={id}
         setId={setId}

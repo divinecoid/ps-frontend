@@ -8,9 +8,7 @@ export default function ModalProductModel({ onSubmit, isEdit, id, setId }: BaseF
     return <ModalItem<ProductModel>
         title={isEdit ? "Edit Product Model" : "Add Product Model"}
         description={isEdit ? "Edit product model" : "Add new product model"}
-        onCreate={Services.MasterProductModel.store}
-        onUpdate={Services.MasterProductModel.update}
-        onView={Services.MasterProductModel.show}
+        services={Services.MasterProductModel}
         isEdit={isEdit}
         id={id}
         setId={setId}
