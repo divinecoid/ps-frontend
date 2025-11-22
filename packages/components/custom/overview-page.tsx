@@ -12,7 +12,7 @@ interface OverviewProps<TData, TValue> {
 }
 
 export default function OverviewPage<TData, TValue>({ source, columns, selectable, actions }: OverviewProps<TData, TValue>) {
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [count, setCount] = useState(0);
     const [filter, setFilter] = useState<string>("");
