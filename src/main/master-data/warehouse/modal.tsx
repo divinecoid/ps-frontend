@@ -1,15 +1,19 @@
-import ModalAddItem from "@/components/custom/add-item";
+import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { Warehouse } from "@/interfaces/warehouse";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddWarehouse({ onSubmit, id }: BaseForm) {
-    return <ModalAddItem<Warehouse>
-        title="Add Rack"
-        description="Add new rack"
+export default function ModalWarehouse({ onSubmit, isEdit, id, setId }: BaseForm) {
+    return <ModalItem<Warehouse>
+        title={isEdit ? "Edit Warehouse" : "Add Warehouse"}
+        description={isEdit ? "Edit Warehouse" : "Add new warehouse"}
         onCreate={Services.MasterWarehouse.store}
         onUpdate={Services.MasterWarehouse.update}
+        onView={Services.MasterWarehouse.show}
+        isEdit={isEdit}
+        id={id}
+        setId={setId}
         afterSubmit={onSubmit}
         formShape={[
             {
@@ -38,7 +42,7 @@ export default function ModalAddWarehouse({ onSubmit, id }: BaseForm) {
                 }),
                 label: "Priority",
                 description: "Warehouse's priority",
-                placeholder: "1"
+                placeholder: "1",
             },
         ]} />
 }

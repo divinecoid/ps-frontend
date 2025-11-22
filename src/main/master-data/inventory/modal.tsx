@@ -1,15 +1,19 @@
-import ModalAddItem from "@/components/custom/add-item";
+import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { Inventory } from "@/interfaces/inventory";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
-    return <ModalAddItem<Inventory>
-        title="Add Inventory"
-        description="Add new inventory"
+export default function ModalInventory({ onSubmit, isEdit, id, setId }: BaseForm) {
+    return <ModalItem<Inventory>
+        title={isEdit ? "Edit Inventory" : "Add Inventory"}
+        description={isEdit ? "Edit inventory" : "Add new inventory"}
         onCreate={Services.MasterInventory.store}
         onUpdate={Services.MasterInventory.update}
+        onView={Services.MasterInventory.show}
+        isEdit={isEdit}
+        id={id}
+        setId={setId}
         afterSubmit={onSubmit}
         formShape={[
             {
@@ -18,7 +22,7 @@ export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
                 schema: z.string().min(2, {
                     message: "Serial number must be at least 2 characters.",
                 }),
-                label: "Code",
+                label: "Serial number",
                 description: "Input inventory's serial number.",
                 placeholder: "IVT-001",
             },
@@ -26,7 +30,7 @@ export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
                 key: "product_id",
                 type: "combobox",
                 schema: z.string().nonempty({
-                    message: "Product is required"
+                    message: "Product is required",
                 }),
                 source: {
                     id: "id",
@@ -41,7 +45,7 @@ export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
                 key: "factory_id",
                 type: "combobox",
                 schema: z.string().nonempty({
-                    message: "Factory is required"
+                    message: "Factory is required",
                 }),
                 source: {
                     id: "id",
@@ -58,7 +62,7 @@ export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
                 schema: z.coerce.number().positive({
                     message: "Quantity must be positive.",
                 }),
-                label: "Code",
+                label: "Quantity",
                 description: "Input inventory's quantity.",
                 placeholder: "150",
             },
@@ -66,7 +70,7 @@ export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
                 key: "cmt_id",
                 type: "combobox",
                 schema: z.string().nonempty({
-                    message: "CMT is required"
+                    message: "CMT is required",
                 }),
                 source: {
                     id: "id",
@@ -81,7 +85,7 @@ export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
                 key: "rack_id",
                 type: "combobox",
                 schema: z.string().nonempty({
-                    message: "Rack is required"
+                    message: "Rack is required",
                 }),
                 source: {
                     id: "id",
@@ -96,11 +100,12 @@ export default function ModalAddInventory({ onSubmit, id }: BaseForm) {
                 key: "barcode_group",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Barcode group is required"
+                    message: "Barcode group is required",
                 }),
                 label: "Barcode group",
                 description: "The group of this batch.",
                 placeholder: "BCG-001",
-            }
-        ]} />
+            },
+        ]}
+    />
 }

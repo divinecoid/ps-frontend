@@ -8,15 +8,17 @@ interface OverviewProps<TData, TValue> {
     source: BaseApiCallIndexProps;
     columns: ColumnDef<TData, TValue>[];
     selectable?: boolean;
-    actions?: (utils: { refresh: () => void }) => React.ReactNode[];
+    actions?: (utils: { onSubmit: () => void }) => React.ReactNode[];
+    rowActions?: (cell: { row: TData, id: number, setId: React.Dispatch<React.SetStateAction<number>> }) => React.ReactNode;
 }
 
-export default function OverviewPage<TData, TValue>({ source, columns, selectable, actions }: OverviewProps<TData, TValue>) {
+export default function OverviewPage<TData, TValue>({ source, columns, selectable, actions, rowActions }: OverviewProps<TData, TValue>) {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [count, setCount] = useState(0);
     const [filter, setFilter] = useState<string>("");
     const [data, setData] = useState<TData[]>();
+    const [id, setId] = useState<number>();
     const getData = async () => {
         try {
             const result = await source(page, pageSize, filter);
@@ -46,7 +48,10 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 onPageChange={setPage}
                 onPageSizeChange={setPageSize}
                 selectable={selectable}
-                actions={actions ? actions({ refresh: getData }) : []}
+                actions={actions ? actions({ onSubmit: getData }) : []}
+                rowActions={rowActions ? ({ row }) => (
+                    rowActions({ row, id, setId })
+                ): undefined}
                 filterComponents={
                     <Input
                         placeholder="Search..."

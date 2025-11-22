@@ -1,15 +1,19 @@
-import ModalAddItem from "@/components/custom/add-item";
+import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { Product } from "@/interfaces/product";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddProduct({ onSubmit, id }: BaseForm) {
-    return <ModalAddItem<Product>
-        title="Add Product"
-        description="Add new product"
+export default function ModalProduct({ onSubmit, isEdit, id, setId }: BaseForm) {
+    return <ModalItem<Product>
+        title={isEdit ? "Edit Product" : "Add Product"}
+        description={isEdit ? "Edit Product" : "Add new product"}
         onCreate={Services.MasterProduct.store}
         onUpdate={Services.MasterProduct.update}
+        onView={Services.MasterProduct.show}
+        isEdit={isEdit}
+        id={id}
+        setId={setId}
         afterSubmit={onSubmit}
         formShape={[
             {
@@ -57,7 +61,6 @@ export default function ModalAddProduct({ onSubmit, id }: BaseForm) {
                 description: "Input product's size.",
                 placeholder: "Product's size",
             },
-
             {
                 key: "sku",
                 type: "text",
@@ -68,5 +71,6 @@ export default function ModalAddProduct({ onSubmit, id }: BaseForm) {
                 description: "Input product's SKU.",
                 placeholder: "Product's SKU",
             },
-        ]} />
+        ]}
+    />
 }

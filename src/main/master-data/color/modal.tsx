@@ -1,15 +1,19 @@
-import ModalAddItem from "@/components/custom/add-item";
+import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { Color } from "@/interfaces/color";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddColor({ onSubmit, id }: BaseForm) {
-    return <ModalAddItem<Color>
-        title="Add Color"
-        description="Add new color"
+export default function ModalColor({ onSubmit, isEdit, id, setId }: BaseForm) {
+    return <ModalItem<Color>
+        title={isEdit ? "Edit Color" : "Add Color"}
+        description={isEdit ? "Edit Color" : "Add new color"}
         onCreate={Services.MasterColor.store}
         onUpdate={Services.MasterColor.update}
+        onView={Services.MasterColor.show}
+        isEdit={isEdit}
+        id={id}
+        setId={setId}
         afterSubmit={onSubmit}
         formShape={[
             {
@@ -30,5 +34,6 @@ export default function ModalAddColor({ onSubmit, id }: BaseForm) {
                 description: "Input color's name.",
                 placeholder: "Color name",
             },
-        ]} />
+        ]}
+    />
 }

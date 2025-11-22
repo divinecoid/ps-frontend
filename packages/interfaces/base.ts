@@ -17,12 +17,13 @@ export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: 
 
 export type BaseApiCallCreateProps = (value: any) => Promise<Response>;
 
-export type BaseApiCallUpdateProps = (id: string, value: any) => Promise<Response>;
+export type BaseApiCallUpdateProps = (id: number, value: any) => Promise<Response>;
 
-export type BaseForm = { onSubmit: () => void, id?: string };
+export type BaseApiCallViewProps = (id: number) => Promise<Response>;
 
-export interface ModalProps {
-    onSubmit: () => Promise<void>
-    id?: string
-    buttonTrigger?: React.ReactNode;
-}
+export type BaseForm = {
+  onSubmit: () => void,
+  isEdit?: boolean
+  id?: number
+  setId?: React.Dispatch<React.SetStateAction<number>>
+};

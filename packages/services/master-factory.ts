@@ -14,10 +14,10 @@ export const store = async (values: Factory) => {
     return await POST(URL.FACTORY, values);
 }
 
-export const update = async (id: string, values: Factory) => {
+export const update = async (id: number, values: Factory) => {
     return await PATCH(`${URL.FACTORY}/${id}`, values);
 }
 
-export const show = async (id: string) => {
+export const show = async (id: number) => {
     return await GET(`${URL.FACTORY}/${id}`);
 }

@@ -24,9 +24,9 @@ import { useForm } from "react-hook-form";
 import { z, ZodTypeAny } from "zod/v3";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DynamicInput, { InputMeta, InputTypes } from "@/components/custom/dynamic-input";
-import { BaseApiCallIndexProps, BaseApiCallCreateProps, BaseApiCallUpdateProps } from "@/interfaces/base";
+import { BaseApiCallIndexProps, BaseApiCallCreateProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
 import { toast } from "sonner";
-import { useState } from "react";
+import React from "react";
 
 interface FormShape<T> {
     key: keyof T & string;
@@ -46,18 +46,20 @@ interface FormShape<T> {
     defaultValue?: string | number | (string | number)[];
 }
 
-interface ModalAddRackProps<T extends FieldValues> {
-    id?: string;
+interface ModalItemProps<T extends FieldValues> {
+    id?: number;
+    setId?: React.Dispatch<React.SetStateAction<number>>
+    isEdit?: boolean,
     title?: string;
     description?: string;
     children?: React.ReactNode;
     footer?: React.ReactNode;
     onCreate?: BaseApiCallCreateProps;
     onUpdate?: BaseApiCallUpdateProps;
+    onView?: BaseApiCallViewProps;
     afterSubmit: () => void;
     onError?: SubmitErrorHandler<T>;
     formShape: FormShape<T>[];
-    buttonTrigger?: React.ReactNode;
 }
 
 export function generateSchema<T>(fields: FormShape<T>[]) {
@@ -96,31 +98,49 @@ export function generateSchema<T>(fields: FormShape<T>[]) {
     };
 }
 
-export default function ModalAddItem<T extends FieldValues>({
+export default function ModalItem<T extends FieldValues>({
     id,
+    setId,
+    isEdit,
     title,
     description,
     children,
     onCreate,
     onUpdate,
+    onView,
     afterSubmit,
     onError,
     formShape,
-    buttonTrigger
-}: ModalAddRackProps<T>) {
+}: ModalItemProps<T>) {
     const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
-    const [open, setOpen] = useState(false);
     const form = useForm({
         resolver: zodResolver(schema),
         defaultValues
     });
+    React.useEffect(() => {
+        const viewData = async () => {
+            try {
+                if (isEdit && id) {
+                    const res = await onView(id);
+                    if (res.ok) {
+                        const json = await res.json();
+                        form.reset(json.data);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        viewData();
+    }, [id]);
+
     const submitForm = async (values) => {
         try {
             const res = await (id ? onUpdate(id, values) : onCreate(values));
             const json = await res.json();
             if (res.ok) {
                 afterSubmit();
-                setOpen(false);
+                isEdit && setId(undefined);
             } else {
                 toast.error(String(json.message), { richColors: true });
             }
@@ -129,12 +149,12 @@ export default function ModalAddItem<T extends FieldValues>({
         }
     }
     return (
-        <Dialog open={open} onOpenChange={(open) => { setOpen(open); open && form.reset(defaultValues); }}>
-            <DialogTrigger asChild className="select-none">
-                {buttonTrigger ? buttonTrigger :
+        <Dialog open={isEdit ? id ? true : false : undefined} onOpenChange={(open) => { setId && setId(undefined); open && form.reset(defaultValues); }}>
+            {!isEdit && (
+                <DialogTrigger asChild className="select-none">
                     <Button variant="outline"><Plus /> Create</Button>
-                }
-            </DialogTrigger>
+                </DialogTrigger>
+            )}
             <DialogContent className="flex flex-col max-h-[90vh] p-0 select-none">
                 <DialogHeader className="px-6 pt-6">
                     <DialogTitle>{title}</DialogTitle>

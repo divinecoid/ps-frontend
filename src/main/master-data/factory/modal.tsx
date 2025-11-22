@@ -1,15 +1,19 @@
-import ModalAddItem from "@/components/custom/add-item";
+import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { Factory } from "@/interfaces/factory";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddFactory({ onSubmit, id }: BaseForm) {
-    return <ModalAddItem<Factory>
-        title="Add Factory"
-        description="Add new factory"
+export default function ModalFactory({ onSubmit, isEdit, id, setId }: BaseForm) {
+    return <ModalItem<Factory>
+        title={isEdit ? "Edit Factory" : "Add Factory"}
+        description={isEdit ? "Edit factory" : "Add new factory"}
         onCreate={Services.MasterFactory.store}
         onUpdate={Services.MasterFactory.update}
+        onView={Services.MasterFactory.show}
+        isEdit={isEdit}
+        id={id}
+        setId={setId}
         afterSubmit={onSubmit}
         formShape={[
             {
@@ -30,5 +34,6 @@ export default function ModalAddFactory({ onSubmit, id }: BaseForm) {
                 description: "Input factory's name.",
                 placeholder: "Factory name",
             },
-        ]} />
+        ]}
+    />
 }

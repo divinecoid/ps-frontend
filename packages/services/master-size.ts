@@ -14,10 +14,10 @@ export const store = async (values: Size) => {
     return await POST(URL.SIZE, values);
 }
 
-export const update = async (id: string, values: Size) => {
+export const update = async (id: number, values: Size) => {
     return await PATCH(`${URL.SIZE}/${id}`, values);
 }
 
-export const show = async (id: string) => {
+export const show = async (id: number) => {
     return await GET(`${URL.SIZE}/${id}`);
 }

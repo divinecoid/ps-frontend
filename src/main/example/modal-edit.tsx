@@ -1,16 +1,41 @@
 import ModalAddItem from "@/components/custom/modal-item";
 import { z } from "zod/v3";
 import Services from "@/services";
+import { useEffect, useState } from "react";
+import { Rack, RackViewResponse } from "@/interfaces/rack";
 
 const testing = false;
 
-export default function ModalAddExample({ onSubmit }) {
+export default function ModalEditExample({ onSubmit, id, open, setOpen }) {
+
+    const [data, setData] = useState<Rack>();
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    const getData = async () => {
+        if (id) {
+            try {
+                const res = await Services.MasterRack.show(id)
+                if (res.ok) {
+                    const json: RackViewResponse = await res.json();
+                    setData(json.data);
+                    
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
 
     const test = <ModalAddItem
         title="Add Rack"
         description="Add new rack"
         onCreate={Services.MasterRack.store}
         onUpdate={Services.MasterRack.update}
+        id={id}
+        isEdit
         afterSubmit={onSubmit}
         formShape={[
             {
@@ -111,6 +136,7 @@ export default function ModalAddExample({ onSubmit }) {
         description="Add new rack"
         onCreate={Services.MasterRack.store}
         onUpdate={Services.MasterRack.update}
+        id={id}
         afterSubmit={onSubmit}
         formShape={[
             {

@@ -14,10 +14,10 @@ export const store = async (values: CMT) => {
     return await POST(URL.CMT, values);
 }
 
-export const update = async (id: string, values: CMT) => {
+export const update = async (id: number, values: CMT) => {
     return await PATCH(`${URL.CMT}/${id}`, values);
 }
 
-export const show = async (id: string) => {
+export const show = async (id: number) => {
     return await GET(`${URL.CMT}/${id}`);
 }

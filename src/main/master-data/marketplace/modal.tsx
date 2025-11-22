@@ -1,15 +1,19 @@
-import ModalAddItem from "@/components/custom/add-item";
+import ModalItem from "@/components/custom/modal-item";
 import { BaseForm } from "@/interfaces/base";
 import { Marketplace } from "@/interfaces/marketplace";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalAddMarketplace({ onSubmit, id }: BaseForm) {
-    return <ModalAddItem<Marketplace>
-        title="Add Marketplace"
-        description="Add new marketplace"
+export default function ModalMarketplace({ onSubmit, isEdit, id, setId }: BaseForm) {
+    return <ModalItem<Marketplace>
+        title={isEdit ? "Edit Marketplace" : "Add Marketplace"}
+        description={isEdit ? "Edit Marketplace" : "Add new marketplace"}
         onCreate={Services.MasterMarketplace.store}
         onUpdate={Services.MasterMarketplace.update}
+        onView={Services.MasterMarketplace.show}
+        isEdit={isEdit}
+        id={id}
+        setId={setId}
         afterSubmit={onSubmit}
         formShape={[
             {
