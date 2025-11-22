@@ -66,7 +66,7 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
           className="justify-between"
         >
           {value
-            ? options.find((item) => item.value === value)?.label
+            ? options.find((item) => item.value === String(value))?.label
             : <p className="opacity-50">{placeholder}</p>}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -90,7 +90,7 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === item.value ? "opacity-100" : "opacity-0"
+                      String(value) === item.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>
