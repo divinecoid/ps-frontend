@@ -1,16 +1,22 @@
-import ModalAddItem from "@/components/custom/modal-item";
-import { z } from "zod/v3";
+import ModalItem from "@/components/custom/modal-item";
+import { BaseForm } from "@/interfaces/base";
+import { Rack } from "@/interfaces/rack";
 import Services from "@/services";
+import { z } from "zod/v3";
 
 const testing = false;
 
-export default function ModalAddExample({ onSubmit }) {
+export default function ModalRack({ onSubmit, isEdit, id, setId }: BaseForm) {
 
-    const test = <ModalAddItem
-        title="Add Rack"
-        description="Add new rack"
+    const test = <ModalItem
+        title={isEdit ? "Edit Rack" : "Add Rack"}
+        description={isEdit ? "Edit Rack" : "Add new rack"}
         onCreate={Services.MasterRack.store}
         onUpdate={Services.MasterRack.update}
+        onView={Services.MasterRack.show}
+        isEdit={isEdit}
+        id={id}
+        setId={setId}
         afterSubmit={onSubmit}
         formShape={[
             {
@@ -105,12 +111,15 @@ export default function ModalAddExample({ onSubmit }) {
                 }
             },
         ]} />
-
-    const rack = <ModalAddItem
-        title="Add Rack"
-        description="Add new rack"
+    const rack = <ModalItem<Rack>
+        title={isEdit ? "Edit Rack" : "Add Rack"}
+        description={isEdit ? "Edit Rack" : "Add new rack"}
         onCreate={Services.MasterRack.store}
         onUpdate={Services.MasterRack.update}
+        onView={Services.MasterRack.show}
+        isEdit={isEdit}
+        id={id}
+        setId={setId}
         afterSubmit={onSubmit}
         formShape={[
             {
@@ -121,7 +130,7 @@ export default function ModalAddExample({ onSubmit }) {
                 }),
                 label: "Code",
                 description: "Input rack's code.",
-                placeholder: "R001",
+                placeholder: "RC-001",
             },
             {
                 key: "name",
@@ -129,16 +138,14 @@ export default function ModalAddExample({ onSubmit }) {
                 schema: z.string(),
                 label: "Name",
                 description: "Input rack's name.",
-                placeholder: "Item rack name",
+                placeholder: "Rack name",
             },
             {
                 key: "warehouse_id",
                 type: "combobox",
-                schema: z.string().nonempty(
-                    "Warehouse is required!"
-                ),
+                schema: z.string(),
                 label: "Warehouse",
-                description: "This is your public display name.",
+                description: "The location where this rack placed.",
                 placeholder: "Warehouse",
                 source: {
                     id: "id",

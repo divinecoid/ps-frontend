@@ -12,4 +12,9 @@ export const columns: ColumnDef<Rack>[] = [
     header: "Name",
     enableSorting: true,
   },
+  {
+    accessorKey: "warehouse.name",
+    header: "Warehouse name",
+    enableSorting: true,
+  },
 ]
