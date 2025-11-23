@@ -1,23 +1,20 @@
 import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { GET, PATCH, POST } from "./api"
 import { Inventory } from "@/interfaces/inventory";
-
-const URL = {
-    INVENTORY: "inventory"
-}
+import { ENDPOINT } from "./endpoints";
 
 export const index: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(URL.INVENTORY, { page, per_page, search });
+    return await GET(ENDPOINT.INVENTORY, { page, per_page, search });
 }
 
 export const store = async (values: Inventory) => {
-    return await POST(URL.INVENTORY, values);
+    return await POST(ENDPOINT.INVENTORY, values);
 }
 
 export const update = async (id: number, values: Inventory) => {
-    return await PATCH(`${URL.INVENTORY}/${id}`, values);
+    return await PATCH(`${ENDPOINT.INVENTORY}/${id}`, values);
 }
 
 export const show = async (id: number) => {
-    return await GET(`${URL.INVENTORY}/${id}`);
+    return await GET(`${ENDPOINT.INVENTORY}/${id}`);
 }

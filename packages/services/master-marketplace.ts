@@ -1,23 +1,20 @@
 import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { GET, PATCH, POST } from "./api"
 import { Marketplace } from "@/interfaces/marketplace";
-
-const URL = {
-    MARKETPLACE: "marketplace"
-}
+import { ENDPOINT } from "./endpoints";
 
 export const index: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(URL.MARKETPLACE, { page, per_page, search });
+    return await GET(ENDPOINT.MARKETPLACE, { page, per_page, search });
 }
 
 export const store = async (values: Marketplace) => {
-    return await POST(URL.MARKETPLACE, values);
+    return await POST(ENDPOINT.MARKETPLACE, values);
 }
 
 export const update = async (id: number, values: Marketplace) => {
-    return await PATCH(`${URL.MARKETPLACE}/${id}`, values);
+    return await PATCH(`${ENDPOINT.MARKETPLACE}/${id}`, values);
 }
 
 export const show = async (id: number) => {
-    return await GET(`${URL.MARKETPLACE}/${id}`);
+    return await GET(`${ENDPOINT.MARKETPLACE}/${id}`);
 }

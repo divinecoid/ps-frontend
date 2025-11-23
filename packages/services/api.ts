@@ -1,4 +1,5 @@
-import { logout, refresh } from "./auth";
+import { refresh } from "./auth";
+import { ENDPOINT } from "./endpoints";
 
 const timeout = 5000;
 
@@ -23,7 +24,7 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
             signal: controller.signal
         });
         clearTimeout(timeoutId);
-        if (result.status === 401 && token) {
+        if (result.status === 401 && token && !String(input).includes(ENDPOINT.REFRESH)) {
             if (count <= 1) {
                 const refreshResult = await refresh();
                 if (refreshResult.ok) {
@@ -33,11 +34,15 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
                     onTokenRefreshed?.(newToken);
                     return await fetchWithTimeout(input, init, count + 1);
                 } else {
-                    await logout();
+                    await window.electronAPI.deleteRefreshToken();
+                    await window.electronAPI.deleteToken();
+                    window.location.reload();
                     throw new Error("Unauthorized: Token refresh failed");
                 }
             } else {
-                await logout();
+                await window.electronAPI.deleteRefreshToken();
+                await window.electronAPI.deleteToken();
+                window.location.reload();
                 throw new Error("Too many refresh attempts");
             }
         }
