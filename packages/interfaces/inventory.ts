@@ -1,6 +1,6 @@
-import { BaseResponse, IndexResponse } from "./base"
+import { BaseResponse, IndexResponse, MasterData } from "./base"
 
-export interface Inventory {
+export interface Inventory extends MasterData {
   id: number
   serial_number: string
   product_id: number

@@ -50,7 +50,7 @@ export function NavUser({
         navigate('/login');
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

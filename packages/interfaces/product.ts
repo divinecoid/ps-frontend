@@ -1,6 +1,6 @@
-import { BaseResponse, IndexResponse } from "./base"
+import { BaseResponse, IndexResponse, MasterData } from "./base"
 
-export interface Product {
+export interface Product extends MasterData {
   id: number
   sku: string
   color_id: number

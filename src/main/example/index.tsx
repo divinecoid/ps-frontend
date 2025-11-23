@@ -6,35 +6,41 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
+import ConfirmRack from "./confirm";
 
 export default function MasterRacks() {
     const [editRow, setEditRow] = useState<number>();
-    return (
-        <>
-            <OverviewPage
-                columns={columns}
-                source={Services.MasterRack}
-                selectable
-                actions={(props) => [
-                    <ModalRack {...props} />,
-                    <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />
-                ]}
-                rowActions={({ row }) => (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+    const [restoreRow, setRestoreRow] = useState<number>();
+    const [deleteRow, setDeleteRow] = useState<number>();
+    return <OverviewPage
+        columns={columns}
+        source={Services.MasterRack}
+        selectable
+        actions={(props) => [
+            <ModalRack {...props} />,
+            <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />,
+            <ConfirmRack {...props} action={Services.MasterRack.restore} id={restoreRow} setId={setRestoreRow} title="Are you want to restore this object?" description="This action will restore this object back to active state." />,
+            <ConfirmRack {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Are you want to delete this object?" description="This action will set this object to inactive state." />
+        ]}
+        rowActions={({ row }) => (
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    {row.is_deleted ?
+                        <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
+                        : <>
                             <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                )}
-            />
-        </>
-    );
+                            <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
+                        </>
+                    }
+                </DropdownMenuContent>
+            </DropdownMenu>
+        )}
+    />
 }

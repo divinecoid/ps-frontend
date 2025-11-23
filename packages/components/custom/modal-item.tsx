@@ -19,7 +19,7 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form";
-import { FieldValues, Path, SubmitErrorHandler } from "react-hook-form";
+import { FieldValues, Path, SubmitErrorHandler, SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { z, ZodTypeAny } from "zod/v3";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -125,13 +125,13 @@ export default function ModalItem<T extends FieldValues>({
                     }
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         }
         viewData();
     }, [id]);
 
-    const submitForm = async (values) => {
+    const submitForm :SubmitHandler<T> = async (values) => {
         try {
             const res = await (id ? services.update(id, values) : services.store(values));
             const json = await res.json();

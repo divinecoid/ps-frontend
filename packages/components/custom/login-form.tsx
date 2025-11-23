@@ -35,7 +35,7 @@ export function LoginForm({
         navigate('/home');
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
   return (

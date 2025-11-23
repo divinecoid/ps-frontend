@@ -21,7 +21,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     const [id, setId] = useState<number>();
     const getData = async () => {
         try {
-            const result = await source.index(page, pageSize, filter);
+            const result = await source.master(page, pageSize, filter);
             if (result.ok) {
                 const json = (await result.json());
                 setData(json.data);

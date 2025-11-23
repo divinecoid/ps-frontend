@@ -6,16 +6,21 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
+import ModalConfirm from "@/components/custom/modal-confirm";
 
 export default function MasterRacks() {
     const [editRow, setEditRow] = useState<number>();
+    const [restoreRow, setRestoreRow] = useState<number>();
+    const [deleteRow, setDeleteRow] = useState<number>();
     return <OverviewPage
         columns={columns}
         source={Services.MasterRack}
         selectable
         actions={(props) => [
             <ModalRack {...props} />,
-            <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />
+            <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />,
+            <ModalConfirm {...props} action={Services.MasterRack.restore} id={restoreRow} setId={setRestoreRow} title="Are you want to restore this object?" description="This action will restore this object back to active state." />,
+            <ModalConfirm {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Are you want to delete this object?" description="This action will set this object to inactive state." />
         ]}
         rowActions={({ row }) => (
             <DropdownMenu>
@@ -27,8 +32,13 @@ export default function MasterRacks() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                    {row.is_deleted ?
+                        <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
+                        : <>
+                            <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
+                        </>
+                    }
                 </DropdownMenuContent>
             </DropdownMenu>
         )}

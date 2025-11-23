@@ -1,6 +1,6 @@
-import { BaseResponse, IndexResponse } from "./base"
+import { BaseResponse, IndexResponse, MasterData } from "./base"
 
-export interface Size {
+export interface Size extends MasterData {
   id: number
   code: string
   name: string

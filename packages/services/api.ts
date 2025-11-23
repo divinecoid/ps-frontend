@@ -74,28 +74,28 @@ export const GET = async (path: string, params?: Record<string, any>) => {
     });
 }
 
-export const POST = async (path: string, body: {}) => {
+export const POST = async (path: string, body?: {}) => {
     return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path, {
         method: 'POST',
         body: JSON.stringify(body),
     })
 }
 
-export const PATCH = async (path: string, body: {}) => {
+export const PATCH = async (path: string, body?: {}) => {
     return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path, {
         method: 'PATCH',
         body: JSON.stringify(body),
     })
 }
 
-export const PUT = async (path: string, body: {}) => {
+export const PUT = async (path: string, body?: {}) => {
     return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path, {
         method: 'PUT',
         body: JSON.stringify(body),
     })
 }
 
-export const DELETE = async (path: string, body: {}) => {
+export const DELETE = async (path: string, body?: {}) => {
     return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path, {
         method: 'DELETE',
         body: JSON.stringify(body),

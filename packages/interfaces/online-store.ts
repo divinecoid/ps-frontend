@@ -1,6 +1,6 @@
-import { BaseResponse, IndexResponse } from "./base"
+import { BaseResponse, IndexResponse, MasterData } from "./base"
 
-export interface OnlineStore {
+export interface OnlineStore extends MasterData {
   id: number
   marketplace_id: string
   store_code: string

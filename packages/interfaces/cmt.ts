@@ -1,6 +1,6 @@
-import { BaseResponse, IndexResponse } from "./base"
+import { BaseResponse, IndexResponse, MasterData } from "./base"
 
-export interface CMT {
+export interface CMT extends MasterData {
   id: number
   code: string
   name: string
