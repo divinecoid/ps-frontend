@@ -94,7 +94,9 @@ export default function ModalRack(props: BaseForm) {
             {
                 key: "i",
                 type: "combobox",
-                schema: z.string(),
+                schema: z.string().nonempty({
+                    message: "i is required",
+                }),
                 label: "Combobox",
                 description: "Combobox",
                 placeholder: "COMBO",
@@ -131,7 +133,9 @@ export default function ModalRack(props: BaseForm) {
             {
                 key: "warehouse_id",
                 type: "combobox",
-                schema: z.string(),
+                schema: z.string().nonempty({
+                    message: "Warehouse is required",
+                }),
                 label: "Warehouse",
                 description: "The location where this rack placed.",
                 placeholder: "Warehouse",

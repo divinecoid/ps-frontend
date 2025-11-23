@@ -4,7 +4,7 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/custom/nav-main"
-import { NavProjects } from "@/components/custom/nav-projects"
+// import { NavProjects } from "@/components/custom/nav-projects"
 import { NavTests } from "@/components/custom/nav-tests"
 import { NavUser } from "@/components/ui/nav-user"
 import {
