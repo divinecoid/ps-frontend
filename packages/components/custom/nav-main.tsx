@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/sidebar"
 import { Link, useLocation } from "react-router-dom"
 import { useCallback } from "react"
+import { hasRole } from "@/lib/jwt-decode"
+import { useAuth } from "@/provider/auth-provider"
 
 export function NavMain({
   items,
@@ -26,19 +28,23 @@ export function NavMain({
     url: string
     icon?: LucideIcon
     isActive?: boolean
+    role: string[]
     items?: {
       title: string
       url: string
+      role: string[]
     }[]
   }[]
 }) {
   const path = useLocation().pathname;
-  const checkActive = useCallback((url: string) => path === url ? true : false, [path])
+  const { token } = useAuth();
+  const checkActive = useCallback((url: string) => path === url ? true : false, [path]);
+  const checkRole = (roles: string[]) => roles.some(role => hasRole(token, role));
   return (
     <SidebarGroup>
       <SidebarGroupLabel>System</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
+        {items.map((item) => (item.role ? checkRole(item.role) : true) && (
           <Collapsible
             key={item.title}
             asChild
@@ -55,7 +61,7 @@ export function NavMain({
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
+                  {item.items?.map((subItem) => (subItem.role ? checkRole(subItem.role) : true) && (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild isActive={checkActive(subItem.url)}>
                         <Link to={subItem.url}>

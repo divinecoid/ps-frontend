@@ -156,50 +156,87 @@ export const Menu = {
       title: "Master Data",
       url: "#",
       icon: SquareTerminal,
+      role: [
+        'admin',
+        'user'
+      ],
       items: [
         {
           title: "Rack",
           url: "/master-data/rack",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Warehouse",
           url: "/master-data/warehouse",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "CMT",
           url: "/master-data/cmt",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Inventory",
           url: "/master-data/inventory",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Product",
           url: "/master-data/product",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Product Model",
           url: "/master-data/product-model",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Size",
           url: "/master-data/size",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Color",
           url: "/master-data/color",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Factory",
           url: "/master-data/factory",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Online Store",
           url: "/master-data/online-store",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Marketplace",
           url: "/master-data/marketplace",
+          role: [
+            'admin'
+          ]
         },
       ],
     },
