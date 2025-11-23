@@ -36,7 +36,7 @@ export function NavMain({
   const checkActive = useCallback((url: string) => path === url ? true : false, [path])
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>System</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible

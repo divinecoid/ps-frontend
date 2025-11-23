@@ -18,10 +18,11 @@ import MasterColors from './main/master-data/color';
 import MasterFactories from './main/master-data/factory';
 import MasterOnlineStores from './main/master-data/online-store';
 import MasterMarketplaces from './main/master-data/marketplace';
+import { hasRole } from '@/lib/jwt-decode';
 
 function App() {
   const { token } = useAuth();
-
+  const isAdmin = hasRole(token, "admin");
   return (
     <HashRouter>
       <Routes>
@@ -31,17 +32,22 @@ function App() {
         <Route element={token ? <NavigationLayout /> : <Navigate to="/login" replace />}>
           <Route path="/home" element={<Home />} />
           <Route path="/example" element={<Example />} />
-          <Route path="/master-data/rack" element={<MasterRacks />} />
-          <Route path="/master-data/warehouse" element={<MasterWarehouse />} />
-          <Route path="/master-data/cmt" element={<MasterCMTs />} />
-          <Route path="/master-data/inventory" element={<MasterInventories />} />
-          <Route path="/master-data/product" element={<MasterProducts />} />
-          <Route path="/master-data/product-model" element={<MasterProductModels />} />
-          <Route path="/master-data/size" element={<MasterSizes />} />
-          <Route path="/master-data/color" element={<MasterColors />} />
-          <Route path="/master-data/factory" element={<MasterFactories />} />
-          <Route path="/master-data/online-store" element={<MasterOnlineStores />} />
-          <Route path="/master-data/marketplace" element={<MasterMarketplaces />} />
+          {isAdmin && (
+            <>
+              <Route path="/master-data/rack" element={<MasterRacks />} />
+              <Route path="/master-data/warehouse" element={<MasterWarehouse />} />
+              <Route path="/master-data/cmt" element={<MasterCMTs />} />
+              <Route path="/master-data/inventory" element={<MasterInventories />} />
+              <Route path="/master-data/product" element={<MasterProducts />} />
+              <Route path="/master-data/product-model" element={<MasterProductModels />} />
+              <Route path="/master-data/size" element={<MasterSizes />} />
+              <Route path="/master-data/color" element={<MasterColors />} />
+              <Route path="/master-data/factory" element={<MasterFactories />} />
+              <Route path="/master-data/online-store" element={<MasterOnlineStores />} />
+              <Route path="/master-data/marketplace" element={<MasterMarketplaces />} />
+            </>
+          )}
+
 
 
 
