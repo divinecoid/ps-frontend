@@ -117,7 +117,6 @@ ipcMain.handle("save-token", async (_, token) => {
   return true;
 });
 
-
 ipcMain.handle("get-refresh-token", async () => {
   const token = await getRefreshToken();
   return token || null;
@@ -132,7 +131,27 @@ ipcMain.handle("delete-token", async () => {
   const token = await deleteToken();
   return token || null;
 });
+
 ipcMain.handle("delete-refresh-token", async () => {
   const token = await deleteRefreshToken();
   return token || null;
+});
+
+ipcMain.handle("open-oauth", async (event, url, successUrl) => {
+  const win = new BrowserWindow({
+    width: 1110,
+    height: 750,
+    webPreferences: {
+      nodeIntegration: false
+    }
+  });
+
+  win.loadURL(url);
+
+  win.webContents.on("will-navigate", (_, currentUrl) => {
+    if (currentUrl.includes(successUrl)) {
+      win.close();
+      event.sender.send("oauth-done");
+    }
+  });
 });

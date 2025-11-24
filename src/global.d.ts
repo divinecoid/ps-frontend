@@ -1,4 +1,4 @@
-export {};
+export { };
 
 declare global {
   interface Window {
@@ -11,6 +11,7 @@ declare global {
       deleteRefreshToken: () => Promise<boolean>;
       onNavigate: (callback: (path: string) => void) => void;
       getInitialToken: () => Promise<string | null>;
+      startOauth(url: string, successUrl: string): Promise<void>;
     };
   }
 

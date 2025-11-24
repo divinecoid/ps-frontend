@@ -12,6 +12,11 @@ export default function MasterOnlineStores() {
     const [editRow, setEditRow] = useState<number>();
     const [restoreRow, setRestoreRow] = useState<number>();
     const [deleteRow, setDeleteRow] = useState<number>();
+
+    const authOnlineStore = async (id: number, successUrl: string) => {
+        await window.electronAPI.startOauth(`https://ps-test.divineproject.my.id/lazada/login/${id}`, successUrl);
+    }
+
     return <OverviewPage
         columns={columns}
         source={Services.MasterOnlineStore}
@@ -35,6 +40,7 @@ export default function MasterOnlineStores() {
                             {row.is_deleted ?
                                 <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
                                 : <>
+                                    <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.store_url)}>Connect</DropdownMenuItem>
                                     <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
                                     <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
                                 </>

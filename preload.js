@@ -8,4 +8,5 @@ contextBridge.exposeInMainWorld("electronAPI", {
     deleteToken: () => ipcRenderer.invoke("delete-token"),
     deleteRefreshToken: () => ipcRenderer.invoke("delete-refresh-token"),
     onNavigate: (callback) => ipcRenderer.on("navigate-to", (_, path) => callback(path)),
+    startOauth: (url, successUrl) => ipcRenderer.invoke("open-oauth", url, successUrl)
 });
