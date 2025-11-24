@@ -31,7 +31,7 @@ export default function MasterOnlineStores() {
     }
 
     const authOnlineStore = async (id: number, successUrl: string) => {
-        await window.electronAPI.startOauth(`${import.meta.env.VITE_APP_BASE_URL}/${getMarketplaceAlias(id)}/login/${id}`, successUrl);
+        await window.electronAPI.startOauth(`${import.meta.env.VITE_APP_BASE_URL}/${await getMarketplaceAlias(id)}/login/${id}`, successUrl);
     }
 
     return <OverviewPage
