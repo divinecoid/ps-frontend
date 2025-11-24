@@ -37,7 +37,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
         getData();
     }, [page, pageSize, filter]);
 
-    return <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+    return <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 select-none">
         <div className="px-4 lg:px-6">
             <DataTable
                 data={data ?? []}

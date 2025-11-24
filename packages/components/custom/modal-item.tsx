@@ -27,6 +27,7 @@ import DynamicInput, { InputMeta, InputTypes } from "@/components/custom/dynamic
 import { BaseApiCallIndexProps, BaseApiCallProps } from "@/interfaces/base";
 import { toast } from "sonner";
 import React from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface FormShape<T> {
     key: keyof T & string;
@@ -161,7 +162,7 @@ export default function ModalItem<T extends FieldValues>({
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submitForm, onError)}
                         className="flex flex-col flex-1 h-0 select-none">
-                        <div className="flex-1 space-y-8 overflow-y-auto px-6">
+                        <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
                             {children}
                             {Object.entries((schema as z.ZodObject<any>).shape).map(([key]) => {
                                 const fieldMeta = meta[key];
@@ -172,7 +173,7 @@ export default function ModalItem<T extends FieldValues>({
                                         control={form.control}
                                         name={key as Path<T>}
                                         render={({ field }) => (
-                                            <FormItem>
+                                            <FormItem className="px-8 py-2">
                                                 <FormLabel>{fieldMeta.label}</FormLabel>
                                                 <FormControl>
                                                     <DynamicInput
@@ -188,7 +189,7 @@ export default function ModalItem<T extends FieldValues>({
                                     />
                                 );
                             })}
-                        </div>
+                        </ScrollArea>
                         <DialogFooter className="sm:justify-end px-6 pb-6">
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>

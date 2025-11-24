@@ -31,15 +31,15 @@ export default function MasterProducts() {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            {row.is_deleted ?
-                                <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
-                                : <>
-                                    <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                                    <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
-                                </>
-                            }
-                        </DropdownMenuContent>
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    {row.is_deleted ?
+                        <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
+                        : <>
+                            <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
+                        </>
+                    }
+                </DropdownMenuContent>
             </DropdownMenu>
         )}
     />

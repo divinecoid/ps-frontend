@@ -1,5 +1,6 @@
 import Services, { setTokenRefreshListener } from "@/services";
 import { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const AuthContext = createContext(null);
 
@@ -16,6 +17,9 @@ export function AuthProvider({ initialToken, children }) {
             await window.electronAPI.saveRefreshToken(refresh_token);
             setToken(token);
             return true;
+        } else {
+            const json = await result.json();
+            toast.error(json.message, {richColors: true})
         }
         return false;
     };

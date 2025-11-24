@@ -28,6 +28,14 @@ export default function ModalMarketplace(props: BaseForm) {
                 placeholder: "Marketplace name",
             },
             {
+                key: "alias",
+                type: "text",
+                schema: z.string(),
+                label: "Alias",
+                description: "Input marketplace's alias.",
+                placeholder: "store-name",
+            },
+            {
                 key: "base_api_url",
                 type: "text",
                 schema: z.string().url({

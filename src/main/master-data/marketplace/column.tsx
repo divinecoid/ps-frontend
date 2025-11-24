@@ -14,6 +14,11 @@ export const columns: ColumnDef<Marketplace>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "alias",
+    header: "Alias",
+    enableSorting: true,
+  },
+  {
     accessorKey: "base_api_url",
     header: "Base API URL",
     enableSorting: true,
