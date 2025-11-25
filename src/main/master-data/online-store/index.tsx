@@ -2,13 +2,12 @@ import { columns } from "./column";
 import Services from "@/services";
 import ModalOnlineStore from "./modal";
 import OverviewPage from "@/components/custom/overview-page";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import { MarketplaceViewResponse } from "@/interfaces/marketplace";
 import { toast } from "sonner";
+import DropdownRowActions from "@/components/custom/dropdown-row-actions";
 
 export default function MasterOnlineStores() {
     const [editRow, setEditRow] = useState<number>();
@@ -46,25 +45,15 @@ export default function MasterOnlineStores() {
             <ModalConfirm {...props} action={Services.MasterOnlineStore.destroy} id={deleteRow} setId={setDeleteRow} title="Are you want to delete this object?" description="This action will set this object to inactive state." />
         ]}
         rowActions={({ row }) => (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    {row.is_deleted ?
-                        <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
-                        : <>
-                            <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.store_url)}>Connect</DropdownMenuItem>
-                            <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                            <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
-                        </>
-                    }
-                </DropdownMenuContent>
-            </DropdownMenu>
-        )}
-    />
+            <DropdownRowActions>
+                {row.is_deleted ?
+                    <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
+                    : <>
+                        <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.store_url)}>Connect</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
+                    </>
+                }
+            </DropdownRowActions>
+        )} />
 }
