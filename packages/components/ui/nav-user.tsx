@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/provider/auth-provider"
+import { toast } from "sonner"
 
 export function NavUser({
   user,
@@ -50,7 +51,7 @@ export function NavUser({
         navigate('/login');
       }
     } catch (error) {
-      console.error(error);
+      toast.error(error.message, { richColors: true })
     }
   }
 

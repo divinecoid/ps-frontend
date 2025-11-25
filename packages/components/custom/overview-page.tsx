@@ -3,6 +3,7 @@ import DataTable from "@/components/custom/datatable";
 import { ColumnDef } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
 import { BaseApiCallProps } from "@/interfaces/base";
+import { toast } from "sonner";
 
 interface OverviewProps<TData, TValue> {
     source: BaseApiCallProps;
@@ -30,7 +31,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 setCount(json.pagination.total);
             }
         } catch (error) {
-            console.error(error);
+            toast.error(error.message, { richColors: true })
         }
     }
     useEffect(() => {
@@ -51,7 +52,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 actions={actions ? actions({ services: source, onSubmit: getData }) : []}
                 rowActions={rowActions ? ({ row }) => (
                     rowActions({ row, id, setId })
-                ): undefined}
+                ) : undefined}
                 filterComponents={
                     <Input
                         placeholder="Search..."

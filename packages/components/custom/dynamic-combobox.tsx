@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { BaseApiCallIndexProps } from "@/interfaces/base"
+import { toast } from "sonner"
 
 interface DynamicComboboxProps {
   source: BaseApiCallIndexProps;
@@ -50,7 +51,7 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
           setOptions(mapped);
         }
       } catch (error) {
-        console.error(error);
+        toast.error(error.message, {richColors: true})
       }
     }
     getData();

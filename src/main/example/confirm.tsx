@@ -1,5 +1,6 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { BaseDialog } from "@/interfaces/base";
+import { toast } from "sonner";
 
 export default function ConfirmRack({ id, setId, action, onSubmit, title, description }: BaseDialog) {
     const confirm = async () => {
@@ -11,7 +12,7 @@ export default function ConfirmRack({ id, setId, action, onSubmit, title, descri
                     setId(undefined);
                 }
             } catch (error) {
-                console.error(error);
+                toast.error(error.message, { richColors: true })
             }
         }
     }

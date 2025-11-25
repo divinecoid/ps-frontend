@@ -120,19 +120,24 @@ export default function ModalItem<T extends FieldValues>({
             try {
                 if (isEdit && id) {
                     const res = await services.show(id);
+                    const json = await res.json();
                     if (res.ok) {
-                        const json = await res.json();
                         form.reset(json.data);
+                        setOpen(true);
+                    } else {
+                        toast.error(json.message, { richColors: true });
+                        setId(undefined);
                     }
                 }
             } catch (error) {
-                console.error(error);
+                toast.error(error.message, { richColors: true });
+                setId(undefined);
             }
         }
         viewData();
     }, [id]);
 
-    const submitForm :SubmitHandler<T> = async (values) => {
+    const submitForm: SubmitHandler<T> = async (values) => {
         try {
             const res = await (id ? services.update(id, values) : services.store(values));
             const json = await res.json();
@@ -144,11 +149,11 @@ export default function ModalItem<T extends FieldValues>({
                 toast.error(String(json.message), { richColors: true });
             }
         } catch (error) {
-            console.log(error)
+            toast.error(error.message, {richColors: true})
         }
     }
     return (
-        <Dialog open={isEdit ? id ? true : false : open} onOpenChange={(open) => { setId && setId(undefined); setOpen(open); open && form.reset(defaultValues); }}>
+        <Dialog open={open} onOpenChange={(open) => { setId && setId(undefined); setOpen(open); open && form.reset(defaultValues); }}>
             {!isEdit && (
                 <DialogTrigger asChild className="select-none">
                     <Button variant="outline"><Plus /> Create</Button>

@@ -148,7 +148,7 @@ ipcMain.handle("open-oauth", async (event, url, successUrl) => {
 
   win.loadURL(url);
 
-  win.webContents.on("will-navigate", (_, currentUrl) => {
+  win.webContents.on("will-redirect", (_, currentUrl) => {
     if (currentUrl.includes(successUrl)) {
       win.close();
       event.sender.send("oauth-done");

@@ -8,6 +8,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import { MarketplaceViewResponse } from "@/interfaces/marketplace";
+import { toast } from "sonner";
 
 export default function MasterOnlineStores() {
     const [editRow, setEditRow] = useState<number>();
@@ -25,7 +26,7 @@ export default function MasterOnlineStores() {
             }
             return undefined;
         } catch (error) {
-            console.error(error);
+            toast.error(error.message, { richColors: true })
             return undefined;
         }
     }
