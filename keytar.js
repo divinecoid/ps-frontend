@@ -1,9 +1,9 @@
 const keytar = require("keytar");
 
-async function saveToken(token: string) {
+async function saveToken(token) {
     await keytar.setPassword("ps-frontend", "token", token);
 }
-async function saveRefreshToken(refresh_token: string) {
+async function saveRefreshToken(refresh_token) {
     await keytar.setPassword("ps-frontend", "refresh_token", refresh_token);
 }
 

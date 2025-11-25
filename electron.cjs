@@ -1,6 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
-const { getToken, saveToken, getRefreshToken, saveRefreshToken, deleteToken, deleteRefreshToken } = require(path.join(__dirname, "packages/lib/keytar.ts"));
+const { getToken, saveToken, getRefreshToken, saveRefreshToken, deleteToken, deleteRefreshToken } = require(path.join(__dirname, "keytar.js"));
 
 let win = null;
 function createWindow() {
@@ -14,8 +14,12 @@ function createWindow() {
       disableBlinkFeatures: "Autofill,PasswordManager"
     }
   });
-
-  win.loadURL('http://localhost:5173');
+  const isDev = process.argv.includes("--dev");
+  if (isDev) {
+    win.loadURL('http://localhost:5173');
+  } else {
+    win.loadFile(path.join(__dirname, 'dist/index.html'));
+  }
 }
 
 const template = [

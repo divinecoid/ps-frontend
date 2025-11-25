@@ -24,12 +24,14 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     const getData = async () => {
         try {
             const result = await source.master(page, pageSize, filter);
+            const json = (await result.json());
             if (result.ok) {
-                const json = (await result.json());
                 setData(json.data);
                 setPage(json.pagination.current_page);
                 setPageSize(json.pagination.per_page);
                 setCount(json.pagination.total);
+            } else {
+                toast.error(json.message, { richColors: true })
             }
         } catch (error) {
             toast.error(error.message, { richColors: true })
@@ -41,7 +43,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
         getData();
     }, [page, pageSize, filter]);
 
-    return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-wait' : 'cursor-default' }`}>
+    return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>
         <div className="px-4 lg:px-6">
             <DataTable
                 data={data ?? []}

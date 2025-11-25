@@ -52,11 +52,10 @@
     "zod": "^4.1.12"
   },
   "scripts": {
-    "dev": "concurrently \"vite\" \"npm run electron\"",
-    "electron": "electron .",
+    "dev": "concurrently \"vite\" \"electron . --dev\"",
+    "prod": "npm run build && electron .",
     "build": "vite build",
-    "preview": "vite preview",
-    "build:mac": "electron-builder --mac"
+    "build:mac": "npm run build && electron-builder --mac"
   },
   "eslintConfig": {
     "extends": [
@@ -96,8 +95,9 @@
     ],
     "files": [
       "dist/**",
-      "electron.js",
-      "preload.js"
+      "electron.cjs",
+      "preload.js",
+      "keytar.js"
     ]
   }
 }

@@ -12,6 +12,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  base: "./",
+  build: {
+    chunkSizeWarningLimit: 1500
+  },
   resolve: {
     alias: {
       '@/components': path.resolve(__dirname, 'packages/components'),
