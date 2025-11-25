@@ -20,6 +20,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     const [filter, setFilter] = useState<string>("");
     const [data, setData] = useState<TData[]>();
     const [id, setId] = useState<number>();
+    const [loading, setLoading] = useState<boolean>(true);
     const getData = async () => {
         try {
             const result = await source.master(page, pageSize, filter);
@@ -32,13 +33,15 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
             }
         } catch (error) {
             toast.error(error.message, { richColors: true })
+        } finally {
+            loading && setLoading(false);
         }
     }
     useEffect(() => {
         getData();
     }, [page, pageSize, filter]);
 
-    return <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 select-none">
+    return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-wait' : 'cursor-default' }`}>
         <div className="px-4 lg:px-6">
             <DataTable
                 data={data ?? []}
@@ -49,6 +52,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 onPageChange={setPage}
                 onPageSizeChange={setPageSize}
                 selectable={selectable}
+                loading={loading}
                 actions={actions ? actions({ services: source, onSubmit: getData }) : []}
                 rowActions={rowActions ? ({ row }) => (
                     rowActions({ row, id, setId })

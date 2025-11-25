@@ -38,6 +38,7 @@ import {
 import DatatablePagination from "./datatable-pagination"
 import SortHeader from "./sort-header"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface DataTableProps<TData, TValue> {
   data: TData[],
@@ -51,6 +52,7 @@ interface DataTableProps<TData, TValue> {
   selectable?: boolean;
   actions?: React.ReactNode[];
   rowActions?: (cell: { row: TData }) => React.ReactNode;
+  loading?: boolean;
 }
 
 const pageSizes = [10, 20, 50, 100];
@@ -66,7 +68,8 @@ export default function DataTable<TData, TValue>({
   filterComponents,
   selectable,
   actions,
-  rowActions }: DataTableProps<TData, TValue>) {
+  rowActions,
+  loading }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -206,12 +209,15 @@ export default function DataTable<TData, TValue>({
                   </TableRow>
                 ))
               ) : (
-                <TableRow>
+                <TableRow className="w-full">
                   <TableCell
-                    colSpan={columns.length}
-                    className="h-12 text-center"
+                    colSpan={columns.length + 2}
+                    className="h-12 text-center relative"
                   >
-                    No results.
+                      <Skeleton className={`rounded-none absolute left-0 right-0 top-0 bottom-0 flex items-center justify-center ${loading ? 'opacity-20' : 'opacity-0'} duration-500 fade-in`} />
+                      <div className={`${loading ? 'opacity-0' : 'opacity-100 '} duration-500 absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center fade-in`}>
+                        No results.
+                      </div>
                   </TableCell>
                 </TableRow>
               )}

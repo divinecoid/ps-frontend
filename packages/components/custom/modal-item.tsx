@@ -111,6 +111,7 @@ export default function ModalItem<T extends FieldValues>({
 }: ModalItemProps<T>) {
     const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
     const [open, setOpen] = React.useState<boolean>(false);
+    const [loading, setLoading] = React.useState<boolean>(isEdit ? true : false);
     const form = useForm({
         resolver: zodResolver(schema),
         defaultValues
@@ -132,12 +133,15 @@ export default function ModalItem<T extends FieldValues>({
             } catch (error) {
                 toast.error(error.message, { richColors: true });
                 setId(undefined);
+            } finally {
+                loading && setLoading(false);
             }
         }
         viewData();
     }, [id]);
 
     const submitForm: SubmitHandler<T> = async (values) => {
+        setLoading(true);
         try {
             const res = await (id ? services.update(id, values) : services.store(values));
             const json = await res.json();
@@ -149,7 +153,9 @@ export default function ModalItem<T extends FieldValues>({
                 toast.error(String(json.message), { richColors: true });
             }
         } catch (error) {
-            toast.error(error.message, {richColors: true})
+            toast.error(error.message, { richColors: true })
+        } finally {
+            loading && setLoading(false);
         }
     }
     return (
@@ -159,7 +165,7 @@ export default function ModalItem<T extends FieldValues>({
                     <Button variant="outline"><Plus /> Create</Button>
                 </DialogTrigger>
             )}
-            <DialogContent className="flex flex-col max-h-[90vh] p-0 select-none">
+            <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>
                 <DialogHeader className="px-6 pt-6">
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
