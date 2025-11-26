@@ -142,20 +142,24 @@ ipcMain.handle("delete-refresh-token", async () => {
 });
 
 ipcMain.handle("open-oauth", async (event, url, successUrl) => {
-  const win = new BrowserWindow({
+  const oauthWin = new BrowserWindow({
     width: 1110,
     height: 750,
+    closable: true,
     webPreferences: {
-      nodeIntegration: false
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true
     }
   });
 
-  win.loadURL(url);
+  oauthWin.loadURL(url);
 
-  win.webContents.on("will-redirect", (_, currentUrl) => {
+  oauthWin.webContents.on("did-finish-load", () => {
+    const currentUrl = oauthWin.webContents.getURL();
     if (currentUrl.includes(successUrl)) {
-      win.close();
-      event.sender.send("oauth-done");
+      win.webContents.send("oauth-done");
+      oauthWin.close();
     }
   });
 });

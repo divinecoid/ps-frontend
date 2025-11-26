@@ -2,7 +2,7 @@ import { BaseResponse, IndexResponse, MasterData } from "./base"
 
 export interface OnlineStore extends MasterData {
   id: number
-  marketplace_id: string
+  marketplace_id: number
   store_code: string
   store_name: string
   api_key: string
@@ -14,6 +14,10 @@ export interface OnlineStore extends MasterData {
   marketplace: {
     name: string
   }
+  access_token: string
+  refresh_token: string
+  access_token_expires_at: Date
+  refresh_token_expires_at: Date
 }
 
 export interface OnlineStoreResponse extends IndexResponse {

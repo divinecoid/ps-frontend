@@ -3,7 +3,7 @@ import Services from "@/services";
 import ModalOnlineStore from "./modal";
 import OverviewPage from "@/components/custom/overview-page";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import { MarketplaceViewResponse } from "@/interfaces/marketplace";
 import { toast } from "sonner";
@@ -13,14 +13,25 @@ export default function MasterOnlineStores() {
     const [editRow, setEditRow] = useState<number>();
     const [restoreRow, setRestoreRow] = useState<number>();
     const [deleteRow, setDeleteRow] = useState<number>();
+    const refreshTableRef = useRef<() => void>(() => { });
+
+    useEffect(() => {
+        const handler = () => {
+            refreshTableRef.current();
+        };
+        window.electronAPI.onOauthDone(handler);
+        return () => window.electronAPI.removeOauthListener();
+    }, []);
 
     const getMarketplaceAlias = async (id: number): Promise<string> => {
         try {
             if (id) {
                 const res = await Services.MasterMarketplace.show(id);
+                const json: MarketplaceViewResponse = await res.json();
                 if (res.ok) {
-                    const json: MarketplaceViewResponse = await res.json();
                     return json.data.alias;
+                } else {
+                    toast.error(json.message, { richColors: true })
                 }
             }
             return undefined;
@@ -30,14 +41,16 @@ export default function MasterOnlineStores() {
         }
     }
 
-    const authOnlineStore = async (id: number, successUrl: string) => {
-        await window.electronAPI.startOauth(`${import.meta.env.VITE_APP_BASE_URL}/${await getMarketplaceAlias(id)}/login/${id}`, successUrl);
+    const authOnlineStore = async (id: number, marketplace_id: number, successUrl: string) => {
+        const url = `${import.meta.env.VITE_APP_BASE_URL}/${await getMarketplaceAlias(marketplace_id)}/login/${id}`;
+        await window.electronAPI.startOauth(url, successUrl);
     }
 
     return <OverviewPage
         columns={columns}
         source={Services.MasterOnlineStore}
         selectable
+        onLoadedRef={(fn) => (refreshTableRef.current = fn)}
         actions={(props) => [
             <ModalOnlineStore {...props} />,
             <ModalOnlineStore {...props} isEdit id={editRow} setId={setEditRow} />,
@@ -49,7 +62,7 @@ export default function MasterOnlineStores() {
                 {row.is_deleted ?
                     <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
                     : <>
-                        <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.store_url)}>Connect</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.marketplace_id, row.redirect_uri)}>Connect</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
                     </>

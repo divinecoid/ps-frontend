@@ -11,9 +11,10 @@ interface OverviewProps<TData, TValue> {
     selectable?: boolean;
     actions?: (utils: { services: BaseApiCallProps, onSubmit: () => void }) => React.ReactNode[];
     rowActions?: (cell: { row: TData, id: number, setId: React.Dispatch<React.SetStateAction<number>> }) => React.ReactNode;
+    onLoadedRef?: (refreshFn: () => void) => void;
 }
 
-export default function OverviewPage<TData, TValue>({ source, columns, selectable, actions, rowActions }: OverviewProps<TData, TValue>) {
+export default function OverviewPage<TData, TValue>({ source, columns, selectable, actions, rowActions, onLoadedRef }: OverviewProps<TData, TValue>) {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [count, setCount] = useState(0);
@@ -42,6 +43,9 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     useEffect(() => {
         getData();
     }, [page, pageSize, filter]);
+    useEffect(() => {
+        onLoadedRef?.(getData);
+    }, []);
 
     return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>
         <div className="px-4 lg:px-6">

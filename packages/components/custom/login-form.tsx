@@ -59,6 +59,7 @@ export function LoginForm({
                   type="text"
                   placeholder="user.example"
                   required
+                  autoFocus
                 />
               </Field>
               <Field>
