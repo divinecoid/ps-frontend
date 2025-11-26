@@ -55,7 +55,9 @@
     "dev": "concurrently \"vite\" \"electron . --dev\"",
     "prod": "npm run build && electron .",
     "build": "vite build",
-    "build:mac": "npm run build && electron-builder --mac"
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:win": "npm run build && electron-builder --win",
+    "build:linux": "npm run build && electron-builder --linux"
   },
   "eslintConfig": {
     "extends": [
