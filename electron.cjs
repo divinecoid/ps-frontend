@@ -20,6 +20,14 @@ function createWindow() {
   } else {
     win.loadFile(path.join(__dirname, 'dist/index.html'));
   }
+
+  win.on("enter-full-screen", () => {
+    win.webContents.send("fullscreen-change", true);
+  });
+
+  win.on("leave-full-screen", () => {
+    win.webContents.send("fullscreen-change", false);
+  });
 }
 
 const template = [

@@ -14,6 +14,7 @@ declare global {
       startOauth: (url: string, successUrl: string) => Promise<void>;
       onOauthDone: (callback: () => void) => void;
       removeOauthListener: () => void;
+      onFullscreenChange: (callback: (isFullscreen: boolean) => void) => void;
     };
   }
 

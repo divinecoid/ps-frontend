@@ -10,5 +10,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     onNavigate: (callback) => ipcRenderer.on("navigate-to", (_, path) => callback(path)),
     startOauth: (url, successUrl) => ipcRenderer.invoke("open-oauth", url, successUrl),
     onOauthDone: (callback) => ipcRenderer.on("oauth-done", callback),
-    removeOauthListener: () => ipcRenderer.removeAllListeners("oauth-done")
+    removeOauthListener: () => ipcRenderer.removeAllListeners("oauth-done"),
+    onFullscreenChange: (callback) => ipcRenderer.on("fullscreen-change", (_, state) => callback(state))
 });
