@@ -7,6 +7,8 @@ import Register from './auth/register';
 import NavigationLayout from '@/components/custom/navigation-layout';
 import Home from './main/home';
 import Example from './main/example';
+import MasterUsers from './main/master-data/user';
+import MasterRoles from './main/master-data/role';
 import MasterRacks from './main/master-data/rack';
 import MasterWarehouse from './main/master-data/warehouse';
 import MasterCMTs from './main/master-data/cmt';
@@ -34,6 +36,8 @@ function App() {
           <Route path="/example" element={<Example />} />
           {isAdmin && (
             <>
+              <Route path="/master-data/user" element={<MasterUsers />} />
+              <Route path="/master-data/role" element={<MasterRoles />} />
               <Route path="/master-data/rack" element={<MasterRacks />} />
               <Route path="/master-data/warehouse" element={<MasterWarehouse />} />
               <Route path="/master-data/cmt" element={<MasterCMTs />} />
