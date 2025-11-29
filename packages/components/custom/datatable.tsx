@@ -214,7 +214,7 @@ export default function DataTable<TData, TValue>({
                     colSpan={columns.length + 2}
                     className="h-12 text-center relative"
                   >
-                      <Skeleton className={`rounded-none absolute left-0 right-0 top-0 bottom-0 flex items-center justify-center ${loading ? 'opacity-20' : 'opacity-0'} duration-500 fade-in`} />
+                      <Skeleton className={`rounded-none absolute left-0 right-0 top-0 bottom-0 items-center justify-center ${loading ? 'flex' : 'hidden'} duration-500 fade-in`} />
                       <div className={`${loading ? 'opacity-0' : 'opacity-100 '} duration-500 absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center fade-in`}>
                         No results.
                       </div>

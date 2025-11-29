@@ -6,7 +6,9 @@ export interface User extends MasterData {
   name: string
   username: string
   email: string
+  password?: string
   roles: Role[]
+  role_id: string[]
 }
 
 export interface UserResponse extends IndexResponse {

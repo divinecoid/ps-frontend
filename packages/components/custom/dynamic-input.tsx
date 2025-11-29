@@ -9,14 +9,17 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { DynamicCombobox } from "./dynamic-combobox";
 import { BaseApiCallIndexProps } from "@/interfaces/base";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
-export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "switch" | "textarea";
+export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea";
 
 export interface InputMeta {
     label?: string;
     description?: string;
     placeholder?: string;
     type?: InputTypes;
+    passwordEdit?: boolean;
     options?: Record<string, string>;                       //radio, select
     defaultValue?: string | number | (string | number)[];   //radio, select, checkbox, slider, input, textarea
     max?: number;                                           //slider
@@ -37,10 +40,10 @@ export default function DynamicInput<T extends FieldValues>({
     meta,
     api
 }: DynamicInputProps<T>) {
-    const { type, placeholder, options, defaultValue, max, step, source } = meta;
+    const { type, placeholder, options, defaultValue, max, step, source, passwordEdit } = meta;
+    const [edit, setEdit] = useState(false);
     switch (type) {
         case 'text':
-        case 'password':
         case 'email':
         case 'search':
         case 'tel':
@@ -58,6 +61,28 @@ export default function DynamicInput<T extends FieldValues>({
                 name={field.name}
                 ref={field.ref}
             />
+        case 'password':
+            return <div className="flex gap-3">
+                {(edit || !passwordEdit) && (
+                    <Input
+                        className="flex-1"
+                        placeholder={placeholder}
+                        type={type}
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                    />
+                )}
+                {passwordEdit && (
+                    <Button type="button"
+                        variant={edit ? 'default' : 'secondary'}
+                        onClick={() => { setEdit(!edit); field.onChange(undefined) }}>
+                        {edit ? 'Cancel' : 'Update Password'}
+                    </Button>
+                )}
+            </div>
         case 'range':
             return <Slider
                 value={Array.isArray(field.value) ? field.value : [Number(field.value ?? defaultValue ?? 0)]}
@@ -78,10 +103,12 @@ export default function DynamicInput<T extends FieldValues>({
                 checked={!!field.value}
                 onCheckedChange={field.onChange} />
         case 'combobox':
+        case 'multi-combobox':
             return <DynamicCombobox
                 id={source.id}
                 label={source.label}
                 placeholder={placeholder}
+                type={type == "multi-combobox" ? "multi" : "single"}
                 source={api}
                 value={field.value ?? defaultValue}
                 onValueChange={field.onChange} />
@@ -107,7 +134,7 @@ export default function DynamicInput<T extends FieldValues>({
                 value={String(field.value ?? defaultValue ?? "")}
                 onValueChange={field.onChange}
                 name={field.name}
-                >
+            >
                 <SelectTrigger>
                     <SelectValue
                         placeholder={placeholder} />

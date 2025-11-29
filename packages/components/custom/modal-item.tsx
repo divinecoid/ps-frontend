@@ -39,6 +39,7 @@ interface FormShape<T> {
     max?: number;
     step?: number;
     options?: Record<string, string>;
+    passwordEdit?: boolean;
     source?: {
         id: string;
         label: string;
@@ -75,6 +76,7 @@ export function generateSchema<T>(fields: FormShape<T>[]) {
             type: field.type,
             options: field.options,
             defaultValue: field.defaultValue,
+            passwordEdit: field.passwordEdit,
             max: field.max,
             step: field.step,
             ...(field.source && {
@@ -84,7 +86,7 @@ export function generateSchema<T>(fields: FormShape<T>[]) {
                 }
             })
         };
-        defaultValues[field.key] = field.defaultValue ?? "";
+        defaultValues[field.key] = field.defaultValue ?? undefined;
         if (field.source) {
             api[field.key] = field.source.api;
         }

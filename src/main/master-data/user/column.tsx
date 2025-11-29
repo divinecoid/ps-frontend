@@ -4,27 +4,25 @@ import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<User>[] = [
   {
-    accessorKey: "code",
-    header: "Code",
-    enableSorting: true,
-  },
-  {
     accessorKey: "name",
     header: "Name",
     enableSorting: true,
   },
-
   {
     accessorKey: "username",
     header: "Username",
     enableSorting: true,
   },
-
+  {
+    accessorKey: "email",
+    header: "Email",
+    enableSorting: true,
+  },
   {
     header: "Role",
     enableSorting: true,
     cell: (({row}) => {
-      return row.original.roles.map(r => r.name[0]).join(", ")
+      return row.original.roles.map(r => r.name).join(", ")
     })
   },
   {
