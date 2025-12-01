@@ -51,7 +51,9 @@ export function NavUser({
         navigate('/login');
       }
     } catch (error) {
-      toast.error(error.message, { richColors: true })
+      if (error instanceof Error) {
+        toast.error(error.message, { richColors: true })
+      }
     }
   }
 

@@ -240,7 +240,7 @@ export default function DataTable<TData, TValue>({
           }
         </div>
         <div>
-          <Select defaultValue={`${perPage}`} onValueChange={value => onPageSizeChange(Number(value))}>
+          <Select defaultValue={`${perPage}`} onValueChange={value => onPageSizeChange?.(Number(value))}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -252,7 +252,7 @@ export default function DataTable<TData, TValue>({
           </Select>
         </div>
         <div className="space-x-2">
-          <DatatablePagination currentPage={currentPage} totalPages={Math.ceil(count / perPage)} onPageChange={onPageChange} />
+          <DatatablePagination currentPage={currentPage??0} totalPages={(count && perPage) ? Math.ceil(count / perPage):0} onPageChange={onPageChange} />
         </div>
       </div>
     </div>

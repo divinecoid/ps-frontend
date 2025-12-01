@@ -42,7 +42,7 @@ export interface BaseApiCallProps {
 interface BaseModal {
   onSubmit: () => void
   id?: number
-  setId?: React.Dispatch<React.SetStateAction<number>>
+  setId?: React.Dispatch<React.SetStateAction<number|undefined>>
 }
 
 export interface BaseForm extends BaseModal {

@@ -26,7 +26,7 @@ export function EmptyPage() {
               description: "Will be implemented soon!",
               action: {
                 label: "Got it",
-                onClick: undefined,
+                onClick: () => {},
               },
             })}>Contact support</Link>
         </EmptyDescription>

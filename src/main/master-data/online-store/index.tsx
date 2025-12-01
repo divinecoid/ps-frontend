@@ -23,7 +23,7 @@ export default function MasterOnlineStores() {
         return () => window.electronAPI.removeOauthListener();
     }, []);
 
-    const getMarketplaceAlias = async (id: number): Promise<string> => {
+    const getMarketplaceAlias = async (id: number): Promise<string|undefined> => {
         try {
             if (id) {
                 const res = await Services.MasterMarketplace.show(id);
@@ -36,8 +36,10 @@ export default function MasterOnlineStores() {
             }
             return undefined;
         } catch (error) {
-            toast.error(error.message, { richColors: true })
-            return undefined;
+            if (error instanceof Error) {
+                toast.error(error.message, { richColors: true })
+                return undefined;
+            }
         }
     }
 

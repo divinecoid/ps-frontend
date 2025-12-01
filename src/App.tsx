@@ -24,7 +24,7 @@ import { hasRole } from '@/lib/jwt-decode';
 
 function App() {
   const { token } = useAuth();
-  const isAdmin = hasRole(token, "admin");
+  const isAdmin = token ? hasRole(token, "admin") : false;
   return (
     <HashRouter>
       <Routes>

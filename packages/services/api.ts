@@ -5,7 +5,7 @@ const timeout = 5000;
 
 let onTokenRefreshed: ((token: string) => void) | null = null;
 
-export const setTokenRefreshListener = (callback: (token: string) => void) => {
+export const setTokenRefreshListener = (callback: ((token: string) => void)|null) => {
     onTokenRefreshed = callback;
 };
 

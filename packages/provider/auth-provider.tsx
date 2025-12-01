@@ -2,10 +2,21 @@ import Services, { setTokenRefreshListener } from "@/services";
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const AuthContext = createContext(null);
+interface AuthContextType {
+    token: string | null | undefined;
+    login: (user: string, pass: string) => Promise<boolean>;
+    logout: () => Promise<boolean>;
+}
 
-export function AuthProvider({ initialToken, children }) {
-    const [token, setToken] = useState(initialToken);
+interface AuthProviderProps {
+    initialToken?: string | null;
+    children: React.ReactNode;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export function AuthProvider({ initialToken, children }: AuthProviderProps) {
+    const [token, setToken] = useState<string | null | undefined>(initialToken);
 
     const login = async (user: string, pass: string) => {
         const result = await Services.Auth.login(user, pass);
@@ -19,7 +30,7 @@ export function AuthProvider({ initialToken, children }) {
             return true;
         } else {
             const json = await result.json();
-            toast.error(json.message, {richColors: true})
+            toast.error(json.message, { richColors: true })
         }
         return false;
     };
@@ -27,7 +38,7 @@ export function AuthProvider({ initialToken, children }) {
     const logout = async () => {
         const result = await Services.Auth.logout();
         if (result.ok) {
-            setToken(null);
+            setToken(undefined);
             return true;
         }
         return false;
@@ -49,5 +60,10 @@ export function AuthProvider({ initialToken, children }) {
         </AuthContext.Provider>
     );
 }
-
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth must be used inside AuthProvider");
+    }
+    return context;
+};

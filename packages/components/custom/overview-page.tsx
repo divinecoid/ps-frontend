@@ -10,7 +10,7 @@ interface OverviewProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     selectable?: boolean;
     actions?: (utils: { services: BaseApiCallProps, onSubmit: () => void }) => React.ReactNode[];
-    rowActions?: (cell: { row: TData, id: number, setId: React.Dispatch<React.SetStateAction<number>> }) => React.ReactNode;
+    rowActions?: (cell: { row: TData, id: number | undefined, setId: React.Dispatch<React.SetStateAction<number | undefined>> }) => React.ReactNode;
     onLoadedRef?: (refreshFn: () => void) => void;
 }
 
@@ -24,9 +24,9 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     const [loading, setLoading] = useState<boolean>(true);
     const getData = async () => {
         try {
-            const result = await source.master(page, pageSize, filter);
-            const json = (await result.json());
-            if (result.ok) {
+            const result = await source.master?.(page, pageSize, filter);
+            const json = (await result?.json());
+            if (result?.ok) {
                 setData(json.data);
                 setPage(json.pagination.current_page);
                 setPageSize(json.pagination.per_page);
@@ -35,7 +35,9 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 toast.error(json.message, { richColors: true })
             }
         } catch (error) {
-            toast.error(error.message, { richColors: true })
+            if (error instanceof Error) {
+                toast.error(error.message, { richColors: true })
+            }
         } finally {
             loading && setLoading(false);
         }

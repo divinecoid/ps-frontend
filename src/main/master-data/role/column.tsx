@@ -4,12 +4,12 @@ import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Role>[] = [
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: "name",
+    header: "Name",
     enableSorting: true,
   },
   {
-    accessorKey: "name",
+    accessorKey: "description",
     header: "Name",
     enableSorting: true,
   },

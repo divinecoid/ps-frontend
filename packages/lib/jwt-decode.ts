@@ -14,7 +14,7 @@ const decodeToken = (token: string | null) => {
     }
 };
 
-export const hasRole = (token: string | null, role: string) => {
+export const hasRole = (token: string, role: string) => {
     const decoded = decodeToken(token);
     if (!decoded?.roles) return false;
 

@@ -6,13 +6,15 @@ export default function ModalConfirm({ id, setId, action, onSubmit, title, descr
     const confirm = async () => {
         if (id) {
             try {
-                const res = await action(id);
-                if (res.ok) {
+                const res = await action?.(id);
+                if (res?.ok) {
                     onSubmit();
-                    setId(undefined);
+                    setId?.(undefined);
                 }
             } catch (error) {
-                toast.error(error.message, { richColors: true })
+                if (error instanceof Error) {
+                    toast.error(error.message, { richColors: true })
+                }
             }
         }
     }

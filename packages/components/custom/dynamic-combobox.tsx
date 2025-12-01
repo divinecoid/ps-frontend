@@ -52,7 +52,9 @@ export function DynamicCombobox({ source, id, label, type = 'single', placeholde
           setOptions(mapped);
         }
       } catch (error) {
-        toast.error(error.message, { richColors: true })
+        if (error instanceof Error) {
+          toast.error(error.message, { richColors: true })
+        }
       }
     }
     getData();

@@ -50,7 +50,7 @@ interface FormShape<T> {
 
 interface ModalItemProps<T extends FieldValues> {
     id?: number;
-    setId?: React.Dispatch<React.SetStateAction<number>>
+    setId?: React.Dispatch<React.SetStateAction<number | undefined>>
     isEdit?: boolean,
     title?: string;
     description?: string;
@@ -58,7 +58,7 @@ interface ModalItemProps<T extends FieldValues> {
     footer?: React.ReactNode;
     services?: BaseApiCallProps;
     onSubmit: () => void;
-    onError?: SubmitErrorHandler<T>;
+    onError?: SubmitErrorHandler<FieldValues>;
     formShape: FormShape<T>[];
 }
 
@@ -122,19 +122,21 @@ export default function ModalItem<T extends FieldValues>({
         const viewData = async () => {
             try {
                 if (isEdit && id) {
-                    const res = await services.show(id);
-                    const json = await res.json();
-                    if (res.ok) {
+                    const res = await services?.show?.(id);
+                    const json = await res?.json();
+                    if (res?.ok) {
                         form.reset(json.data);
                         setOpen(true);
                     } else {
                         toast.error(json.message, { richColors: true });
-                        setId(undefined);
+                        setId?.(undefined);
                     }
                 }
             } catch (error) {
-                toast.error(error.message, { richColors: true });
-                setId(undefined);
+                if (error instanceof Error) {
+                    toast.error(error.message, { richColors: true });
+                    setId?.(undefined);
+                }
             } finally {
                 loading && setLoading(false);
             }
@@ -142,20 +144,22 @@ export default function ModalItem<T extends FieldValues>({
         viewData();
     }, [id]);
 
-    const submitForm: SubmitHandler<T> = async (values) => {
+    const submitForm = async (values:FieldValues) => {
         setLoading(true);
         try {
-            const res = await (id ? services.update(id, values) : services.store(values));
-            const json = await res.json();
-            if (res.ok) {
+            const res = await (id ? services?.update?.(id, values) : services?.store?.(values));
+            const json = await res?.json();
+            if (res?.ok) {
                 onSubmit();
-                isEdit && setId(undefined);
+                isEdit && setId?.(undefined);
                 setOpen(false);
             } else {
                 toast.error(String(json.message), { richColors: true });
             }
         } catch (error) {
-            toast.error(error.message, { richColors: true })
+            if (error instanceof Error) {
+                toast.error(error.message, { richColors: true })
+            }
         } finally {
             loading && setLoading(false);
         }
@@ -192,7 +196,7 @@ export default function ModalItem<T extends FieldValues>({
                                                     <DynamicInput
                                                         field={field}
                                                         meta={fieldMeta}
-                                                        api={fieldSource ?? undefined}
+                                                        api={fieldSource}
                                                     />
                                                 </FormControl>
                                                 <FormDescription>{fieldMeta.description}</FormDescription>

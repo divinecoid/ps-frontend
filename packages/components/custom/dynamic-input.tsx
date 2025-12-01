@@ -24,7 +24,7 @@ export interface InputMeta {
     defaultValue?: string | number | (string | number)[];   //radio, select, checkbox, slider, input, textarea
     max?: number;                                           //slider
     step?: number;                                          //slider
-    source: {
+    source?: {
         id: string;
         label: string;
     }
@@ -104,19 +104,24 @@ export default function DynamicInput<T extends FieldValues>({
                 onCheckedChange={field.onChange} />
         case 'combobox':
         case 'multi-combobox':
-            return <DynamicCombobox
+            return api != undefined && source != undefined ? <DynamicCombobox
                 id={source.id}
                 label={source.label}
                 placeholder={placeholder}
                 type={type == "multi-combobox" ? "multi" : "single"}
                 source={api}
-                value={field.value ?? defaultValue}
-                onValueChange={field.onChange} />
+                value={field.value}
+                onValueChange={field.onChange} /> :
+                <div className="border-destructive rounded-md p-2 bg-destructive/20">
+                    <p className="text-xs text-destructive">
+                        Dynamic Combobox needs API as options source: {type}
+                    </p>
+                </div>
         case 'radio':
             return <RadioGroup
                 value={String(field.value ?? defaultValue ?? "")}
                 onValueChange={field.onChange}>
-                {Object.entries(options).map(([value, label]) => {
+                {options && Object.entries(options).map(([value, label]) => {
                     return <div
                         className="flex items-center gap-3"
                         key={value}>
@@ -140,7 +145,7 @@ export default function DynamicInput<T extends FieldValues>({
                         placeholder={placeholder} />
                 </SelectTrigger>
                 <SelectContent>
-                    {Object.entries(options).map(([value, label]) => {
+                    {options && Object.entries(options).map(([value, label]) => {
                         return <SelectItem
                             key={value}
                             value={value}>{label}

@@ -6,11 +6,13 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import ModalBarcode from "./modal-barcode";
 
 export default function MasterCMTs() {
-    const [editRow, setEditRow] = useState<number>();
-    const [restoreRow, setRestoreRow] = useState<number>();
-    const [deleteRow, setDeleteRow] = useState<number>();
+    const [editRow, setEditRow] = useState<number|undefined>();
+    const [restoreRow, setRestoreRow] = useState<number|undefined>();
+    const [deleteRow, setDeleteRow] = useState<number|undefined>();
+    const [viewBarcode, setViewBarcode] = useState<number|undefined>();
     return <OverviewPage
         columns={columns}
         source={Services.MasterCMT}
@@ -19,13 +21,15 @@ export default function MasterCMTs() {
             <ModalCMT {...props} />,
             <ModalCMT {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterCMT.restore} id={restoreRow} setId={setRestoreRow} title="Are you want to restore this object?" description="This action will restore this object back to active state." />,
-            <ModalConfirm {...props} action={Services.MasterCMT.destroy} id={deleteRow} setId={setDeleteRow} title="Are you want to delete this object?" description="This action will set this object to inactive state." />
+            <ModalConfirm {...props} action={Services.MasterCMT.destroy} id={deleteRow} setId={setDeleteRow} title="Are you want to delete this object?" description="This action will set this object to inactive state." />,
+            <ModalBarcode {...props} id={viewBarcode} setId={setViewBarcode} />
         ]}
         rowActions={({ row }) => (
             <DropdownRowActions>
                 {row.is_deleted ?
                     <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
                     : <>
+                        <DropdownMenuItem onSelect={() => setViewBarcode(row.id)}>View Barcode</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
                     </>
