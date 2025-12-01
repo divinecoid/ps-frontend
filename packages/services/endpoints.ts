@@ -12,5 +12,7 @@ export const ENDPOINT = {
     PRODUCT: "product",
     RACK: "rack",
     SIZE: "size",
-    WAREHOUSE: "warehouse"
+    WAREHOUSE: "warehouse",
+    USER: "user",
+    ROLE: "role"
 }

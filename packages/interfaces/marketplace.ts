@@ -4,6 +4,7 @@ export interface Marketplace extends MasterData {
   id: number
   code: string
   name: string
+  alias: string
   base_api_url: string
   description: string
   is_need_checker: string

@@ -1,5 +1,6 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { BaseDialog } from "@/interfaces/base";
+import { toast } from "sonner";
 
 export default function ModalConfirm({ id, setId, action, onSubmit, title, description }: BaseDialog) {
     const confirm = async () => {
@@ -11,13 +12,13 @@ export default function ModalConfirm({ id, setId, action, onSubmit, title, descr
                     setId(undefined);
                 }
             } catch (error) {
-                console.error(error);
+                toast.error(error.message, { richColors: true })
             }
         }
     }
 
     return <AlertDialog open={id ? true : false} onOpenChange={() => { setId && setId(undefined) }}>
-        <AlertDialogContent>
+        <AlertDialogContent className="select-none">
             <AlertDialogHeader>
                 <AlertDialogTitle>{title}</AlertDialogTitle>
                 <AlertDialogDescription>

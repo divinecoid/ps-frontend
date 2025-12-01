@@ -16,13 +16,14 @@ import {
 import { Input } from "@/components/ui/input"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "@/provider/auth-provider"
+import { toast } from "sonner"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
-   const { login } = useAuth();
+  const { login } = useAuth();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,7 +36,7 @@ export function LoginForm({
         navigate('/home');
       }
     } catch (error) {
-      console.error(error);
+      toast.error(error.message, { richColors: true })
     }
   }
   return (
@@ -58,6 +59,7 @@ export function LoginForm({
                   type="text"
                   placeholder="user.example"
                   required
+                  autoFocus
                 />
               </Field>
               <Field>

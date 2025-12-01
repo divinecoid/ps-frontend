@@ -1,8 +1,8 @@
 import { Badge } from "@/components/ui/badge";
-import { Marketplace } from "@/interfaces/marketplace"
+import { Role } from "@/interfaces/role"
 import { ColumnDef } from "@tanstack/react-table"
 
-export const columns: ColumnDef<Marketplace>[] = [
+export const columns: ColumnDef<Role>[] = [
   {
     accessorKey: "code",
     header: "Code",
@@ -11,26 +11,6 @@ export const columns: ColumnDef<Marketplace>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "alias",
-    header: "Alias",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "base_api_url",
-    header: "Base API URL",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "is_need_checker",
-    header: "Need checker",
     enableSorting: true,
   },
   {

@@ -17,12 +17,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { BaseApiCallIndexProps } from "@/interfaces/base"
+import { toast } from "sonner"
 
 interface DynamicComboboxProps {
   source: BaseApiCallIndexProps;
   id: string;
   label: string;
   placeholder?: string;
+  type?: 'single' | 'multi';
   value: string | number | (string | number)[];
   onValueChange: (...event: any[]) => void;
 }
@@ -32,7 +34,7 @@ interface Options {
   label: string;
 }
 
-export function DynamicCombobox({ source, id, label, placeholder, value, onValueChange }: DynamicComboboxProps) {
+export function DynamicCombobox({ source, id, label, type = 'single', placeholder, value, onValueChange }: DynamicComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
@@ -50,7 +52,7 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
           setOptions(mapped);
         }
       } catch (error) {
-        console.error(error);
+        toast.error(error.message, { richColors: true })
       }
     }
     getData();
@@ -65,9 +67,13 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
           aria-expanded={open}
           className="justify-between"
         >
-          {value
-            ? options.find((item) => item.value === String(value))?.label
-            : <p className="opacity-50">{placeholder}</p>}
+          {value && Array.isArray(value) && value.length > 0 ? (              // multiselect
+            value.map(v => options.find(o => o.value === String(v))?.label).join(", ")
+          ) : !Array.isArray(value) && value ? (                              // singleselect
+            options.find(o => o.value === String(value))?.label
+          ) : (
+            <p className="opacity-50">{placeholder}</p>
+          )}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -82,15 +88,28 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
                   key={item.value}
                   value={item.value}
                   onSelect={() => {
-                    onValueChange(item.value)
-                    setOpen(false)
+                    if (type === 'single') {
+                      onValueChange(Number(item.value))
+                      setOpen(false)
+                    } else {
+                      const current = Array.isArray(value) ? value.map(String) : [];
+                      const exists = current.includes(item.value);
+                      const next = exists
+                        ? current.filter(v => v !== item.value)
+                        : [...current, item.value];
+                      onValueChange(next.map(Number));
+                    }
                   }}
                 >
                   {item.label}
                   <Check
                     className={cn(
                       "ml-auto",
-                      String(value) === item.value ? "opacity-100" : "opacity-0"
+                      (type === "single"
+                        ? value === Number(item.value)
+                        : Array.isArray(value) && value.includes(Number(item.value)))
+                        ? "opacity-100"
+                        : "opacity-0"
                     )}
                   />
                 </CommandItem>

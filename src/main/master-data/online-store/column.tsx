@@ -49,6 +49,26 @@ export const columns: ColumnDef<OnlineStore>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "access_tokent",
+    header: "Access Token",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "refresh_token",
+    header: "Refresh Token",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "access_token_expires_at",
+    header: "Access Token Expires At",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "refresh_token_expires_at",
+    header: "Refresh Token Expires At",
+    enableSorting: true,
+  },
+  {
     accessorKey: "is_deleted",
     header: "Deleted",
     enableSorting: true,

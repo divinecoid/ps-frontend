@@ -27,6 +27,7 @@ import DynamicInput, { InputMeta, InputTypes } from "@/components/custom/dynamic
 import { BaseApiCallIndexProps, BaseApiCallProps } from "@/interfaces/base";
 import { toast } from "sonner";
 import React from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface FormShape<T> {
     key: keyof T & string;
@@ -38,6 +39,7 @@ interface FormShape<T> {
     max?: number;
     step?: number;
     options?: Record<string, string>;
+    passwordEdit?: boolean;
     source?: {
         id: string;
         label: string;
@@ -74,6 +76,7 @@ export function generateSchema<T>(fields: FormShape<T>[]) {
             type: field.type,
             options: field.options,
             defaultValue: field.defaultValue,
+            passwordEdit: field.passwordEdit,
             max: field.max,
             step: field.step,
             ...(field.source && {
@@ -83,7 +86,7 @@ export function generateSchema<T>(fields: FormShape<T>[]) {
                 }
             })
         };
-        defaultValues[field.key] = field.defaultValue ?? "";
+        defaultValues[field.key] = field.defaultValue ?? undefined;
         if (field.source) {
             api[field.key] = field.source.api;
         }
@@ -110,6 +113,7 @@ export default function ModalItem<T extends FieldValues>({
 }: ModalItemProps<T>) {
     const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
     const [open, setOpen] = React.useState<boolean>(false);
+    const [loading, setLoading] = React.useState<boolean>(isEdit ? true : false);
     const form = useForm({
         resolver: zodResolver(schema),
         defaultValues
@@ -119,19 +123,27 @@ export default function ModalItem<T extends FieldValues>({
             try {
                 if (isEdit && id) {
                     const res = await services.show(id);
+                    const json = await res.json();
                     if (res.ok) {
-                        const json = await res.json();
                         form.reset(json.data);
+                        setOpen(true);
+                    } else {
+                        toast.error(json.message, { richColors: true });
+                        setId(undefined);
                     }
                 }
             } catch (error) {
-                console.error(error);
+                toast.error(error.message, { richColors: true });
+                setId(undefined);
+            } finally {
+                loading && setLoading(false);
             }
         }
         viewData();
     }, [id]);
 
-    const submitForm :SubmitHandler<T> = async (values) => {
+    const submitForm: SubmitHandler<T> = async (values) => {
+        setLoading(true);
         try {
             const res = await (id ? services.update(id, values) : services.store(values));
             const json = await res.json();
@@ -143,17 +155,19 @@ export default function ModalItem<T extends FieldValues>({
                 toast.error(String(json.message), { richColors: true });
             }
         } catch (error) {
-            console.log(error)
+            toast.error(error.message, { richColors: true })
+        } finally {
+            loading && setLoading(false);
         }
     }
     return (
-        <Dialog open={isEdit ? id ? true : false : open} onOpenChange={(open) => { setId && setId(undefined); setOpen(open); open && form.reset(defaultValues); }}>
+        <Dialog open={open} onOpenChange={(open) => { setId && setId(undefined); setOpen(open); open && form.reset(defaultValues); }}>
             {!isEdit && (
                 <DialogTrigger asChild className="select-none">
                     <Button variant="outline"><Plus /> Create</Button>
                 </DialogTrigger>
             )}
-            <DialogContent className="flex flex-col max-h-[90vh] p-0 select-none">
+            <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>
                 <DialogHeader className="px-6 pt-6">
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
@@ -161,7 +175,7 @@ export default function ModalItem<T extends FieldValues>({
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submitForm, onError)}
                         className="flex flex-col flex-1 h-0 select-none">
-                        <div className="flex-1 space-y-8 overflow-y-auto px-6">
+                        <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
                             {children}
                             {Object.entries((schema as z.ZodObject<any>).shape).map(([key]) => {
                                 const fieldMeta = meta[key];
@@ -172,7 +186,7 @@ export default function ModalItem<T extends FieldValues>({
                                         control={form.control}
                                         name={key as Path<T>}
                                         render={({ field }) => (
-                                            <FormItem>
+                                            <FormItem className="px-7 py-2">
                                                 <FormLabel>{fieldMeta.label}</FormLabel>
                                                 <FormControl>
                                                     <DynamicInput
@@ -188,7 +202,7 @@ export default function ModalItem<T extends FieldValues>({
                                     />
                                 );
                             })}
-                        </div>
+                        </ScrollArea>
                         <DialogFooter className="sm:justify-end px-6 pb-6">
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>

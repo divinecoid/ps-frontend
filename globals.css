@@ -121,3 +121,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+::selection {
+  background: rgba(97, 149, 216, 0.5);
+  color: var(--primary);
+}

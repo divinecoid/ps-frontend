@@ -1,5 +1,7 @@
 export { setTokenRefreshListener } from './api';
 import * as Auth from './auth';
+import * as MasterUser from './master-user';
+import * as MasterRole from './master-role';
 import * as MasterRack from './master-rack';
 import * as MasterWarehouse from './master-warehouse';
 import * as MasterCMT from './master-cmt';
@@ -14,6 +16,8 @@ import * as MasterMarketplace from './master-marketplace';
 
 const Services = {
     Auth,
+    MasterUser,
+    MasterRole,
     MasterRack,
     MasterWarehouse,
     MasterCMT,

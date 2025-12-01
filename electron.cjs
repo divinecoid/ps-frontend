@@ -1,6 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
-const { getToken, saveToken, getRefreshToken, saveRefreshToken, deleteToken, deleteRefreshToken } = require(path.join(__dirname, "packages/lib/keytar.ts"));
+const { getToken, saveToken, getRefreshToken, saveRefreshToken, deleteToken, deleteRefreshToken } = require(path.join(__dirname, "keytar.js"));
 
 let win = null;
 function createWindow() {
@@ -14,8 +14,20 @@ function createWindow() {
       disableBlinkFeatures: "Autofill,PasswordManager"
     }
   });
+  const isDev = process.argv.includes("--dev");
+  if (isDev) {
+    win.loadURL('http://localhost:5173');
+  } else {
+    win.loadFile(path.join(__dirname, 'dist/index.html'));
+  }
 
-  win.loadURL('http://localhost:5173');
+  win.on("enter-full-screen", () => {
+    win.webContents.send("fullscreen-change", true);
+  });
+
+  win.on("leave-full-screen", () => {
+    win.webContents.send("fullscreen-change", false);
+  });
 }
 
 const template = [
@@ -138,20 +150,24 @@ ipcMain.handle("delete-refresh-token", async () => {
 });
 
 ipcMain.handle("open-oauth", async (event, url, successUrl) => {
-  const win = new BrowserWindow({
+  const oauthWin = new BrowserWindow({
     width: 1110,
     height: 750,
+    closable: true,
     webPreferences: {
-      nodeIntegration: false
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true
     }
   });
 
-  win.loadURL(url);
+  oauthWin.loadURL(url);
 
-  win.webContents.on("will-navigate", (_, currentUrl) => {
+  oauthWin.webContents.on("did-finish-load", () => {
+    const currentUrl = oauthWin.webContents.getURL();
     if (currentUrl.includes(successUrl)) {
-      win.close();
-      event.sender.send("oauth-done");
+      win.webContents.send("oauth-done");
+      oauthWin.close();
     }
   });
 });
