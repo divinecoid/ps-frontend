@@ -1,13 +1,15 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useTheme } from "next-themes";
 import React from "react";
 import Barcode from "react-barcode";
 
 interface ModalBarcodeProps {
     id?: number,
-    setId?: React.Dispatch<React.SetStateAction<number|undefined>>
+    setId?: React.Dispatch<React.SetStateAction<number | undefined>>
 }
 
 export default function ModalBarcode({ id, setId }: ModalBarcodeProps) {
+      const { resolvedTheme } = useTheme();
     const [open, setOpen] = React.useState<boolean>(!!id);
     React.useEffect(() => {
         setOpen(!!id)
@@ -19,8 +21,9 @@ export default function ModalBarcode({ id, setId }: ModalBarcodeProps) {
                 <DialogTitle>View Barcode</DialogTitle>
                 <DialogDescription>View CMT Barcode</DialogDescription>
             </DialogHeader>
-
-            <Barcode value={String(id)} />
+            {id && (
+                <Barcode value={String(id)} className="w-full" background='transparent' lineColor={resolvedTheme === 'dark' ? 'white' : 'black'} />
+            )}
         </DialogContent>
     </Dialog>
 } 
