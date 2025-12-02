@@ -13,7 +13,7 @@ export default function ModalBarcode({ id, setId }: ModalBarcodeProps) {
         setOpen(!!id)
     }, [id]);
 
-    return <Dialog open={open} onOpenChange={(open) => { setId && setId(undefined); setOpen(open); }}>
+    return <Dialog open={open} onOpenChange={(open) => { setId?.(undefined); setOpen(open); }}>
         <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none`}>
             <DialogHeader className="px-6 pt-6">
                 <DialogTitle>View Barcode</DialogTitle>

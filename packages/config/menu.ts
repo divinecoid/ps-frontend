@@ -1,4 +1,4 @@
-import { AudioWaveform, BookOpen, Bot, Command, Construction, Frame, GalleryVerticalEnd, Map, PieChart, Settings2, SquareTerminal } from "lucide-react";
+import { AudioWaveform, Command, Construction, Frame, GalleryVerticalEnd, Map, PieChart, SquareTerminal } from "lucide-react";
 
 // export const Menu = {
 //   user: {

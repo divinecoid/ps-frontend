@@ -19,7 +19,7 @@ export default function ModalConfirm({ id, setId, action, onSubmit, title, descr
         }
     }
 
-    return <AlertDialog open={id ? true : false} onOpenChange={() => { setId && setId(undefined) }}>
+    return <AlertDialog open={id ? true : false} onOpenChange={() => { setId?.(undefined) }}>
         <AlertDialogContent className="select-none">
             <AlertDialogHeader>
                 <AlertDialogTitle>{title}</AlertDialogTitle>

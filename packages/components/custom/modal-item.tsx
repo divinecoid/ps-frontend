@@ -19,7 +19,7 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form";
-import { FieldValues, Path, SubmitErrorHandler, SubmitHandler } from "react-hook-form";
+import { FieldValues, Path, SubmitErrorHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { z, ZodTypeAny } from "zod/v3";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,13 +60,14 @@ interface ModalItemProps<T extends FieldValues> {
     onSubmit: () => void;
     onError?: SubmitErrorHandler<FieldValues>;
     formShape: FormShape<T>[];
+    key?: number;
 }
 
 export function generateSchema<T>(fields: FormShape<T>[]) {
     const shape: Record<string, ZodTypeAny> = {};
     const api: Record<string, BaseApiCallIndexProps | null> = {};
     const meta: Record<string, InputMeta> = {};
-    const defaultValues: Record<string, any> = {};
+    const defaultValues: Record<string, unknown> = {};
     for (const field of fields) {
         shape[field.key] = field.schema;
         meta[field.key] = {
@@ -110,6 +111,7 @@ export default function ModalItem<T extends FieldValues>({
     onSubmit,
     onError,
     formShape,
+    key
 }: ModalItemProps<T>) {
     const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
     const [open, setOpen] = React.useState<boolean>(false);
@@ -138,7 +140,7 @@ export default function ModalItem<T extends FieldValues>({
                     setId?.(undefined);
                 }
             } finally {
-                loading && setLoading(false);
+                setLoading(false);
             }
         }
         viewData();
@@ -151,7 +153,7 @@ export default function ModalItem<T extends FieldValues>({
             const json = await res?.json();
             if (res?.ok) {
                 onSubmit();
-                isEdit && setId?.(undefined);
+                setId?.(undefined);
                 setOpen(false);
             } else {
                 toast.error(String(json.message), { richColors: true });
@@ -161,11 +163,11 @@ export default function ModalItem<T extends FieldValues>({
                 toast.error(error.message, { richColors: true })
             }
         } finally {
-            loading && setLoading(false);
+            setLoading(false);
         }
     }
     return (
-        <Dialog open={open} onOpenChange={(open) => { setId && setId(undefined); setOpen(open); open && form.reset(defaultValues); }}>
+        <Dialog key={key} open={open} onOpenChange={(open) => { setId?.(undefined); setOpen(open); if (open) form.reset(defaultValues) }}>
             {!isEdit && (
                 <DialogTrigger asChild className="select-none">
                     <Button variant="outline"><Plus /> Create</Button>
@@ -181,7 +183,7 @@ export default function ModalItem<T extends FieldValues>({
                         className="flex flex-col flex-1 h-0 select-none">
                         <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
                             {children}
-                            {Object.entries((schema as z.ZodObject<any>).shape).map(([key]) => {
+                            {Object.entries((schema as z.ZodObject<T>).shape).map(([key]) => {
                                 const fieldMeta = meta[key];
                                 const fieldSource = api[key];
                                 return (

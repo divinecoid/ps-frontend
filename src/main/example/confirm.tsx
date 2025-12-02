@@ -1,4 +1,4 @@
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { BaseDialog } from "@/interfaces/base";
 import { toast } from "sonner";
 
@@ -19,7 +19,7 @@ export default function ConfirmRack({ id, setId, action, onSubmit, title, descri
         }
     }
 
-    return <AlertDialog open={id ? true : false} onOpenChange={() => { setId && setId(undefined) }}>
+    return <AlertDialog open={id ? true : false} onOpenChange={() => { setId?.(undefined) }}>
         <AlertDialogContent>
             <AlertDialogHeader>
                 <AlertDialogTitle>{title}</AlertDialogTitle>

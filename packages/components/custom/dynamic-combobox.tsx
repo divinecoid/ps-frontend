@@ -26,7 +26,7 @@ interface DynamicComboboxProps {
   placeholder?: string;
   type?: 'single' | 'multi';
   value: string | number | (string | number)[];
-  onValueChange: (...event: any[]) => void;
+  onValueChange: (values: number | number[]) => void;
 }
 
 interface Options {
@@ -45,7 +45,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', placeholde
         const result = await source(1, 10, filter);
         if (result.ok) {
           const json = (await result.json());
-          const mapped = json.data.map((item: any) => ({
+          const mapped = json.data.map((item: Record<string, string>) => ({
             value: String(item[id]),
             label: item[label]
           }))

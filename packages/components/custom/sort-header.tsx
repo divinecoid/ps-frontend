@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { ReactNode } from "react";
 
-const SortHeader = ({
+const SortHeader = <TData, TValue>({
     column,
     children,
 }: {
-    column: Column<any, unknown>;
+    column: Column<TData, TValue>;
     children: ReactNode;
 }) => {
     const changeOrder = () => {

@@ -39,7 +39,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 toast.error(error.message, { richColors: true })
             }
         } finally {
-            loading && setLoading(false);
+            setLoading(false);
         }
     }
     useEffect(() => {

@@ -19,9 +19,9 @@ export interface BaseResponse {
 }
 export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: string) => Promise<Response>;
 
-type BaseApiCallCreateProps = (value: any) => Promise<Response>;
+type BaseApiCallCreateProps = (value: object) => Promise<Response>;
 
-type BaseApiCallUpdateProps = (id: number, value: any) => Promise<Response>;
+type BaseApiCallUpdateProps = (id: number, value: object) => Promise<Response>;
 
 type BaseApiCallViewProps = (id: number) => Promise<Response>;
 
@@ -46,6 +46,7 @@ interface BaseModal {
 }
 
 export interface BaseForm extends BaseModal {
+  key?: number
   isEdit?: boolean
 };
 

@@ -60,7 +60,7 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
     }
 }
 
-export const GET = async (path: string, params?: Record<string, any>) => {
+export const GET = async (path: string, params?: Record<string, unknown>) => {
     const url = new URL(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path);
     if (params) {
         Object.entries(params).forEach(([key, value]) => {
@@ -74,28 +74,28 @@ export const GET = async (path: string, params?: Record<string, any>) => {
     });
 }
 
-export const POST = async (path: string, body?: {}) => {
+export const POST = async (path: string, body?: object) => {
     return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
         method: 'POST',
         body: JSON.stringify(body),
     })
 }
 
-export const PATCH = async (path: string, body?: {}) => {
+export const PATCH = async (path: string, body?: object) => {
     return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
         method: 'PATCH',
         body: JSON.stringify(body),
     })
 }
 
-export const PUT = async (path: string, body?: {}) => {
+export const PUT = async (path: string, body?: object) => {
     return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
         method: 'PUT',
         body: JSON.stringify(body),
     })
 }
 
-export const DELETE = async (path: string, body?: {}) => {
+export const DELETE = async (path: string, body?: object) => {
     return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
         method: 'DELETE',
         body: JSON.stringify(body),
