@@ -1,10 +1,10 @@
 import ModalItem from "@/components/custom/modal-item"
-import { BaseForm } from "@/interfaces/base"
+import { BaseModalForm } from "@/interfaces/base"
 import { OnlineStore } from "@/interfaces/online-store"
 import Services from "@/services"
 import { z } from "zod/v3"
 
-export default function ModalOnlineStore(props: BaseForm) {
+export default function ModalOnlineStore(props: BaseModalForm) {
     return <ModalItem<OnlineStore>
         title={props.isEdit ? "Edit Online Store" : "Add Online Store"}
         description={props.isEdit ? "Edit Online Store" : "Add new online store"}

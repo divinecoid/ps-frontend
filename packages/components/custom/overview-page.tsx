@@ -6,10 +6,10 @@ import { BaseApiCallProps } from "@/interfaces/base";
 import { toast } from "sonner";
 
 interface OverviewProps<TData, TValue> {
-    source: BaseApiCallProps;
+    source: BaseApiCallProps<TValue>;
     columns: ColumnDef<TData, TValue>[];
     selectable?: boolean;
-    actions?: (utils: { services: BaseApiCallProps, onSubmit: () => void }) => React.ReactNode[];
+    actions?: (utils: { services: BaseApiCallProps<TValue>, onSubmit: () => void }) => React.ReactNode[];
     rowActions?: (cell: { row: TData, id: number | undefined, setId: React.Dispatch<React.SetStateAction<number | undefined>> }) => React.ReactNode;
     onLoadedRef?: (refreshFn: () => void) => void;
 }

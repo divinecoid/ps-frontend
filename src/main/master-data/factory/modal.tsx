@@ -1,9 +1,9 @@
 import ModalItem from "@/components/custom/modal-item";
-import { BaseForm } from "@/interfaces/base";
+import { BaseModalForm } from "@/interfaces/base";
 import { Factory } from "@/interfaces/factory";
 import { z } from "zod/v3";
 
-export default function ModalFactory(props: BaseForm) {
+export default function ModalFactory(props: BaseModalForm) {
     return <ModalItem<Factory>
         title={props.isEdit ? "Edit Factory" : "Add Factory"}
         description={props.isEdit ? "Edit factory" : "Add new factory"}

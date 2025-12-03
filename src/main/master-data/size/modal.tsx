@@ -1,9 +1,9 @@
 import ModalItem from "@/components/custom/modal-item";
-import { BaseForm } from "@/interfaces/base";
+import { BaseModalForm } from "@/interfaces/base";
 import { Size } from "@/interfaces/size";
 import { z } from "zod/v3";
 
-export default function ModalSize(props: BaseForm) {
+export default function ModalSize(props: BaseModalForm) {
     return <ModalItem<Size>
         title={props.isEdit ? "Edit Size" : "Add Size"}
         description={props.isEdit ? "Edit size" : "Add new size"}

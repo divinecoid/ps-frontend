@@ -1,4 +1,4 @@
-import { AudioWaveform, Command, Construction, Frame, GalleryVerticalEnd, Map, PieChart, SquareTerminal } from "lucide-react";
+import { Construction, Frame, Map, PieChart, Repeat2, SquareTerminal, UserCog } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -134,24 +134,53 @@ export const Menu = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
+  // teams: [
+  //   {
+  //     name: "PS Frontend",
+  //     logo: GalleryVerticalEnd,
+  //     plan: "Enterprise",
+  //   },
+  //   {
+  //     name: "Acme Corp.",
+  //     logo: AudioWaveform,
+  //     plan: "Startup",
+  //   },
+  //   {
+  //     name: "Evil Corp.",
+  //     logo: Command,
+  //     plan: "Free",
+  //   },
+  // ],
+  navTransaction: [
     {
-      name: "PS Frontend",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
+      title: "Transaction",
+      url: "#",
+      icon: Repeat2,
+      role: [
+        'preparist',
+        'checker'
+      ],
+      items: [
+         {
+          title: "Request",
+          url: "/transaction/request",
+          role: [
+            'preparist',
+            'checker'
+          ]
+        },
+        {
+          title: "Order",
+          url: "/transaction/order",
+          role: [
+            'preparist',
+            'checker'
+          ]
+        },
+      ]
+    }
   ],
-  navMain: [
+  navMaster: [
     {
       title: "Master Data",
       url: "#",
@@ -254,6 +283,31 @@ export const Menu = {
         },
       ],
     },
+    {
+      title: "Administration",
+      url: "#",
+      icon: UserCog,
+      role: [
+        'admin',
+        'user'
+      ],
+      items: [
+         {
+          title: "User",
+          url: "/master-data/user",
+          role: [
+            'admin'
+          ]
+        },
+        {
+          title: "Role",
+          url: "/master-data/role",
+          role: [
+            'admin'
+          ]
+        },
+      ]
+    }
   ],
   projects: [
     {
@@ -272,11 +326,11 @@ export const Menu = {
       icon: Map,
     },
   ],
-  tests: [
-    {
-      name: "Basic CRUD",
-      url: "/example",
-      icon: Construction,
-    },
-  ],
+  // tests: [
+  //   {
+  //     name: "Basic CRUD",
+  //     url: "/example",
+  //     icon: Construction,
+  //   },
+  // ],
 }

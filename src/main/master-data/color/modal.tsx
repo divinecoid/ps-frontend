@@ -1,9 +1,9 @@
 import ModalItem from "@/components/custom/modal-item";
-import { BaseForm } from "@/interfaces/base";
+import { BaseModalForm } from "@/interfaces/base";
 import { Color } from "@/interfaces/color";
 import { z } from "zod/v3";
 
-export default function ModalColor(props: BaseForm) {
+export default function ModalColor(props: BaseModalForm) {
     return <ModalItem<Color>
         title={props.isEdit ? "Edit Color" : "Add Color"}
         description={props.isEdit ? "Edit Color" : "Add new color"}

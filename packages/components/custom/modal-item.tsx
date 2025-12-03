@@ -21,32 +21,14 @@ import {
 } from "@/components/ui/form";
 import { FieldValues, Path, SubmitErrorHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
-import { z, ZodTypeAny } from "zod/v3";
+import { z } from "zod/v3";
 import { zodResolver } from "@hookform/resolvers/zod";
-import DynamicInput, { InputMeta, InputTypes } from "@/components/custom/dynamic-input";
-import { BaseApiCallIndexProps, BaseApiCallProps } from "@/interfaces/base";
+import DynamicInput from "@/components/custom/dynamic-input";
+import { BaseApiCallProps, FormShape } from "@/interfaces/base";
 import { toast } from "sonner";
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-interface FormShape<T> {
-    key: keyof T & string;
-    type: InputTypes;
-    schema: z.ZodTypeAny;
-    label?: string;
-    description?: string;
-    placeholder?: string;
-    max?: number;
-    step?: number;
-    options?: Record<string, string>;
-    passwordEdit?: boolean;
-    source?: {
-        id: string;
-        label: string;
-        api: BaseApiCallIndexProps | null;
-    },
-    defaultValue?: string | number | (string | number)[];
-}
+import generateSchema from "@/lib/generate-schema";
 
 interface ModalItemProps<T extends FieldValues> {
     id?: number;
@@ -56,48 +38,11 @@ interface ModalItemProps<T extends FieldValues> {
     description?: string;
     children?: React.ReactNode;
     footer?: React.ReactNode;
-    services?: BaseApiCallProps;
+    services?: BaseApiCallProps<FieldValues>;
     onSubmit: () => void;
     onError?: SubmitErrorHandler<FieldValues>;
     formShape: FormShape<T>[];
     key?: number;
-}
-
-export function generateSchema<T>(fields: FormShape<T>[]) {
-    const shape: Record<string, ZodTypeAny> = {};
-    const api: Record<string, BaseApiCallIndexProps | null> = {};
-    const meta: Record<string, InputMeta> = {};
-    const defaultValues: Record<string, unknown> = {};
-    for (const field of fields) {
-        shape[field.key] = field.schema;
-        meta[field.key] = {
-            label: field.label,
-            description: field.description,
-            placeholder: field.placeholder,
-            type: field.type,
-            options: field.options,
-            defaultValue: field.defaultValue,
-            passwordEdit: field.passwordEdit,
-            max: field.max,
-            step: field.step,
-            ...(field.source && {
-                source: {
-                    id: field.source.id,
-                    label: field.source.label
-                }
-            })
-        };
-        defaultValues[field.key] = field.defaultValue ?? undefined;
-        if (field.source) {
-            api[field.key] = field.source.api;
-        }
-    }
-    return {
-        schema: z.object(shape),
-        meta,
-        defaultValues,
-        api
-    };
 }
 
 export default function ModalItem<T extends FieldValues>({
@@ -146,7 +91,7 @@ export default function ModalItem<T extends FieldValues>({
         viewData();
     }, [id]);
 
-    const submitForm = async (values:FieldValues) => {
+    const submitForm = async (values: FieldValues) => {
         setLoading(true);
         try {
             const res = await (id ? services?.update?.(id, values) : services?.store?.(values));
@@ -182,7 +127,6 @@ export default function ModalItem<T extends FieldValues>({
                     <form onSubmit={form.handleSubmit(submitForm, onError)}
                         className="flex flex-col flex-1 h-0 select-none">
                         <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
-                            {children}
                             {Object.entries((schema as z.ZodObject<T>).shape).map(([key]) => {
                                 const fieldMeta = meta[key];
                                 const fieldSource = api[key];
@@ -208,6 +152,7 @@ export default function ModalItem<T extends FieldValues>({
                                     />
                                 );
                             })}
+                            {children}
                         </ScrollArea>
                         <DialogFooter className="sm:justify-end px-6 pb-6">
                             <DialogClose asChild>

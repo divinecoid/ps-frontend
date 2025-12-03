@@ -21,10 +21,13 @@ import MasterFactories from './main/master-data/factory';
 import MasterOnlineStores from './main/master-data/online-store';
 import MasterMarketplaces from './main/master-data/marketplace';
 import { hasRole } from '@/lib/jwt-decode';
+import FormInventory from './main/master-data/inventory/form';
 
 function App() {
   const { token } = useAuth();
   const isAdmin = token ? hasRole(token, "admin") : false;
+  const isPreparist = token ? hasRole(token, "preparist") : false;
+  const isChecker = token ? hasRole(token, "checker") : false;
   return (
     <HashRouter>
       <Routes>
@@ -42,6 +45,7 @@ function App() {
               <Route path="/master-data/warehouse" element={<MasterWarehouse />} />
               <Route path="/master-data/cmt" element={<MasterCMTs />} />
               <Route path="/master-data/inventory" element={<MasterInventories />} />
+              <Route path="/master-data/inventory/edit/:id" element={<FormInventory />} />
               <Route path="/master-data/product" element={<MasterProducts />} />
               <Route path="/master-data/product-model" element={<MasterProductModels />} />
               <Route path="/master-data/size" element={<MasterSizes />} />
@@ -49,6 +53,14 @@ function App() {
               <Route path="/master-data/factory" element={<MasterFactories />} />
               <Route path="/master-data/online-store" element={<MasterOnlineStores />} />
               <Route path="/master-data/marketplace" element={<MasterMarketplaces />} />
+            </>
+          )}
+
+          {(isChecker || isPreparist) && (
+            <>
+              <Route path="/transaction/request" element={<></>} />
+              <Route path="/transaction/order" element={<></>} />
+
             </>
           )}
 

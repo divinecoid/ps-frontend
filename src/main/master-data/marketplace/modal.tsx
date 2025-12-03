@@ -1,9 +1,9 @@
 import ModalItem from "@/components/custom/modal-item";
-import { BaseForm } from "@/interfaces/base";
+import { BaseModalForm } from "@/interfaces/base";
 import { Marketplace } from "@/interfaces/marketplace";
 import { z } from "zod/v3";
 
-export default function ModalMarketplace(props: BaseForm) {
+export default function ModalMarketplace(props: BaseModalForm) {
     return <ModalItem<Marketplace>
         title={props.isEdit ? "Edit Marketplace" : "Add Marketplace"}
         description={props.isEdit ? "Edit Marketplace" : "Add new marketplace"}

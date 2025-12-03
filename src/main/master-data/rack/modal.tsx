@@ -1,10 +1,10 @@
 import ModalItem from "@/components/custom/modal-item";
-import { BaseForm } from "@/interfaces/base";
+import { BaseModalForm } from "@/interfaces/base";
 import { Rack } from "@/interfaces/rack";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalRack(props: BaseForm) {
+export default function ModalRack(props: BaseModalForm) {
     return <ModalItem<Rack>
         title={props.isEdit ? "Edit Rack" : "Add Rack"}
         description={props.isEdit ? "Edit Rack" : "Add new rack"}

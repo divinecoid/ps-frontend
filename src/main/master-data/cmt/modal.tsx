@@ -1,9 +1,9 @@
 import ModalItem from "@/components/custom/modal-item";
-import { BaseForm } from "@/interfaces/base";
+import { BaseModalForm } from "@/interfaces/base";
 import { CMT } from "@/interfaces/cmt";
 import { z } from "zod/v3";
 
-export default function ModalCMT(props: BaseForm) {
+export default function ModalCMT(props: BaseModalForm) {
     return <ModalItem<CMT>
         title={props.isEdit ? "Edit CMT" : "Add CMT"}
         description={props.isEdit ? "Edit CMT" : "Add new CMT"}

@@ -40,17 +40,20 @@ export function NavUser({
     avatar: string
   }
 }) {
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const onLogout = async () => {
+  const onLogout = () => {
     try {
+      setOpenMobile(false);
+      setTimeout(async () => {
       const success = await logout();
       if (success) {
-        navigate('/login');
-      }
-    } catch (error) {
+          navigate('/login');
+        }
+      }, 200);
+      } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message, { richColors: true })
       }

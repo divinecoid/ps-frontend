@@ -20,11 +20,9 @@ import { useCallback } from "react"
 import { hasRole } from "@/lib/jwt-decode"
 import { useAuth } from "@/provider/auth-provider"
 
-export function NavMain({
-  label,
+export function NavRequest({
   items,
 }: {
-  label: string,
   items: {
     title: string
     url: string
@@ -46,7 +44,7 @@ export function NavMain({
   };
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      <SidebarGroupLabel>System</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (item.role ? checkRole(item.role) : true) && (
           <Collapsible

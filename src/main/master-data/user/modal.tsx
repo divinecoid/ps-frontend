@@ -1,10 +1,10 @@
 import ModalItem from "@/components/custom/modal-item";
-import { BaseForm } from "@/interfaces/base";
+import { BaseModalForm } from "@/interfaces/base";
 import { User } from "@/interfaces/user";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-export default function ModalUser(props: BaseForm) {
+export default function ModalUser(props: BaseModalForm) {
     return <ModalItem<User>
         title={props.isEdit ? "Edit User" : "Add User"}
         description={props.isEdit ? "Edit User" : "Add new User"}

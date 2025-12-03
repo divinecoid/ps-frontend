@@ -1,13 +1,14 @@
-import ModalItem from "@/components/custom/modal-item";
-import { BaseModalForm } from "@/interfaces/base";
+import ItemForm from "@/components/custom/item-form";
+import { BaseForm } from "@/interfaces/base";
 import { Inventory } from "@/interfaces/inventory";
 import Services from "@/services";
+import { useParams } from "react-router-dom";
 import { z } from "zod/v3";
 
-export default function ModalInventory(props: BaseModalForm) {
-    return <ModalItem<Inventory>
-        title={props.isEdit ? "Edit Inventory" : "Add Inventory"}
-        description={props.isEdit ? "Edit inventory" : "Add new inventory"}
+export default function FormInventory(props: BaseForm) {
+    const param = useParams();
+    return <ItemForm<Inventory>
+        id={Number(param)}
         {...props}
         formShape={[
             {

@@ -41,9 +41,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={Menu.navMain} />
+        <NavMain label="Transactions" items={Menu.navTransaction} />
+        <NavMain label="System" items={Menu.navMaster} />
         {/* <NavProjects projects={Menu.projects} /> */}
-        <NavTests tests={Menu.tests} />
+        {/* <NavTests tests={Menu.tests} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={Menu.user} />
