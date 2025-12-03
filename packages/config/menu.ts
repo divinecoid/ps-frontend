@@ -1,4 +1,4 @@
-import { Construction, Frame, Map, PieChart, Repeat2, SquareTerminal, UserCog } from "lucide-react";
+import { Frame, Map, PieChart, Repeat2, SquareTerminal, UserCog } from "lucide-react";
 
 // export const Menu = {
 //   user: {
