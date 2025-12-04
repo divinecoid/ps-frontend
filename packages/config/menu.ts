@@ -191,20 +191,6 @@ export const Menu = {
       ],
       items: [
         {
-          title: "User",
-          url: "/master-data/user",
-          role: [
-            'admin'
-          ]
-        },
-        {
-          title: "Role",
-          url: "/master-data/role",
-          role: [
-            'admin'
-          ]
-        },
-        {
           title: "Rack",
           url: "/master-data/rack",
           role: [
