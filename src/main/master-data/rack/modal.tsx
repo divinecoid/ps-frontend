@@ -31,7 +31,7 @@ export default function ModalRack(props: BaseModalForm) {
             {
                 key: "warehouse_id",
                 type: "combobox",
-                schema: z.string().nonempty({
+                schema: z.number().positive({
                     message: "Warehouse is required",
                 }),
                 label: "Warehouse",

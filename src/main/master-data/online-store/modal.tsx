@@ -13,7 +13,7 @@ export default function ModalOnlineStore(props: BaseModalForm) {
             {
                 key: "marketplace_id",
                 type: "combobox",
-                schema: z.string().nonempty({
+                schema: z.number().positive({
                     message: "Marketplace is required.",
                 }),
                 source: {
