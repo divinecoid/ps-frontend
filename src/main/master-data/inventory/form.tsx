@@ -24,7 +24,7 @@ export default function FormInventory(props: BaseForm) {
             {
                 key: "product_id",
                 type: "combobox",
-                schema: z.string().nonempty({
+                schema: z.number().positive({
                     message: "Product is required",
                 }),
                 source: {
@@ -39,7 +39,7 @@ export default function FormInventory(props: BaseForm) {
             {
                 key: "factory_id",
                 type: "combobox",
-                schema: z.string().nonempty({
+                schema: z.number().positive({
                     message: "Factory is required",
                 }),
                 source: {
@@ -64,7 +64,7 @@ export default function FormInventory(props: BaseForm) {
             {
                 key: "cmt_id",
                 type: "combobox",
-                schema: z.string().nonempty({
+                schema: z.number().positive({
                     message: "CMT is required",
                 }),
                 source: {
@@ -79,7 +79,7 @@ export default function FormInventory(props: BaseForm) {
             {
                 key: "rack_id",
                 type: "combobox",
-                schema: z.string().nonempty({
+                schema: z.number().positive({
                     message: "Rack is required",
                 }),
                 source: {

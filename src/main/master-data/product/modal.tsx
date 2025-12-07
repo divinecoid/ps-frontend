@@ -13,7 +13,7 @@ export default function ModalProduct(props: BaseModalForm) {
             {
                 key: "color_id",
                 type: "combobox",
-                schema: z.string().nonempty({
+                schema: z.number().positive({
                     message: "Color must be selected.",
                 }),
                 source: {
@@ -28,7 +28,7 @@ export default function ModalProduct(props: BaseModalForm) {
             {
                 key: "model_id",
                 type: "combobox",
-                schema: z.string().nonempty({
+                schema: z.number().positive({
                     message: "Model must be selected.",
                 }),
                 source: {
@@ -43,7 +43,7 @@ export default function ModalProduct(props: BaseModalForm) {
             {
                 key: "size_id",
                 type: "combobox",
-                schema: z.string().nonempty({
+                schema: z.number().positive({
                     message: "Size must be selected.",
                 }),
                 source: {
