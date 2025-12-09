@@ -1,4 +1,4 @@
-import { Frame, Map, PieChart, Repeat2, SquareTerminal, UserCog } from "lucide-react";
+import { Frame, Map, PieChart, Repeat2, SquareTerminal, UserCog, Construction } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -312,11 +312,11 @@ export const Menu = {
       icon: Map,
     },
   ],
-  // tests: [
-  //   {
-  //     name: "Basic CRUD",
-  //     url: "/example",
-  //     icon: Construction,
-  //   },
-  // ],
+  tests: [
+    {
+      name: "Basic CRUD",
+      url: "/example",
+      icon: Construction,
+    },
+  ],
 }

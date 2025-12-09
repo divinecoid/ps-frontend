@@ -22,12 +22,14 @@ import MasterOnlineStores from './main/master-data/online-store';
 import MasterMarketplaces from './main/master-data/marketplace';
 import { hasRole } from '@/lib/jwt-decode';
 import FormInventory from './main/master-data/inventory/form';
+import FormExample from './main/example/form';
 
 function App() {
   const { token } = useAuth();
   const isAdmin = token ? hasRole(token, "admin") : false;
   const isPreparist = token ? hasRole(token, "preparist") : false;
   const isChecker = token ? hasRole(token, "checker") : false;
+  const dummiesEnabled = true;
   return (
     <HashRouter>
       <Routes>
@@ -36,7 +38,12 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route element={token ? <NavigationLayout /> : <Navigate to="/login" replace />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/example" element={<Example />} />
+        {dummiesEnabled && (
+          <>
+            <Route path="/example" element={<Example />} />
+            <Route path="/example/edit/:id" element={<FormExample />} />
+          </>
+        )}
           {isAdmin && (
             <>
               <Route path="/master-data/user" element={<MasterUsers />} />

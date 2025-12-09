@@ -122,7 +122,7 @@ export default function ItemForm<T extends FieldValues>({
                 })}
                 {children}
             </ScrollArea>
-            <div className="flex justify-end gap-2 px-7 py-2">
+            <div className="sticky bottom-0 backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
                 <Button variant="outline" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Cancel</Button>
                 <Button type="submit">Submit</Button>
             </div>

@@ -102,32 +102,36 @@ export default function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         {filterComponents}
         <div className="gap-2 ml-auto flex">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild className="select-none">
-              <Button variant="outline">
-                Columns <ChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {table
+            .getAllColumns()
+            .filter((column) => column.getCanHide()).length > 0 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild className="select-none">
+                  <Button variant="outline">
+                    Columns <ChevronDown />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {table
+                    .getAllColumns()
+                    .filter((column) => column.getCanHide())
+                    .map((column) => {
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          className="capitalize"
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                        >
+                          {column.id}
+                        </DropdownMenuCheckboxItem>
+                      )
+                    })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           {actions && actions.map((item, key) => {
             if (React.isValidElement(item)) {
               return React.cloneElement(item, { key });
@@ -214,10 +218,10 @@ export default function DataTable<TData, TValue>({
                     colSpan={columns.length + 2}
                     className="h-12 text-center relative"
                   >
-                      <Skeleton className={`rounded-none absolute left-0 right-0 top-0 bottom-0 items-center justify-center ${loading ? 'flex' : 'hidden'} duration-500 fade-in`} />
-                      <div className={`${loading ? 'opacity-0' : 'opacity-100 '} duration-500 absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center fade-in`}>
-                        No results.
-                      </div>
+                    <Skeleton className={`rounded-none absolute left-0 right-0 top-0 bottom-0 items-center justify-center ${loading ? 'flex' : 'hidden'} duration-500 fade-in`} />
+                    <div className={`${loading ? 'opacity-0' : 'opacity-100 '} duration-500 absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center fade-in`}>
+                      No results.
+                    </div>
                   </TableCell>
                 </TableRow>
               )}
@@ -252,7 +256,7 @@ export default function DataTable<TData, TValue>({
           </Select>
         </div>
         <div className="space-x-2">
-          <DatatablePagination currentPage={currentPage??0} totalPages={(count && perPage) ? Math.ceil(count / perPage):0} onPageChange={onPageChange} />
+          <DatatablePagination currentPage={currentPage ?? 0} totalPages={(count && perPage) ? Math.ceil(count / perPage) : 0} onPageChange={onPageChange} />
         </div>
       </div>
     </div>

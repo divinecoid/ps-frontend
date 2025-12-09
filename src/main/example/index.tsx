@@ -6,6 +6,7 @@ import { DropdownMenuItem} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ConfirmRack from "./confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import { Link } from "react-router-dom";
 
 export default function MasterRacks() {
     const [editRow, setEditRow] = useState<number>();
@@ -27,6 +28,7 @@ export default function MasterRacks() {
                     <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
                     : <>
                         <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem asChild><Link to={`./edit/${row.id}`}>Edit 2</Link></DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
                     </>
                 }
