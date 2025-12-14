@@ -13,6 +13,8 @@ export default function generateSchema<T>(fields: FormShape<T>[]) {
             label: field.label,
             description: field.description,
             placeholder: field.placeholder,
+            numberOfMonths: field.numberOfMonths,
+            mode: field.mode,
             type: field.type,
             options: field.options,
             defaultValue: field.defaultValue,

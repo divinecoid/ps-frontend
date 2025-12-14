@@ -11,6 +11,8 @@ import { DynamicCombobox } from "./dynamic-combobox";
 import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/custom/date-picker";
+import { Mode } from "react-day-picker";
 
 export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea";
 
@@ -19,6 +21,8 @@ export interface InputMeta {
     description?: string;
     placeholder?: string;
     type?: InputTypes;
+    mode?: Mode;
+    numberOfMonths?: number;
     passwordEdit?: boolean;
     options?: Record<string, string>;                       //radio, select
     defaultValue?: string | number | (string | number)[];   //radio, select, checkbox, slider, input, textarea
@@ -40,7 +44,7 @@ export default function DynamicInput<T extends FieldValues>({
     meta,
     api
 }: DynamicInputProps<T>) {
-    const { type, placeholder, options, defaultValue, max, step, source, passwordEdit } = meta;
+    const { type, placeholder, options, defaultValue, max, step, source, passwordEdit, mode, numberOfMonths } = meta;
     const [edit, setEdit] = useState(false);
     switch (type) {
         case 'text':
@@ -164,6 +168,13 @@ export default function DynamicInput<T extends FieldValues>({
                     {meta.label}
                 </Label>
             </div>
+        case 'date':
+            return <DatePicker
+                placeholder={placeholder}
+                value={field.value}
+                onChange={field.onChange}
+                numberOfMonths={numberOfMonths}
+                mode={mode}/>
         default:
             return <div className="border-destructive rounded-md p-2 bg-destructive/20">
                 <p className="text-xs text-destructive">

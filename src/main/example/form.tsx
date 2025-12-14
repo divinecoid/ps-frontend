@@ -16,7 +16,7 @@ export default function FormExample(props: BaseForm) {
     const param = useParams();
     const [editRow, setEditRow] = useState<number>();
     const [deleteRow, setDeleteRow] = useState<number>();
-    const rack = <ItemForm<Rack>
+    const rack = <ItemForm
         id={Number(param)}
         {...props}
         formShape={[
@@ -52,6 +52,16 @@ export default function FormExample(props: BaseForm) {
                     label: "name",
                     api: Services.MasterWarehouse.index
                 }
+            },
+            {
+                key: "date",
+                type: "date",
+                mode: "multiple",
+                numberOfMonths: 5,
+                schema: z.date(),
+                label: "Rack date",
+                description: "Input rack's date.",
+                placeholder: "Rack date",
             },
         ]} >
         <OverviewPage

@@ -1,4 +1,5 @@
 import { InputTypes } from "@/components/custom/dynamic-input"
+import { Mode } from "react-day-picker"
 import z from "zod/v3"
 
 export interface Pagination {
@@ -67,6 +68,8 @@ export interface FormShape<T> {
     key: keyof T & string;
     type: InputTypes;
     schema: z.ZodTypeAny;
+    mode?: Mode;
+    numberOfMonths?: number;
     label?: string;
     description?: string;
     placeholder?: string;
