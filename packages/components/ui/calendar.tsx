@@ -125,10 +125,9 @@ function Calendar({
         hidden: cn("invisible", defaultClassNames.hidden),
         ...classNames,
       }}
+      /* eslint-disable react/prop-types */
       components={{
-        Root: ({ className, rootRef, ...props }: {
-          rootRef?: React.Ref<HTMLDivElement> | undefined
-        } & React.HTMLAttributes<HTMLDivElement>) => {
+        Root: ({ className, rootRef, ...props }) => {
           return (
             <div
               data-slot="calendar"
@@ -138,12 +137,7 @@ function Calendar({
             />
           )
         },
-        Chevron: ({ className, orientation, ...props }: {
-          className?: string | undefined;
-          size?: number | undefined;
-          disabled?: boolean | undefined;
-          orientation?: "up" | "down" | "left" | "right" | undefined;
-        }) => {
+        Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
               <ChevronLeftIcon className={cn("size-4", className)} {...props} />
@@ -175,6 +169,7 @@ function Calendar({
         },
         ...components,
       }}
+      /* eslint-enable react/prop-types */
       {...props}
     />
   )
