@@ -73,7 +73,7 @@ export function DatePicker({ ...props }: DatePickerProps) {
             selected={isDate(props.value) ? props.value : undefined}
             disabled={props.disabled}
             onSelect={(date) => {
-              isDate(date) && props.onChange(date);
+              if(isDate(date)) props.onChange(date);
               setOpen(false);
             }}
             captionLayout="dropdown" />

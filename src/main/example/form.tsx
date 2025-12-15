@@ -1,7 +1,6 @@
 import ItemForm from "@/components/custom/item-form";
 import OverviewPage from "@/components/custom/overview-page";
 import { BaseForm } from "@/interfaces/base";
-import { Rack } from "@/interfaces/rack";
 import Services from "@/services";
 import { useParams } from "react-router-dom";
 import { z } from "zod/v3";
