@@ -41,6 +41,7 @@ function App() {
         {dummiesEnabled && (
           <>
             <Route path="/example" element={<Example />} />
+            <Route path="/example/new" element={<FormExample />} />
             <Route path="/example/edit/:id" element={<FormExample />} />
           </>
         )}

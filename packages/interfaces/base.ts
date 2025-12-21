@@ -83,4 +83,5 @@ export interface FormShape<T> {
         api: BaseApiCallIndexProps | null;
     },
     defaultValue?: string | number | (string | number)[];
+    custom?: React.ReactElement;
 }

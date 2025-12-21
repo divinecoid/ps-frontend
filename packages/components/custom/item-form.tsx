@@ -19,6 +19,7 @@ import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import generateSchema from "@/lib/generate-schema";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 interface ItemProps<T extends FieldValues> {
     id?: number;
@@ -26,7 +27,7 @@ interface ItemProps<T extends FieldValues> {
     isEdit?: boolean,
     children?: React.ReactNode;
     footer?: React.ReactNode;
-    services?: BaseApiCallProps<FieldValues>;
+    services?: BaseApiCallProps<T>;
     onError?: SubmitErrorHandler<FieldValues>;
     formShape: FormShape<T>[];
     key?: number;
@@ -39,9 +40,9 @@ export default function ItemForm<T extends FieldValues>({
     services,
     onError,
     formShape,
-    key
+    key,
 }: ItemProps<T>) {
-    const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
+    const { schema, meta, defaultValues, api, component } = generateSchema<T>(formShape);
     const [loading, setLoading] = React.useState<boolean>(isEdit ? true : false);
     const navigate = useNavigate();
     const form = useForm({
@@ -74,9 +75,10 @@ export default function ItemForm<T extends FieldValues>({
     }, [id]);
 
     const submitForm = async (values: FieldValues) => {
+        toast.info(JSON.stringify(values), { richColors: true }) //TODO:
         setLoading(true);
         try {
-            const res = await (id ? services?.update?.(id, values) : services?.store?.(values));
+            const res = await (id ? services?.update?.(id, values as T) : services?.store?.(values as T));
             const json = await res?.json();
             if (res?.ok) {
                 navigate('../');
@@ -98,6 +100,7 @@ export default function ItemForm<T extends FieldValues>({
                 {Object.entries((schema as z.ZodObject<T>).shape).map(([key]) => {
                     const fieldMeta = meta[key];
                     const fieldSource = api[key];
+                    const custom = component[key];
                     return (
                         <FormField
                             key={key}
@@ -111,10 +114,17 @@ export default function ItemForm<T extends FieldValues>({
                                             field={field}
                                             meta={fieldMeta}
                                             api={fieldSource}
+                                            custom={custom}
                                         />
                                     </FormControl>
                                     <FormDescription>{fieldMeta.description}</FormDescription>
-                                    <FormMessage />
+                                    {fieldMeta.type === 'custom' ? (
+                                        <p
+                                            data-slot="form-message"
+                                            className={cn("text-destructive text-sm")}>
+                                            {form.formState.errors?.[key]?.root?.message?.toString() ?? form.formState.errors[key]?.message?.toString()}
+                                        </p>
+                                    ) : <FormMessage />}
                                 </FormItem>
                             )}
                         />

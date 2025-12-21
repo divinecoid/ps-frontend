@@ -1,83 +1,63 @@
 import ItemForm from "@/components/custom/item-form";
-import OverviewPage from "@/components/custom/overview-page";
 import { BaseForm } from "@/interfaces/base";
 import Services from "@/services";
 import { useParams } from "react-router-dom";
 import { z } from "zod/v3";
-import { detailColumns } from "./detail-column";
-import ModalRack from "./modal";
-import { useState } from "react";
-import DropdownRowActions from "@/components/custom/dropdown-row-actions";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import ConfirmRack from "./confirm";
+import DetailRow from "./detail-row";
+import { Request } from "@/interfaces/request";
+
 
 export default function FormExample(props: BaseForm) {
     const param = useParams();
-    const [editRow, setEditRow] = useState<number>();
-    const [deleteRow, setDeleteRow] = useState<number>();
-    const rack = <ItemForm
+
+    const childSchema = {
+        model_id: z.number().min(0, {
+            message: "Model dibutuhkan.",
+        }).default(-1),
+        color_id: z.number().min(0, {
+            message: "Warna dibutuhkan.",
+        }).default(-1),
+        size_id: z.number().min(0, {
+            message: "Ukuran dibutuhkan.",
+        }).default(-1),
+        dozen_qty: z.coerce.number().min(0, {
+            message: "Jumlah dibutuhkan.",
+        }).default(0),
+        piece_qty: z.coerce.number().min(0, {
+            message: "Jumlah dibutuhkan.",
+        }).default(0),
+    }
+
+    return <ItemForm<Request>
         id={Number(param)}
         {...props}
+        services={Services.Request}
+        onError={console.log}
         formShape={[
             {
-                key: "code",
-                type: "text",
-                schema: z.string().min(2, {
-                    message: "Code must be at least 2 characters.",
-                }),
-                label: "Code",
-                description: "Input rack's code.",
-                placeholder: "RC-001",
-            },
-            {
-                key: "name",
-                type: "text",
-                schema: z.string(),
-                label: "Name",
-                description: "Input rack's name.",
-                placeholder: "Rack name",
-            },
-            {
-                key: "warehouse_id",
+                key: "cmt_id",
                 type: "combobox",
-                schema: z.string().nonempty({
-                    message: "Warehouse is required",
-                }),
-                label: "Warehouse",
-                description: "The location where this rack placed.",
-                placeholder: "Warehouse",
+                schema: z.coerce.number().positive({
+                    message: "CMT dibutuhkan",
+                }).default(-1),
+                label: "CMT",
+                description: "CMT yang akan melakukan penjahitan.",
+                placeholder: "CMT",
                 source: {
                     id: "id",
                     label: "name",
-                    api: Services.MasterWarehouse.index
+                    api: Services.MasterCMT.index
                 }
             },
             {
-                key: "date",
-                type: "date",
-                mode: "multiple",
-                numberOfMonths: 5,
-                schema: z.date(),
-                label: "Rack date",
-                description: "Input rack's date.",
-                placeholder: "Rack date",
-            },
+                key: "request_detail",
+                type: "custom",
+                schema: z.array(z.object(childSchema)).min(1, {
+                    message: "Minimal tambahkan 1 model yang akan dijahit."
+                }),
+                custom: <DetailRow rowKey="request_detail" schema={childSchema} />
+            }
         ]} >
-        <OverviewPage
-            columns={detailColumns}
-            source={Services.MasterRack}
-            actions={(props) => [
-                <ModalRack {...props} />,
-                <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />,
-                <ConfirmRack {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Are you want to delete this object?" description="This action will set this object to inactive state." />
-            ]}
-            rowActions={({ row }) => (
-                <DropdownRowActions>
-                    <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
-                </DropdownRowActions>
-            )} />
-    </ItemForm>
 
-    return rack;
+    </ItemForm>
 }

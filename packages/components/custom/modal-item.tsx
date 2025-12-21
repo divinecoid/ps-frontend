@@ -38,7 +38,7 @@ interface ModalItemProps<T extends FieldValues> {
     description?: string;
     children?: React.ReactNode;
     footer?: React.ReactNode;
-    services?: BaseApiCallProps<FieldValues>;
+    services?: BaseApiCallProps<T>;
     onSubmit: () => void;
     onError?: SubmitErrorHandler<FieldValues>;
     formShape: FormShape<T>[];
@@ -94,7 +94,7 @@ export default function ModalItem<T extends FieldValues>({
     const submitForm = async (values: FieldValues) => {
         setLoading(true);
         try {
-            const res = await (id ? services?.update?.(id, values) : services?.store?.(values));
+            const res = await (id ? services?.update?.(id, values as T) : services?.store?.(values as T));
             const json = await res?.json();
             if (res?.ok) {
                 onSubmit();

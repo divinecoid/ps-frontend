@@ -1,34 +1,29 @@
 import { Badge } from "@/components/ui/badge";
-import { Rack } from "@/interfaces/rack"
+import { Request } from "@/interfaces/request";
 import { ColumnDef } from "@tanstack/react-table"
 
-export const columns: ColumnDef<Rack>[] = [
+export const columns: ColumnDef<Request>[] = [
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: "cmt.code",
+    header: "Kode CMT",
     enableSorting: true,
   },
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: "created_date",
+    header: "Tanggal pengajuan",
     enableSorting: true,
   },
   {
-    accessorKey: "warehouse.name",
-    header: "Warehouse name",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "is_deleted",
-    header: "Deleted",
+    accessorKey: "status",
+    header: "Status",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
-      switch (data.is_deleted) {
-        case true:
-          return <Badge variant="destructive">Deleted</Badge>
-        case false:
-          return <Badge variant="secondary">Active</Badge>
+      switch (data.status) {
+        case "OPEN":
+          return <Badge variant="secondary">Aktif</Badge>
+        case "CLOSED":
+          return <Badge variant="success">Selesai</Badge>
       }
     })
   }

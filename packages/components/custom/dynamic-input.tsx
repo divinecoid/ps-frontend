@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/custom/date-picker";
 import { Mode } from "react-day-picker";
 
-export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea";
+export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea" | "custom";
 
 export interface InputMeta {
     label?: string;
@@ -37,12 +37,14 @@ interface DynamicInputProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>;
     meta: InputMeta;
     api?: BaseApiCallIndexProps | null;
+    custom?: React.ReactElement;
 }
 
 export default function DynamicInput<T extends FieldValues>({
     field,
     meta,
-    api
+    api,
+    custom
 }: DynamicInputProps<T>) {
     const { type, placeholder, options, defaultValue, max, step, source, passwordEdit, mode, numberOfMonths } = meta;
     const [edit, setEdit] = useState(false);
@@ -175,6 +177,8 @@ export default function DynamicInput<T extends FieldValues>({
                 onChange={field.onChange}
                 numberOfMonths={numberOfMonths}
                 mode={mode}/>
+        case 'custom':
+            return custom;
         default:
             return <div className="border-destructive rounded-md p-2 bg-destructive/20">
                 <p className="text-xs text-destructive">

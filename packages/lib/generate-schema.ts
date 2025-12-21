@@ -6,6 +6,7 @@ export default function generateSchema<T>(fields: FormShape<T>[]) {
     const shape: Record<string, ZodTypeAny> = {};
     const api: Record<string, BaseApiCallIndexProps | null> = {};
     const meta: Record<string, InputMeta> = {};
+    const component: Record<string, React.ReactElement> = {};
     const defaultValues: Record<string, unknown> = {};
     for (const field of fields) {
         shape[field.key] = field.schema;
@@ -32,11 +33,15 @@ export default function generateSchema<T>(fields: FormShape<T>[]) {
         if (field.source) {
             api[field.key] = field.source.api;
         }
+        if (field.custom) {
+            component[field.key] = field.custom;
+        }
     }
     return {
         schema: z.object(shape),
         meta,
         defaultValues,
-        api
+        api,
+        component
     };
 }

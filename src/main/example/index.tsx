@@ -7,31 +7,25 @@ import { useState } from "react";
 import ConfirmRack from "./confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
-export default function MasterRacks() {
+export default function MasterExample() {
     const [editRow, setEditRow] = useState<number>();
-    const [restoreRow, setRestoreRow] = useState<number>();
     const [deleteRow, setDeleteRow] = useState<number>();
     return <OverviewPage
         columns={columns}
-        source={Services.MasterRack}
-        selectable
+        source={Services.Request}
         actions={(props) => [
-            <ModalRack {...props} />,
-            <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />,
-            <ConfirmRack {...props} action={Services.MasterRack.restore} id={restoreRow} setId={setRestoreRow} title="Are you want to restore this object?" description="This action will restore this object back to active state." />,
-            <ConfirmRack {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Are you want to delete this object?" description="This action will set this object to inactive state." />
+            <Button asChild variant="outline"><Link to={`./new`}><Plus />Create</Link></Button>,//untuk tambah data
+            <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />,//untuk edit dalam bentuk modal
+            <ConfirmRack {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />//untuk delete
         ]}
         rowActions={({ row }) => (
             <DropdownRowActions>
-                {row.is_deleted ?
-                    <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
-                    : <>
-                        <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem asChild><Link to={`./edit/${row.id}`}>Edit 2</Link></DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
-                    </>
-                }
+                <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to={`./edit/${row.id}`}>Edit 2</Link></DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
             </DropdownRowActions>
         )}
     />

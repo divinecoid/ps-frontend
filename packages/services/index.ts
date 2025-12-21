@@ -13,6 +13,7 @@ import * as MasterColor from './master-color';
 import * as MasterFactory from './master-factory';
 import * as MasterOnlineStore from './master-online-store';
 import * as MasterMarketplace from './master-marketplace';
+import * as Request from './request';
 
 const Services = {
     Auth,
@@ -28,7 +29,8 @@ const Services = {
     MasterColor,
     MasterFactory,
     MasterOnlineStore,
-    MasterMarketplace
+    MasterMarketplace,
+    Request
 };
 
 export default Services;
