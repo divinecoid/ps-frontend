@@ -1,35 +1,26 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { BaseDialog } from "@/interfaces/base";
-import { toast } from "sonner";
 
-export default function ConfirmRack({ id, setId, action, onSubmit, title, description }: BaseDialog) {
-    const confirm = async () => {
+export default function ConfirmDetail({ id, setId, action, title, description, variant }: BaseDialog) {
+
+    const confirm = () => {
         if (id != undefined) {
-            try {
-                const res = await action?.(id);
-                if (res?.ok) {
-                    onSubmit?.();
-                    setId?.(undefined);
-                }
-            } catch (error) {
-                if (error instanceof Error) {
-                    toast.error(error.message, { richColors: true })
-                }
-            }
+            action?.(id);
+            setId?.(undefined);
         }
     }
 
     return <AlertDialog open={id != undefined ? true : false} onOpenChange={() => { setId?.(undefined) }}>
-        <AlertDialogContent className="select-none">
+        <AlertDialogContent>
             <AlertDialogHeader>
-                <AlertDialogTitle>{title}</AlertDialogTitle>
+                <AlertDialogTitle className={`${variant === 'destructive' ? 'text-destructive' : ''}`}>{title}</AlertDialogTitle>
                 <AlertDialogDescription>
                     {description}
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={confirm}>OK</AlertDialogAction>
+                <AlertDialogAction variant={variant} onClick={confirm}>OK</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>

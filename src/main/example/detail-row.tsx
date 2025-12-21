@@ -13,6 +13,8 @@ import { Plus } from "lucide-react";
 import z from "zod/v3";
 import Services from "@/services";
 import { useFieldArray, useFormContext } from "react-hook-form";
+import { useState } from "react";
+import ConfirmDetail from "./detail-confirm";
 
 interface DetailProps {
     schema: z.ZodRawShape
@@ -20,6 +22,7 @@ interface DetailProps {
 }
 
 export default function DetailRow({ schema, rowKey }: DetailProps) {
+    const [deleteId, setDeleteId] = useState<number | undefined>();
     const { control } = useFormContext()
     const { append, fields, remove } = useFieldArray({
         control,
@@ -36,11 +39,8 @@ export default function DetailRow({ schema, rowKey }: DetailProps) {
         })
     }
 
-    const handleRemove = (index: number) => {
-        remove(index);
-    }
-
     return <div className={`flex flex-col h-full select-none`}>
+        <ConfirmDetail id={deleteId} setId={setDeleteId} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus baris terpilih secara permanen!" />
         <Button type="button" className="self-end" onClick={handleAdd}><Plus />Tambah</Button>
         <Table>
             {fields.length == 0 && <TableCaption>Daftar permintaan Anda.</TableCaption>}
@@ -59,7 +59,7 @@ export default function DetailRow({ schema, rowKey }: DetailProps) {
                     control={control}
                     fields={fields}
                     rowKey={rowKey}
-                    handleRemove={handleRemove}
+                    handleRemove={(index) => setDeleteId(index)}
                     formShape={[
                         {
                             key: "model_id",
@@ -99,12 +99,14 @@ export default function DetailRow({ schema, rowKey }: DetailProps) {
                             type: "number",
                             schema: schema.dozen_qty,
                             placeholder: "Jumlah lusin.",
+                            defaultValue: 0
                         },
                         {
                             key: "piece_qty",
                             type: "number",
                             schema: schema.piece_qty,
-                            placeholder: "Jumlah satuan."
+                            placeholder: "Jumlah satuan.",
+                            defaultValue: 0
                         },
                     ]} />
 

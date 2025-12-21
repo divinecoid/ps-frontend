@@ -56,7 +56,7 @@ export default function TableRowForm<T extends FieldValues>({
                     </TableCell>
                 )
             })}
-            <TableCell><Button variant="destructive" onClick={() => handleRemove(index)}>Hapus</Button></TableCell>
+            <TableCell><Button type="button" variant="destructive" onClick={() => handleRemove(index)}>Hapus</Button></TableCell>
         </TableRow>
     ))
 }

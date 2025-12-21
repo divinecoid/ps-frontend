@@ -44,7 +44,7 @@ export interface BaseApiCallProps <T>{
 }
 
 interface BaseModal {
-  onSubmit: () => void
+  onSubmit?: () => void
   id?: number
   setId?: React.Dispatch<React.SetStateAction<number|undefined>>
 }
@@ -61,7 +61,8 @@ export interface BaseForm {
 export interface BaseDialog extends BaseModal {
   title?: string
   description?: string
-  action?: (id: number) => Promise<Response>;
+  action?: (id: number) => Promise<Response> | void;
+  variant?: "default" | "destructive"
 };
 
 export interface FormShape<T> {
