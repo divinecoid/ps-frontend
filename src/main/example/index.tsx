@@ -1,6 +1,5 @@
 import { columns } from "./column";
 import Services from "@/services";
-import ModalRack from "./modal";
 import OverviewPage from "@/components/custom/overview-page";
 import { DropdownMenuItem} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
@@ -11,20 +10,17 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function MasterExample() {
-    const [editRow, setEditRow] = useState<number>();
     const [deleteRow, setDeleteRow] = useState<number>();
     return <OverviewPage
         columns={columns}
         source={Services.Request}
         actions={(props) => [
-            <Button asChild variant="outline"><Link to={`./new`}><Plus />Create</Link></Button>,//untuk tambah data
-            <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />,//untuk edit dalam bentuk modal
-            <ConfirmRack {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />//untuk delete
+            <Button asChild variant="outline"><Link to={`./new`}><Plus />Create</Link></Button>,
+            <ConfirmRack {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
         ]}
         rowActions={({ row }) => (
             <DropdownRowActions>
-                <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                <DropdownMenuItem asChild><Link to={`./edit/${row.id}`}>Edit 2</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to={`./edit/${row.id}`}>Edit</Link></DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
             </DropdownRowActions>
         )}
