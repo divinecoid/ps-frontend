@@ -26,9 +26,6 @@ export default function FormExample(props: BaseForm) {
         color_id: z.number().min(0, {
             message: "Warna dibutuhkan.",
         }).default(-1),
-        size_id: z.number().min(0, {
-            message: "Ukuran dibutuhkan.",
-        }).default(-1),
         variant_detail: z.array(z.object(variantDetailSchema)).min(1, {
             message: "Minimal tambahkan 1 model yang akan dijahit."
         })
