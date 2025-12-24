@@ -6,7 +6,7 @@ export default function generateSchema<T>(fields: FormShape<T>[]) {
     const shape: Record<string, ZodTypeAny> = {};
     const api: Record<string, BaseApiCallIndexProps | null> = {};
     const meta: Record<string, InputMeta> = {};
-    const component: Record<string, React.ReactElement> = {};
+    const component: Record<string, React.ReactElement | ((index: number) => React.ReactNode)> = {};
     const defaultValues: Record<string, unknown> = {};
     for (const field of fields) {
         shape[field.key] = field.schema;

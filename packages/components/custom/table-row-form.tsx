@@ -10,6 +10,7 @@ import { FormShape } from "@/interfaces/base";
 import generateSchema from "@/lib/generate-schema";
 import { TableCell, TableRow } from "@/components/ui/table"
 import { Button } from "../ui/button";
+import React from "react";
 
 interface ItemProps<T extends FieldValues> {
     isEdit?: boolean,
@@ -31,9 +32,20 @@ export default function TableRowForm<T extends FieldValues>({
     return fields.map((row, index) => (
         <TableRow key={row.id}>
             {formShape.map((field) => {
-                const fieldMeta = meta[field.key];
-                const fieldSource = api[field.key];
-                const custom = component[field.key];
+                const custom = component[field.key]
+
+                // 🔥 CUSTOM FIELD
+                if (typeof custom === "function" || React.isValidElement(custom)) {
+                    return (
+                        <TableCell key={field.key}>
+                            {typeof custom === "function"
+                                ? custom(index)
+                                : custom}
+                        </TableCell>
+                    )
+                }
+
+                // 🔽 FIELD NORMAL
                 return (
                     <TableCell key={field.key}>
                         <FormField
@@ -44,9 +56,8 @@ export default function TableRowForm<T extends FieldValues>({
                                     <FormControl>
                                         <DynamicInput
                                             field={rhfField}
-                                            meta={fieldMeta}
-                                            api={fieldSource}
-                                            custom={custom}
+                                            meta={meta[field.key]}
+                                            api={api[field.key]}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -56,7 +67,16 @@ export default function TableRowForm<T extends FieldValues>({
                     </TableCell>
                 )
             })}
-            <TableCell><Button type="button" variant="destructive" onClick={() => handleRemove(index)}>Hapus</Button></TableCell>
+
+            <TableCell>
+                <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => handleRemove(index)}
+                >
+                    Hapus
+                </Button>
+            </TableCell>
         </TableRow>
     ))
 }

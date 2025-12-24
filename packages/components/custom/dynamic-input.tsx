@@ -37,14 +37,12 @@ interface DynamicInputProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>;
     meta: InputMeta;
     api?: BaseApiCallIndexProps | null;
-    custom?: React.ReactElement;
 }
 
 export default function DynamicInput<T extends FieldValues>({
     field,
     meta,
-    api,
-    custom
+    api
 }: DynamicInputProps<T>) {
     const { type, placeholder, options, defaultValue, max, step, source, passwordEdit, mode, numberOfMonths } = meta;
     const [edit, setEdit] = useState(false);
@@ -178,7 +176,7 @@ export default function DynamicInput<T extends FieldValues>({
                 numberOfMonths={numberOfMonths}
                 mode={mode}/>
         case 'custom':
-            return custom;
+            return undefined;
         default:
             return <div className="border-destructive rounded-md p-2 bg-destructive/20">
                 <p className="text-xs text-destructive">

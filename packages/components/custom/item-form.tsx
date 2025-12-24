@@ -97,10 +97,25 @@ export default function ItemForm<T extends FieldValues>({
         <form onSubmit={form.handleSubmit(submitForm, onError)}
             className={`flex flex-col flex-1 h-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>
             <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
-                {Object.entries((schema as z.ZodObject<T>).shape).map(([key]) => {
+                {Object.entries((schema as z.ZodObject<T>).shape).map(([key, index]) => {
                     const fieldMeta = meta[key];
                     const fieldSource = api[key];
                     const custom = component[key];
+                    if (fieldMeta.type === "custom") {
+                        return (
+                            <div key={key} className="px-7 py-2">
+                                {typeof custom === "function"
+                                    ? custom(index)
+                                    : custom}
+                                <p
+                                    data-slot="form-message"
+                                    className="text-destructive text-sm"
+                                >
+                                    {form.formState.errors?.[key]?.root?.message?.toString()}
+                                </p>
+                            </div>
+                        )
+                    }
                     return (
                         <FormField
                             key={key}
@@ -114,21 +129,14 @@ export default function ItemForm<T extends FieldValues>({
                                             field={field}
                                             meta={fieldMeta}
                                             api={fieldSource}
-                                            custom={custom}
                                         />
                                     </FormControl>
                                     <FormDescription>{fieldMeta.description}</FormDescription>
-                                    {fieldMeta.type === 'custom' ? (
-                                        <p
-                                            data-slot="form-message"
-                                            className={cn("text-destructive text-sm")}>
-                                            {form.formState.errors?.[key]?.root?.message?.toString() ?? form.formState.errors[key]?.message?.toString()}
-                                        </p>
-                                    ) : <FormMessage />}
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
-                    );
+                    )
                 })}
                 {children}
             </ScrollArea>

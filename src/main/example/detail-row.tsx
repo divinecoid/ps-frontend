@@ -15,13 +15,15 @@ import Services from "@/services";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { useState } from "react";
 import ConfirmDetail from "./detail-confirm";
+import VariantDetailRow from "./variant-detail-row";
 
 interface DetailProps {
     schema: z.ZodRawShape
+    variantSchema: z.ZodRawShape
     rowKey: string
 }
 
-export default function DetailRow({ schema, rowKey }: DetailProps) {
+export default function DetailRow({ schema, variantSchema, rowKey }: DetailProps) {
     const [deleteId, setDeleteId] = useState<number | undefined>();
     const { control } = useFormContext()
     const { append, fields, remove } = useFieldArray({
@@ -33,9 +35,13 @@ export default function DetailRow({ schema, rowKey }: DetailProps) {
         append({
             model_id: undefined,
             color_id: undefined,
-            size_id: undefined,
-            dozen_qty: 0,
-            piece_qty: 0,
+            variant_detail: [
+                {
+                    size_id: undefined,
+                    dozen_qty: 0,
+                    piece_qty: 0,
+                }
+            ]
         })
     }
 
@@ -48,9 +54,7 @@ export default function DetailRow({ schema, rowKey }: DetailProps) {
                 <TableRow>
                     <TableHead>Model</TableHead>
                     <TableHead>Warna</TableHead>
-                    <TableHead>Ukuran</TableHead>
-                    <TableHead className="w-[50px]">Jumlah (Lusin)</TableHead>
-                    <TableHead className="w-[50px]">Jumlah (Satuan)</TableHead>
+                    <TableHead className="w-[50px]">Detail</TableHead>
                     <TableHead className="w-[50px]">Aksi</TableHead>
                 </TableRow>
             </TableHeader>
@@ -84,30 +88,20 @@ export default function DetailRow({ schema, rowKey }: DetailProps) {
                             placeholder: "Warna",
                         },
                         {
-                            key: "size_id",
-                            type: "combobox",
-                            schema: schema.size_id,
-                            source: {
-                                api: Services.MasterSize.index,
-                                id: "id",
-                                label: "name"
-                            },
-                            placeholder: "Ukuran",
-                        },
-                        {
-                            key: "dozen_qty",
-                            type: "number",
-                            schema: schema.dozen_qty,
-                            placeholder: "Jumlah lusin.",
-                            defaultValue: 0
-                        },
-                        {
-                            key: "piece_qty",
-                            type: "number",
-                            schema: schema.piece_qty,
-                            placeholder: "Jumlah satuan.",
-                            defaultValue: 0
-                        },
+                            key: "variant_detail",
+                            type: "custom",
+                            schema: z.array(z.object(variantSchema)).min(1, {
+                                message: "Minimal tambahkan 1 model yang akan dijahit."
+                            }),
+                            custom: (index: number) => (
+                                <VariantDetailRow
+                                    parentIndex={index}
+                                    parentKey={rowKey}
+                                    rowKey="variant_detail"
+                                    schema={variantSchema}
+                                />
+                            )
+                        }
                     ]} />
 
             </TableBody>

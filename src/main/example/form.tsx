@@ -10,7 +10,16 @@ import { Request } from "@/interfaces/request";
 export default function FormExample(props: BaseForm) {
     const param = useParams();
 
-    const childSchema = {
+    const variantDetailSchema = {
+        dozen_qty: z.coerce.number().min(0, {
+            message: "Jumlah dibutuhkan.",
+        }).default(0),
+        piece_qty: z.coerce.number().min(0, {
+            message: "Jumlah dibutuhkan.",
+        }).default(0),
+    }
+
+    const detailSchema = {
         model_id: z.number().min(0, {
             message: "Model dibutuhkan.",
         }).default(-1),
@@ -20,17 +29,15 @@ export default function FormExample(props: BaseForm) {
         size_id: z.number().min(0, {
             message: "Ukuran dibutuhkan.",
         }).default(-1),
-        dozen_qty: z.coerce.number().min(0, {
-            message: "Jumlah dibutuhkan.",
-        }).default(0),
-        piece_qty: z.coerce.number().min(0, {
-            message: "Jumlah dibutuhkan.",
-        }).default(0),
+        variant_detail: z.array(z.object(variantDetailSchema)).min(1, {
+            message: "Minimal tambahkan 1 model yang akan dijahit."
+        })
     }
 
     return <ItemForm<Request>
         id={Number(param)}
         {...props}
+        onError={console.log}
         services={Services.Request}
         formShape={[
             {
@@ -51,10 +58,10 @@ export default function FormExample(props: BaseForm) {
             {
                 key: "request_detail",
                 type: "custom",
-                schema: z.array(z.object(childSchema)).min(1, {
+                schema: z.array(z.object(detailSchema)).min(1, {
                     message: "Minimal tambahkan 1 model yang akan dijahit."
                 }),
-                custom: <DetailRow rowKey="request_detail" schema={childSchema} />
+                custom: <DetailRow rowKey="request_detail" schema={detailSchema} variantSchema={variantDetailSchema} />
             }
         ]} >
 
