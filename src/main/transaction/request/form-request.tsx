@@ -30,7 +30,7 @@ export default function FormRequest(props: BaseForm) {
             message: "Warna dibutuhkan.",
         }).default(0),
         variant_detail: z.array(z.object(variantDetailSchema)).min(1, {
-            message: "Minimal tambahkan 1 model yang akan dijahit."
+            message: "Minimal tambahkan 1 varian yang akan dijahit."
         })
     }
     const schema = {
@@ -41,7 +41,7 @@ export default function FormRequest(props: BaseForm) {
             message: "Warna dibutuhkan.",
         }).default(0),
         request_detail: z.array(z.object(detailSchema)).min(1, {
-            message: "Minimal tambahkan 1 model yang akan dijahit."
+            message: "Minimal tambahkan 1 produk yang akan dijahit."
         })
     }
 
