@@ -19,7 +19,6 @@ import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import generateSchema from "@/lib/generate-schema";
 import { useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
 
 interface ItemProps<T extends FieldValues> {
     id?: number;

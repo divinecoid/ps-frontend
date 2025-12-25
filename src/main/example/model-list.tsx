@@ -18,6 +18,7 @@ export default function ModelList<T>({ form, index, parentKey, handleDelete }: {
         name: fieldName
     })
     const handleAddVariants = (index: number) => {
+        console.log(index);
         append({
             size_id: undefined,
             dozen_qty: "",

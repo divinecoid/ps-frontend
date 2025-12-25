@@ -13,7 +13,7 @@ export default function VariantListItem<T>({ control, index, rowKey, handleRemov
         <FormField
             control={control}
             name={`${rowKey}.${index}.size_id`}
-            render={({ field, fieldState }) => (
+            render={({ field }) => (
                 <FormItem className="w-full h-full">
                     <FormControl>
                         <DynamicCombobox

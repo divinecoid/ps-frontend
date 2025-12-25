@@ -3,18 +3,15 @@ import { Card } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import React from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import z from "zod/v3";
 import VariantList from "./model-list";
 import ConfirmDetail from "./detail-confirm";
 import { FormLabel } from "@/components/ui/form";
 
 interface DetailProps {
-    schema: z.ZodRawShape
-    variantSchema: z.ZodRawShape
     rowKey: string
 }
 
-export default function DetailList({ schema, rowKey }: DetailProps) {
+export default function DetailList({ rowKey }: DetailProps) {
     const [deleteId, setDeleteId] = React.useState<number | undefined>();
 
     const form = useFormContext()

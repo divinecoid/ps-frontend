@@ -13,7 +13,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/custom/date-picker";
 import { Mode } from "react-day-picker";
-import { boolean } from "zod";
 
 export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea" | "custom";
 

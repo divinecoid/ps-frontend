@@ -10,7 +10,7 @@ import VariantListItem from "./form-request-detail-variant-list-item";
 import ConfirmDetail from "./form-request-detail-confirm";
 import { ProductModelViewResponse } from "@/interfaces/product-model";
 
-export default function ModelList<T>({ form, index, parentKey, handleDelete }: { form: UseFormReturn<FieldValues, T, FieldValues>, index: number, parentKey: string, handleDelete: React.Dispatch<React.SetStateAction<number | undefined>> }) {
+export default function ProductList<T>({ form, index, parentKey, handleDelete }: { form: UseFormReturn<FieldValues, T, FieldValues>, index: number, parentKey: string, handleDelete: React.Dispatch<React.SetStateAction<number | undefined>> }) {
     const [deleteId, setDeleteId] = React.useState<number | undefined>();
     const fieldName = `${parentKey}.${index}.'variant_detail'`
 
@@ -21,7 +21,7 @@ export default function ModelList<T>({ form, index, parentKey, handleDelete }: {
     const handleAddVariants = async (index: number) => {
         const res = await Services.MasterProductModel.show(index);
         const model: ProductModelViewResponse = await res.json();
-        // model.data.sizes; TODO:
+        console.log(model.data); //TODO:
         append({
             size_id: undefined,
             dozen_qty: "",
