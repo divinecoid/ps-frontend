@@ -10,12 +10,11 @@ import { FormLabel } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 
 interface DetailProps {
-    schema: z.ZodRawShape
     variantSchema: z.ZodRawShape
     rowKey: string
 }
 
-export default function DetailList({ schema, rowKey }: DetailProps) {
+export default function DetailList({ rowKey }: DetailProps) {
     const [deleteId, setDeleteId] = React.useState<number | undefined>();
 
     const form = useFormContext()

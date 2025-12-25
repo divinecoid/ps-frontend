@@ -24,8 +24,8 @@ import { hasRole } from '@/lib/jwt-decode';
 import FormInventory from './main/master-data/inventory/form';
 import FormExample from './main/example/form';
 import WidgetPreviewPage from './main/example/widget-preview';
-import Request from './main/request';
-import FormRequest from './main/request/form-request';
+import Request from './main/transaction/request';
+import FormRequest from './main/transaction/request/form-request';
 
 function App() {
   const { token } = useAuth();
