@@ -135,11 +135,12 @@ export default function ModalItem<T extends FieldValues>({
                                         key={key}
                                         control={form.control}
                                         name={key as Path<T>}
-                                        render={({ field }) => (
+                                        render={({ field, fieldState }) => (
                                             <FormItem className="px-7 py-2">
                                                 <FormLabel>{fieldMeta.label}</FormLabel>
                                                 <FormControl>
                                                     <DynamicInput
+                                                        aria-invalid={fieldState.invalid}
                                                         field={field}
                                                         meta={fieldMeta}
                                                         api={fieldSource}

@@ -37,7 +37,6 @@ export default function FormExample2(props: BaseForm) {
     return <ItemForm<Request>
         id={Number(param)}
         {...props}
-        onError={console.log}
         services={Services.Request}
         formShape={[
             {

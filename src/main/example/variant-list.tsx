@@ -22,7 +22,7 @@ export default function VariantListItem<T>({ control, index, rowKey, handleRemov
                             placeholder="Ukuran"
                             type="single"
                             variant="ghost"
-                            className={cn("w-full rounded-none rounded-l-md border border-r-0 shadow-none", fieldState.error && "border-destructive")}
+                            className={cn("w-full rounded-none rounded-l-md border border-r-0 shadow-none")}
                             source={Services.MasterSize.index}
                             value={field.value}
                             onValueChange={field.onChange} />

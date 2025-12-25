@@ -29,6 +29,7 @@ interface DynamicComboboxProps {
   value: string | number | (string | number)[];
   onValueChange: (values: number | number[]) => void;
   className?: string | undefined;
+  "aria-invalid"?: boolean
 }
 
 interface Options {
@@ -36,7 +37,7 @@ interface Options {
   label: string;
 }
 
-export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, value, onValueChange, className }: DynamicComboboxProps) {
+export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, value, onValueChange, className, "aria-invalid":ariaInvalid }: DynamicComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
@@ -69,7 +70,8 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
           variant={variant}
           role="combobox"
           aria-expanded={open}
-          className={cn("justify-between", className)}
+          aria-invalid={ariaInvalid}
+          className={cn("justify-between aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive", className)}
         >
           {value && Array.isArray(value) && value.length > 0 ? (              // multiselect
             value.map(v => options.find(o => o.value === String(v))?.label).join(", ")

@@ -111,7 +111,7 @@ export default function ItemForm<T extends FieldValues>({
                                     data-slot="form-message"
                                     className="text-destructive text-sm"
                                 >
-                                    {form.formState.errors?.[key]?.root?.message?.toString()}
+                                    {form.formState.errors[key]?.message?.toString() ?? form.formState.errors?.[key]?.root?.message?.toString()}
                                 </p>
                             </div>
                         )
@@ -121,11 +121,12 @@ export default function ItemForm<T extends FieldValues>({
                             key={key}
                             control={form.control}
                             name={key as Path<T>}
-                            render={({ field }) => (
+                            render={({ field, fieldState }) => (
                                 <FormItem className="px-7 py-2">
                                     <FormLabel>{fieldMeta.label}</FormLabel>
                                     <FormControl>
                                         <DynamicInput
+                                            aria-invalid={fieldState.invalid}
                                             field={field}
                                             meta={fieldMeta}
                                             api={fieldSource}
@@ -141,8 +142,8 @@ export default function ItemForm<T extends FieldValues>({
                 {children}
             </ScrollArea>
             <div className="sticky bottom-0 border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
-                <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Cancel</Button>
-                <Button type="submit">Submit</Button>
+                <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Batal</Button>
+                <Button type="submit">Simpan</Button>
             </div>
         </form>
     </Form>

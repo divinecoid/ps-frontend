@@ -13,6 +13,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/custom/date-picker";
 import { Mode } from "react-day-picker";
+import { boolean } from "zod";
 
 export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea" | "custom";
 
@@ -37,12 +38,14 @@ interface DynamicInputProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>;
     meta: InputMeta;
     api?: BaseApiCallIndexProps | null;
+    "aria-invalid"?: boolean
 }
 
 export default function DynamicInput<T extends FieldValues>({
     field,
     meta,
-    api
+    api,
+    "aria-invalid": ariaInvalid
 }: DynamicInputProps<T>) {
     const { type, placeholder, options, defaultValue, max, step, source, passwordEdit, mode, numberOfMonths } = meta;
     const [edit, setEdit] = useState(false);
@@ -109,6 +112,7 @@ export default function DynamicInput<T extends FieldValues>({
         case 'combobox':
         case 'multi-combobox':
             return api != undefined && source != undefined ? <DynamicCombobox
+                aria-invalid={ariaInvalid}
                 id={source.id}
                 label={source.label}
                 placeholder={placeholder}
@@ -174,7 +178,7 @@ export default function DynamicInput<T extends FieldValues>({
                 value={field.value}
                 onChange={field.onChange}
                 numberOfMonths={numberOfMonths}
-                mode={mode}/>
+                mode={mode} />
         case 'custom':
             return undefined;
         default:
