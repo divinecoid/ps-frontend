@@ -33,8 +33,6 @@ export default function TableRowForm<T extends FieldValues>({
         <TableRow key={row.id}>
             {formShape.map((field) => {
                 const custom = component[field.key]
-
-                // 🔥 CUSTOM FIELD
                 if (typeof custom === "function" || React.isValidElement(custom)) {
                     return (
                         <TableCell key={field.key}>
@@ -44,8 +42,6 @@ export default function TableRowForm<T extends FieldValues>({
                         </TableCell>
                     )
                 }
-
-                // 🔽 FIELD NORMAL
                 return (
                     <TableCell key={field.key}>
                         <FormField

@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import z from "zod/v3";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import React, { useState } from "react";
+import { useState } from "react";
 import ConfirmDetail from "./detail-confirm";
 import Services from "@/services";
 

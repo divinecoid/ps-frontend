@@ -24,9 +24,11 @@ interface DynamicComboboxProps {
   id: string;
   label: string;
   placeholder?: string;
+  variant?: "outline" | "link" | "default" | "destructive" | "secondary" | "ghost" | null | undefined;
   type?: 'single' | 'multi';
   value: string | number | (string | number)[];
   onValueChange: (values: number | number[]) => void;
+  className?: string | undefined;
 }
 
 interface Options {
@@ -34,7 +36,7 @@ interface Options {
   label: string;
 }
 
-export function DynamicCombobox({ source, id, label, type = 'single', placeholder, value, onValueChange }: DynamicComboboxProps) {
+export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, value, onValueChange, className }: DynamicComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
@@ -64,10 +66,10 @@ export function DynamicCombobox({ source, id, label, type = 'single', placeholde
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant={variant}
           role="combobox"
           aria-expanded={open}
-          className="justify-between"
+          className={cn("justify-between", className)}
         >
           {value && Array.isArray(value) && value.length > 0 ? (              // multiselect
             value.map(v => options.find(o => o.value === String(v))?.label).join(", ")

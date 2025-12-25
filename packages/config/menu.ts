@@ -161,7 +161,7 @@ export const Menu = {
         'checker'
       ],
       items: [
-         {
+        {
           title: "Request",
           url: "/transaction/request",
           role: [
@@ -278,7 +278,7 @@ export const Menu = {
         'user'
       ],
       items: [
-         {
+        {
           title: "User",
           url: "/master-data/user",
           role: [
@@ -316,6 +316,11 @@ export const Menu = {
     {
       name: "Basic CRUD",
       url: "/example",
+      icon: Construction,
+    },
+    {
+      name: "Widget Test",
+      url: "/example/preview",
       icon: Construction,
     },
   ],

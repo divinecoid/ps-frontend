@@ -23,6 +23,7 @@ import MasterMarketplaces from './main/master-data/marketplace';
 import { hasRole } from '@/lib/jwt-decode';
 import FormInventory from './main/master-data/inventory/form';
 import FormExample from './main/example/form';
+import WidgetPreviewPage from './main/example/widget-preview';
 
 function App() {
   const { token } = useAuth();
@@ -43,6 +44,7 @@ function App() {
             <Route path="/example" element={<Example />} />
             <Route path="/example/new" element={<FormExample />} />
             <Route path="/example/edit/:id" element={<FormExample />} />
+            <Route path="/example/preview" element={<WidgetPreviewPage/>} />
           </>
         )}
           {isAdmin && (
