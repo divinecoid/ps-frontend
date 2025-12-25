@@ -4,8 +4,8 @@ import { Plus } from "lucide-react";
 import React from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import z from "zod/v3";
-import VariantList from "./model-list";
-import ConfirmDetail from "./detail-confirm";
+import VariantList from "./form-request-detail-model-list";
+import ConfirmDetail from "./form-request-detail-confirm";
 import { FormLabel } from "@/components/ui/form";
 
 interface DetailProps {

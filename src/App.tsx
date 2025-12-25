@@ -24,6 +24,8 @@ import { hasRole } from '@/lib/jwt-decode';
 import FormInventory from './main/master-data/inventory/form';
 import FormExample from './main/example/form';
 import WidgetPreviewPage from './main/example/widget-preview';
+import Request from './main/request';
+import FormRequest from './main/request/form-request';
 
 function App() {
   const { token } = useAuth();
@@ -66,9 +68,11 @@ function App() {
             </>
           )}
 
-          {(isChecker || isPreparist) && (
+          {(isAdmin || isChecker || isPreparist) && (
             <>
-              <Route path="/transaction/request" element={<></>} />
+              <Route path="/transaction/request" element={<Request/>} />
+              <Route path="/transaction/request/new" element={<FormRequest/>} />
+              <Route path="/transaction/request/edit/:id" element={<FormRequest/>} />
               <Route path="/transaction/order" element={<></>} />
 
             </>

@@ -2,7 +2,6 @@ import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { DELETE, GET, PATCH, POST } from "./api"
 import { Request } from "@/interfaces/request";
 import { ENDPOINT } from "./endpoints";
-import { toast } from "sonner";
 
 export const index: BaseApiCallIndexProps = async (page, per_page, search) => {
     return await GET(ENDPOINT.REQUEST, { page, per_page, search });

@@ -158,7 +158,8 @@ export const Menu = {
       icon: Repeat2,
       role: [
         'preparist',
-        'checker'
+        'checker',
+        'admin'
       ],
       items: [
         {
@@ -166,7 +167,8 @@ export const Menu = {
           url: "/transaction/request",
           role: [
             'preparist',
-            'checker'
+            'checker',
+            'admin'
           ]
         },
         {
