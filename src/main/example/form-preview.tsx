@@ -60,7 +60,7 @@ export default function FormExample2(props: BaseForm) {
                 schema: z.array(z.object(detailSchema)).min(1, {
                     message: "Minimal tambahkan 1 model yang akan dijahit."
                 }),
-                custom: <DetailList rowKey="request_detail" schema={detailSchema} variantSchema={variantDetailSchema} />
+                custom: <DetailList rowKey="request_detail" />
             }
         ]} >
 

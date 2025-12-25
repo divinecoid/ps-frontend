@@ -67,7 +67,7 @@ export default function FormRequest(props: BaseForm) {
                 key: "request_detail",
                 type: "custom",
                 schema: schema.request_detail,
-                custom: <DetailList rowKey="request_detail" schema={detailSchema} variantSchema={variantDetailSchema} />
+                custom: <DetailList rowKey="request_detail" />
             }
         ]} >
 

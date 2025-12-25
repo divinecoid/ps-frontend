@@ -84,12 +84,20 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
             </CardHeader>
             <FormLabel className="mt-2">Varian</FormLabel>
             <CardContent className="border shadow-none rounded-sm p-4 grid grid-cols-1 @xl:grid-cols-2 gap-x-8 gap-y-2 mt-4">
-                {fields.map((row, index) => (
-                    <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteId} rowKey={fieldName} />
-                ))}
-                <div className="flex items-end">
-                    <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants(index)}><Plus /> Tambah varian</Button>
-                </div>
+                <FormField
+                    control={form.control}
+                    name={`${parentKey}.${index}.variant_detail`}
+                    render={() => (
+                        <>
+                            {fields.map((row, index) => (
+                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteId} rowKey={fieldName} />
+                            ))}
+                            <div className="flex items-end">
+                                <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants(index)}><Plus /> Tambah varian</Button>
+                            </div>
+                            <FormMessage />
+                        </>
+                    )} />
             </CardContent>
         </Card>
     </>
