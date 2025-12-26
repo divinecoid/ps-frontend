@@ -31,6 +31,18 @@ export default function FormRequest(props: BaseForm) {
         }).default(0),
         variant_detail: z.array(z.object(variantDetailSchema)).min(1, {
             message: "Minimal tambahkan 1 varian yang akan dijahit."
+        }).superRefine((data, ctx) => {
+            const seen = new Set<number>()
+            data.forEach((item, index) => {
+                if (seen.has(item.size_id)) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: "Ukuran tidak boleh duplikat.",
+                        path: [index, "size_id"],
+                    })
+                }
+                seen.add(item.size_id)
+            })
         })
     }
     const schema = {
@@ -42,6 +54,18 @@ export default function FormRequest(props: BaseForm) {
         }).default(0),
         request_detail: z.array(z.object(detailSchema)).min(1, {
             message: "Minimal tambahkan 1 produk yang akan dijahit."
+        }).superRefine((data, ctx) => {
+            const seen = new Set<number>()
+            data.forEach((item, index) => {
+                if (seen.has(item.model_id)) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: "Model tidak boleh duplikat.",
+                        path: [index, "model_id"],
+                    })
+                }
+                seen.add(item.model_id)
+            })
         })
     }
 
@@ -49,6 +73,7 @@ export default function FormRequest(props: BaseForm) {
         id={Number(param)}
         {...props}
         services={Services.Request}
+        onError={console.log}
         formShape={[
             {
                 key: "cmt_id",
