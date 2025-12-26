@@ -2,7 +2,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { BaseDialog } from "@/interfaces/base";
 import { toast } from "sonner";
 
-export default function ConfirmRack({ id, setId, action, onSubmit, title, description }: BaseDialog) {
+export default function ConfirmRequest({ id, setId, action, onSubmit, title, description }: BaseDialog) {
     const confirm = async () => {
         if (id != undefined) {
             try {

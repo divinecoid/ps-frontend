@@ -3,20 +3,20 @@ import Services from "@/services";
 import OverviewPage from "@/components/custom/overview-page";
 import { DropdownMenuItem} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import ConfirmRack from "./confirm";
+import ConfirmRequest from "./confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-export default function MasterExample() {
+export default function Request() {
     const [deleteRow, setDeleteRow] = useState<number>();
     return <OverviewPage
         columns={columns}
         source={Services.Request}
         actions={(props) => [
             <Button asChild variant="outline"><Link to={`./new`}><Plus />Create</Link></Button>,
-            <ConfirmRack {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
+            <ConfirmRequest {...props} action={Services.Request.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
         ]}
         rowActions={({ row }) => (
             <DropdownRowActions>

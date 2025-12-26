@@ -26,7 +26,7 @@ interface ItemProps<T extends FieldValues> {
     isEdit?: boolean,
     children?: React.ReactNode;
     footer?: React.ReactNode;
-    services?: BaseApiCallProps<FieldValues>;
+    services?: BaseApiCallProps<T>;
     onError?: SubmitErrorHandler<FieldValues>;
     formShape: FormShape<T>[];
     key?: number;
@@ -39,9 +39,9 @@ export default function ItemForm<T extends FieldValues>({
     services,
     onError,
     formShape,
-    key
+    key,
 }: ItemProps<T>) {
-    const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
+    const { schema, meta, defaultValues, api, component } = generateSchema<T>(formShape);
     const [loading, setLoading] = React.useState<boolean>(isEdit ? true : false);
     const navigate = useNavigate();
     const form = useForm({
@@ -74,9 +74,10 @@ export default function ItemForm<T extends FieldValues>({
     }, [id]);
 
     const submitForm = async (values: FieldValues) => {
+        toast.info(JSON.stringify(values), { richColors: true }) //TODO:
         setLoading(true);
         try {
-            const res = await (id ? services?.update?.(id, values) : services?.store?.(values));
+            const res = await (id ? services?.update?.(id, values as T) : services?.store?.(values as T));
             const json = await res?.json();
             if (res?.ok) {
                 navigate('../');
@@ -95,19 +96,36 @@ export default function ItemForm<T extends FieldValues>({
         <form onSubmit={form.handleSubmit(submitForm, onError)}
             className={`flex flex-col flex-1 h-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>
             <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
-                {Object.entries((schema as z.ZodObject<T>).shape).map(([key]) => {
+                {Object.entries((schema as z.ZodObject<T>).shape).map(([key, index]) => {
                     const fieldMeta = meta[key];
                     const fieldSource = api[key];
+                    const custom = component[key];
+                    if (fieldMeta.type === "custom") {
+                        return (
+                            <div key={key} className="px-7 py-2">
+                                {typeof custom === "function"
+                                    ? custom(index)
+                                    : custom}
+                                <p
+                                    data-slot="form-message"
+                                    className="text-destructive text-sm"
+                                >
+                                    {form.formState.errors[key]?.message?.toString() ?? form.formState.errors?.[key]?.root?.message?.toString()}
+                                </p>
+                            </div>
+                        )
+                    }
                     return (
                         <FormField
                             key={key}
                             control={form.control}
                             name={key as Path<T>}
-                            render={({ field }) => (
+                            render={({ field, fieldState }) => (
                                 <FormItem className="px-7 py-2">
                                     <FormLabel>{fieldMeta.label}</FormLabel>
                                     <FormControl>
                                         <DynamicInput
+                                            aria-invalid={fieldState.invalid}
                                             field={field}
                                             meta={fieldMeta}
                                             api={fieldSource}
@@ -118,13 +136,13 @@ export default function ItemForm<T extends FieldValues>({
                                 </FormItem>
                             )}
                         />
-                    );
+                    )
                 })}
                 {children}
             </ScrollArea>
-            <div className="flex justify-end gap-2 px-7 py-2">
-                <Button variant="outline" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Cancel</Button>
-                <Button type="submit">Submit</Button>
+            <div className="sticky bottom-0 border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
+                <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Batal</Button>
+                <Button type="submit">Simpan</Button>
             </div>
         </form>
     </Form>

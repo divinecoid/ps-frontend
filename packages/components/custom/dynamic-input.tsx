@@ -11,14 +11,18 @@ import { DynamicCombobox } from "./dynamic-combobox";
 import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/custom/date-picker";
+import { Mode } from "react-day-picker";
 
-export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea";
+export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea" | "custom";
 
 export interface InputMeta {
     label?: string;
     description?: string;
     placeholder?: string;
     type?: InputTypes;
+    mode?: Mode;
+    numberOfMonths?: number;
     passwordEdit?: boolean;
     options?: Record<string, string>;                       //radio, select
     defaultValue?: string | number | (string | number)[];   //radio, select, checkbox, slider, input, textarea
@@ -33,14 +37,16 @@ interface DynamicInputProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>;
     meta: InputMeta;
     api?: BaseApiCallIndexProps | null;
+    "aria-invalid"?: boolean
 }
 
 export default function DynamicInput<T extends FieldValues>({
     field,
     meta,
-    api
+    api,
+    "aria-invalid": ariaInvalid
 }: DynamicInputProps<T>) {
-    const { type, placeholder, options, defaultValue, max, step, source, passwordEdit } = meta;
+    const { type, placeholder, options, defaultValue, max, step, source, passwordEdit, mode, numberOfMonths } = meta;
     const [edit, setEdit] = useState(false);
     switch (type) {
         case 'text':
@@ -105,6 +111,7 @@ export default function DynamicInput<T extends FieldValues>({
         case 'combobox':
         case 'multi-combobox':
             return api != undefined && source != undefined ? <DynamicCombobox
+                aria-invalid={ariaInvalid}
                 id={source.id}
                 label={source.label}
                 placeholder={placeholder}
@@ -164,6 +171,15 @@ export default function DynamicInput<T extends FieldValues>({
                     {meta.label}
                 </Label>
             </div>
+        case 'date':
+            return <DatePicker
+                placeholder={placeholder}
+                value={field.value}
+                onChange={field.onChange}
+                numberOfMonths={numberOfMonths}
+                mode={mode} />
+        case 'custom':
+            return undefined;
         default:
             return <div className="border-destructive rounded-md p-2 bg-destructive/20">
                 <p className="text-xs text-destructive">

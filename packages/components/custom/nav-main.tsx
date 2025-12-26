@@ -40,11 +40,12 @@ export function NavMain({
 }) {
   const path = useLocation().pathname;
   const { token } = useAuth();
+  const navRole = [...new Set(items.flatMap(item => item.role))];
   const checkActive = useCallback((url: string) => path === url ? true : false, [path]);
   const checkRole = (roles: string[]) => {
     if (token) return roles.some(role => hasRole(token, role))
   };
-  return (
+  return checkRole(navRole) ? (
     <SidebarGroup>
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarMenu>
@@ -81,5 +82,5 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  ) : undefined;
 }

@@ -4,11 +4,11 @@ import { toast } from "sonner";
 
 export default function ModalConfirm({ id, setId, action, onSubmit, title, description }: BaseDialog) {
     const confirm = async () => {
-        if (id) {
+        if (id != undefined) {
             try {
                 const res = await action?.(id);
                 if (res?.ok) {
-                    onSubmit();
+                    onSubmit?.();
                     setId?.(undefined);
                 }
             } catch (error) {
@@ -19,7 +19,7 @@ export default function ModalConfirm({ id, setId, action, onSubmit, title, descr
         }
     }
 
-    return <AlertDialog open={id ? true : false} onOpenChange={() => { setId?.(undefined) }}>
+    return <AlertDialog open={id != undefined ? true : false} onOpenChange={() => { setId?.(undefined) }}>
         <AlertDialogContent className="select-none">
             <AlertDialogHeader>
                 <AlertDialogTitle>{title}</AlertDialogTitle>

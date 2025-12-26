@@ -25,7 +25,7 @@ export default function MasterOnlineStores() {
 
     const getMarketplaceAlias = async (id: number): Promise<string|undefined> => {
         try {
-            if (id) {
+            if (id != undefined) {
                 const res = await Services.MasterMarketplace.show(id);
                 const json: MarketplaceViewResponse = await res.json();
                 if (res.ok) {

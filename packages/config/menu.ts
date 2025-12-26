@@ -1,4 +1,4 @@
-import { Frame, Map, PieChart, Repeat2, SquareTerminal, UserCog } from "lucide-react";
+import { Frame, Map, PieChart, Repeat2, SquareTerminal, UserCog, Construction } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -158,15 +158,17 @@ export const Menu = {
       icon: Repeat2,
       role: [
         'preparist',
-        'checker'
+        'checker',
+        'admin'
       ],
       items: [
-         {
+        {
           title: "Request",
           url: "/transaction/request",
           role: [
             'preparist',
-            'checker'
+            'checker',
+            'admin'
           ]
         },
         {
@@ -278,7 +280,7 @@ export const Menu = {
         'user'
       ],
       items: [
-         {
+        {
           title: "User",
           url: "/master-data/user",
           role: [
@@ -312,11 +314,16 @@ export const Menu = {
       icon: Map,
     },
   ],
-  // tests: [
-  //   {
-  //     name: "Basic CRUD",
-  //     url: "/example",
-  //     icon: Construction,
-  //   },
-  // ],
+  tests: [
+    {
+      name: "Basic CRUD",
+      url: "/example",
+      icon: Construction,
+    },
+    {
+      name: "Widget Test",
+      url: "/example/preview",
+      icon: Construction,
+    },
+  ],
 }

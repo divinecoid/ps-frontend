@@ -1,4 +1,5 @@
 import { InputTypes } from "@/components/custom/dynamic-input"
+import { Mode } from "react-day-picker"
 import z from "zod/v3"
 
 export interface Pagination {
@@ -43,7 +44,7 @@ export interface BaseApiCallProps <T>{
 }
 
 interface BaseModal {
-  onSubmit: () => void
+  onSubmit?: () => void
   id?: number
   setId?: React.Dispatch<React.SetStateAction<number|undefined>>
 }
@@ -60,13 +61,16 @@ export interface BaseForm {
 export interface BaseDialog extends BaseModal {
   title?: string
   description?: string
-  action?: (id: number) => Promise<Response>;
+  action?: (id: number) => Promise<Response> | void;
+  variant?: "default" | "destructive"
 };
 
 export interface FormShape<T> {
     key: keyof T & string;
     type: InputTypes;
     schema: z.ZodTypeAny;
+    mode?: Mode;
+    numberOfMonths?: number;
     label?: string;
     description?: string;
     placeholder?: string;
@@ -80,4 +84,5 @@ export interface FormShape<T> {
         api: BaseApiCallIndexProps | null;
     },
     defaultValue?: string | number | (string | number)[];
+    custom?: | React.ReactElement | ((index: number) => React.ReactNode)
 }

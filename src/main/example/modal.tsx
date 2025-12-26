@@ -110,6 +110,7 @@ export default function ModalRack(props: BaseModalForm) {
     const rack = <ModalItem<Rack>
         title={props.isEdit ? "Edit Rack" : "Add Rack"}
         description={props.isEdit ? "Edit Rack" : "Add new rack"}
+        services={Services.MasterRack}
         {...props}
         formShape={[
             {
