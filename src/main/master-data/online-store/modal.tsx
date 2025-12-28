@@ -91,8 +91,8 @@ export default function ModalOnlineStore(props: BaseModalForm) {
                 key: "is_active",
                 type: "switch",
                 schema: z.coerce.boolean(),
-                label: "Kondisi",
-                description: "Kondisi toko online.",
+                label: "Kondisi toko",
+                description: "Kondisi toko online aktif.",
                 placeholder: "Kondisi toko online",
             },
             {

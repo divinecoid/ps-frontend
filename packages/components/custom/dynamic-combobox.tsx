@@ -113,7 +113,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
                       "ml-auto",
                       (type === "single"
                         ? value === Number(item.value)
-                        : Array.isArray(value) && value.includes(Number(item.value)))
+                        : Array.isArray(value) && value.includes(item.value))
                         ? "opacity-100"
                         : "opacity-0"
                     )}

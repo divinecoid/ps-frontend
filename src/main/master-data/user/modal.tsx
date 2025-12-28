@@ -46,7 +46,7 @@ export default function ModalUser(props: BaseModalForm) {
             {
                 key: "role_id",
                 type: "multi-combobox",
-                schema: z.array(z.number()).nonempty({
+                schema: z.array(z.string()).nonempty({
                     message: "Role is required"
                 }),
                 source: {
