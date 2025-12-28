@@ -37,7 +37,7 @@ interface Options {
   label: string;
 }
 
-export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, value, onValueChange, className, "aria-invalid":ariaInvalid }: DynamicComboboxProps) {
+export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, value, onValueChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
@@ -49,7 +49,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
         if (result.ok) {
           const json = (await result.json());
           const mapped = json.data.map((item: Record<string, string>) => ({
-            value: String(item[id]),
+            value: item[id],
             label: item[label]
           }))
           setOptions(mapped);
@@ -71,15 +71,17 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
           role="combobox"
           aria-expanded={open}
           aria-invalid={ariaInvalid}
-          className={cn("justify-between aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive", className)}
+          className={cn("justify-between aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive truncate", className)}
         >
-          {value && Array.isArray(value) && value.length > 0 ? (              // multiselect
-            value.map(v => options.find(o => o.value === String(v))?.label).join(", ")
-          ) : !Array.isArray(value) && value ? (                              // singleselect
-            options.find(o => o.value === String(value))?.label
-          ) : (
-            <p className="opacity-50">{placeholder}</p>
-          )}
+          <span className="truncate flex-1 text-left">
+            {value && Array.isArray(value) && value.length > 0 ? (              // multiselect
+              value.map(v => options.find(o => o.value === v)?.label).join(", ")
+            ) : !Array.isArray(value) && value ? (                              // singleselect
+              options.find(o => o.value === value)?.label
+            ) : (
+              <p className="opacity-50">{placeholder}</p>
+            )}
+          </span>
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -112,7 +114,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
                     className={cn(
                       "ml-auto",
                       (type === "single"
-                        ? value === Number(item.value)
+                        ? value === item.value
                         : Array.isArray(value) && value.includes(item.value))
                         ? "opacity-100"
                         : "opacity-0"
