@@ -4,26 +4,26 @@ import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<ProductModel>[] = [
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: "sku",
+    header: "SKU",
     enableSorting: true,
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: "Model",
     enableSorting: true,
   },
   {
     accessorKey: "is_deleted",
-    header: "Deleted",
+    header: "Status Model",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
       switch (data.is_deleted) {
         case true:
-          return <Badge variant="destructive">Deleted</Badge>
+          return <Badge variant="destructive">Nonaktif</Badge>
         case false:
-          return <Badge variant="secondary">Active</Badge>
+          return <Badge variant="success">Aktif</Badge>
       }
     })
   }

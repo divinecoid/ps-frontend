@@ -10,30 +10,30 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     accessorKey: "color.name",
-    header: "Color name",
+    header: "Warna",
     enableSorting: true,
   },
   {
     accessorKey: "model.name",
-    header: "Model name",
+    header: "Model",
     enableSorting: true,
   },
   {
     accessorKey: "size.name",
-    header: "Size name",
+    header: "Ukuran",
     enableSorting: true,
   },
   {
     accessorKey: "is_deleted",
-    header: "Deleted",
+    header: "Status produk",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
       switch (data.is_deleted) {
         case true:
-          return <Badge variant="destructive">Deleted</Badge>
+          return <Badge variant="destructive">Nonaktif</Badge>
         case false:
-          return <Badge variant="secondary">Active</Badge>
+          return <Badge variant="success">Aktif</Badge>
       }
     })
   }

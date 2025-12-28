@@ -21,8 +21,8 @@ import generateSchema from "@/lib/generate-schema";
 import { useNavigate } from "react-router-dom";
 
 interface ItemProps<T extends FieldValues> {
-    id?: number;
-    setId?: React.Dispatch<React.SetStateAction<number | undefined>>
+    id?: string;
+    setId?: React.Dispatch<React.SetStateAction<string | undefined>>
     isEdit?: boolean,
     children?: React.ReactNode;
     footer?: React.ReactNode;

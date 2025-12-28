@@ -20,19 +20,19 @@ export default function FormExample(props: BaseForm) {
     }
 
     const detailSchema = {
-        model_id: z.number().min(0, {
+        model_id: z.string().nonempty({
             message: "Model dibutuhkan.",
-        }).default(-1),
-        color_id: z.number().min(0, {
+        }),
+        color_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
-        }).default(-1),
+        }),
         variant_detail: z.array(z.object(variantDetailSchema)).min(1, {
             message: "Minimal tambahkan 1 model yang akan dijahit."
         })
     }
 
     return <ItemForm<Request>
-        id={Number(param)}
+        id={String(param)}
         {...props}
         onError={console.log}
         services={Services.Request}

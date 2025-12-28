@@ -11,9 +11,9 @@ export default function FormRequest(props: BaseForm) {
     const param = useParams();
 
     const variantDetailSchema = {
-        size_id: z.number().min(1, {
+        size_id: z.string().nonempty({
             message: "Ukuran dibutuhkan.",
-        }).default(0),
+        }),
         dozen_qty: z.coerce.number().min(1, {
             message: "Jumlah dibutuhkan.",
         }).default(0),
@@ -23,16 +23,16 @@ export default function FormRequest(props: BaseForm) {
     }
 
     const detailSchema = {
-        model_id: z.number().min(1, {
+        model_id: z.string().nonempty({
             message: "Model dibutuhkan.",
-        }).default(0),
-        color_id: z.number().min(1, {
+        }),
+        color_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
-        }).default(0),
+        }),
         variant_detail: z.array(z.object(variantDetailSchema)).min(1, {
             message: "Minimal tambahkan 1 varian yang akan dijahit."
         }).superRefine((data, ctx) => {
-            const seen = new Set<number>()
+            const seen = new Set<string>()
             data.forEach((item, index) => {
                 if (seen.has(item.size_id)) {
                     ctx.addIssue({
@@ -46,16 +46,16 @@ export default function FormRequest(props: BaseForm) {
         })
     }
     const schema = {
-        cmt_id: z.coerce.number().positive({
+        cmt_id: z.string().nonempty({
             message: "CMT dibutuhkan",
-        }).default(-1),
-        color_id: z.number().min(1, {
+        }),
+        color_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
-        }).default(0),
+        }),
         request_detail: z.array(z.object(detailSchema)).min(1, {
             message: "Minimal tambahkan 1 produk yang akan dijahit."
         }).superRefine((data, ctx) => {
-            const seen = new Set<number>()
+            const seen = new Set<string>()
             data.forEach((item, index) => {
                 if (seen.has(item.model_id)) {
                     ctx.addIssue({
@@ -70,7 +70,7 @@ export default function FormRequest(props: BaseForm) {
     }
 
     return <ItemForm<Request>
-        id={Number(param)}
+        id={String(param)}
         {...props}
         services={Services.Request}
         onError={console.log}

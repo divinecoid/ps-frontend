@@ -4,8 +4,8 @@ import { CMT } from "./cmt"
 export type RequestStatus = "OPEN" | "CLOSED"
 
 export interface Request {
-  id: number
-  cmt_id: number
+  id: string
+  cmt_id: string
   cmt: CMT
   status: RequestStatus
   created_date: Date
@@ -13,9 +13,9 @@ export interface Request {
 }
 
 export interface RequestDetail {
-    id: number
-    request_id: number
-    product_id: number
+    id: string
+    request_id: string
+    product_id: string
     dozen_qty: number
     piece_qty: number
     bs_qty: number

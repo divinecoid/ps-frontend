@@ -1,7 +1,6 @@
 import { BaseResponse, IndexResponse, MasterData } from "./base"
 
 export interface Factory extends MasterData {
-  id: number
   code: string
   name: string
 }

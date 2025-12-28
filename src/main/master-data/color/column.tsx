@@ -5,12 +5,12 @@ import { ColumnDef } from "@tanstack/react-table"
 export const columns: ColumnDef<Color>[] = [
   {
     accessorKey: "code",
-    header: "Code",
+    header: "Kode",
     enableSorting: true,
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: "Nama",
     enableSorting: true,
   },
   {
@@ -21,9 +21,9 @@ export const columns: ColumnDef<Color>[] = [
       const data = row.original;
       switch (data.is_deleted) {
         case true:
-          return <Badge variant="destructive">Deleted</Badge>
+          return <Badge variant="destructive">Nonaktif</Badge>
         case false:
-          return <Badge variant="secondary">Active</Badge>
+          return <Badge variant="success">Aktif</Badge>
       }
     })
   }

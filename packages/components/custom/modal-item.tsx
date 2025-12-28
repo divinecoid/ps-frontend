@@ -31,8 +31,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import generateSchema from "@/lib/generate-schema";
 
 interface ModalItemProps<T extends FieldValues> {
-    id?: number;
-    setId?: React.Dispatch<React.SetStateAction<number | undefined>>
+    id?: string;
+    setId?: React.Dispatch<React.SetStateAction<string | undefined>>
     isEdit?: boolean,
     title?: string;
     description?: string;
@@ -42,7 +42,6 @@ interface ModalItemProps<T extends FieldValues> {
     onSubmit?: () => void;
     onError?: SubmitErrorHandler<FieldValues>;
     formShape: FormShape<T>[];
-    key?: number;
 }
 
 export default function ModalItem<T extends FieldValues>({
@@ -56,7 +55,6 @@ export default function ModalItem<T extends FieldValues>({
     onSubmit,
     onError,
     formShape,
-    key
 }: ModalItemProps<T>) {
     const { schema, meta, defaultValues, api } = generateSchema<T>(formShape);
     const [open, setOpen] = React.useState<boolean>(false);
@@ -112,10 +110,10 @@ export default function ModalItem<T extends FieldValues>({
         }
     }
     return (
-        <Dialog key={key} open={open} onOpenChange={(open) => { setId?.(undefined); setOpen(open); if (open) form.reset(defaultValues) }}>
+        <Dialog open={open} onOpenChange={(open) => { setId?.(undefined); setOpen(open); if (open) form.reset(defaultValues) }}>
             {!isEdit && (
                 <DialogTrigger asChild className="select-none">
-                    <Button variant="outline"><Plus /> Create</Button>
+                    <Button variant="outline"><Plus /> Tambah</Button>
                 </DialogTrigger>
             )}
             <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>

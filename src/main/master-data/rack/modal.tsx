@@ -6,37 +6,37 @@ import { z } from "zod/v3";
 
 export default function ModalRack(props: BaseModalForm) {
     return <ModalItem<Rack>
-        title={props.isEdit ? "Edit Rack" : "Add Rack"}
-        description={props.isEdit ? "Edit Rack" : "Add new rack"}
+        title={props.isEdit ? "Sunting Rak" : "Tambah Rak"}
+        description={props.isEdit ? "Sunting rak yang sudah ada" : "Tambah rak baru"}
         {...props}
         formShape={[
             {
                 key: "code",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Code must be at least 2 characters.",
+                    message: "Code setidaknya memiliki 2 karakter.",
                 }),
-                label: "Code",
-                description: "Input rack's code.",
+                label: "Kode",
+                description: "Masukkan kode rak.",
                 placeholder: "RC-001",
             },
             {
                 key: "name",
                 type: "text",
                 schema: z.string(),
-                label: "Name",
-                description: "Input rack's name.",
-                placeholder: "Rack name",
+                label: "Nama",
+                description: "Masukkan nama rak.",
+                placeholder: "Nama rak",
             },
             {
                 key: "warehouse_id",
                 type: "combobox",
-                schema: z.number().positive({
-                    message: "Warehouse is required",
+                schema: z.string().nonempty({
+                    message: "Gudang dibutuhkan",
                 }),
-                label: "Warehouse",
-                description: "The location where this rack placed.",
-                placeholder: "Warehouse",
+                label: "Gudang",
+                description: "Gudang tempat rak ini diletakkan.",
+                placeholder: "Gudang",
                 source: {
                     id: "id",
                     label: "name",

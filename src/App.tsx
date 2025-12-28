@@ -12,7 +12,6 @@ import MasterRoles from './main/master-data/role';
 import MasterRacks from './main/master-data/rack';
 import MasterWarehouse from './main/master-data/warehouse';
 import MasterCMTs from './main/master-data/cmt';
-import MasterInventories from './main/master-data/inventory';
 import MasterProducts from './main/master-data/product';
 import MasterProductModels from './main/master-data/product-model';
 import MasterSizes from './main/master-data/size';
@@ -21,11 +20,10 @@ import MasterFactories from './main/master-data/factory';
 import MasterOnlineStores from './main/master-data/online-store';
 import MasterMarketplaces from './main/master-data/marketplace';
 import { hasRole } from '@/lib/jwt-decode';
-import FormInventory from './main/master-data/inventory/form';
 import FormExample from './main/example/form';
 import WidgetPreviewPage from './main/example/widget-preview';
 import Request from './main/transaction/request';
-import FormRequest from './main/transaction/request/form-request';
+import FormRequest from './main/transaction/request/new-edit/form-request';
 
 function App() {
   const { token } = useAuth();
@@ -56,8 +54,6 @@ function App() {
               <Route path="/master-data/rack" element={<MasterRacks />} />
               <Route path="/master-data/warehouse" element={<MasterWarehouse />} />
               <Route path="/master-data/cmt" element={<MasterCMTs />} />
-              <Route path="/master-data/inventory" element={<MasterInventories />} />
-              <Route path="/master-data/inventory/edit/:id" element={<FormInventory />} />
               <Route path="/master-data/product" element={<MasterProducts />} />
               <Route path="/master-data/product-model" element={<MasterProductModels />} />
               <Route path="/master-data/size" element={<MasterSizes />} />

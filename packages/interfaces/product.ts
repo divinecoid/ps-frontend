@@ -1,11 +1,10 @@
 import { BaseResponse, IndexResponse, MasterData } from "./base"
 
 export interface Product extends MasterData {
-  id: number
   sku: string
-  color_id: number
-  model_id: number
-  size_id: number
+  color_id: string
+  model_id: string
+  size_id: string
   color: {
     name: string
   }

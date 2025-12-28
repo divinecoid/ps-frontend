@@ -5,7 +5,6 @@ import * as MasterRole from './master-role';
 import * as MasterRack from './master-rack';
 import * as MasterWarehouse from './master-warehouse';
 import * as MasterCMT from './master-cmt';
-import * as MasterInventory from './master-inventory';
 import * as MasterProduct from './master-product';
 import * as MasterProductModel from './master-product-model';
 import * as MasterSize from './master-size';
@@ -22,7 +21,6 @@ const Services = {
     MasterRack,
     MasterWarehouse,
     MasterCMT,
-    MasterInventory,
     MasterProduct,
     MasterProductModel,
     MasterSize,

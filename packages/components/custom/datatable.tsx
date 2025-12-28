@@ -108,7 +108,7 @@ export default function DataTable<TData, TValue>({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild className="select-none">
                   <Button variant="outline">
-                    Columns <ChevronDown />
+                    Kolom <ChevronDown />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -220,7 +220,7 @@ export default function DataTable<TData, TValue>({
                   >
                     <Skeleton className={`rounded-none absolute left-0 right-0 top-0 bottom-0 items-center justify-center ${loading ? 'flex' : 'hidden'} duration-500 fade-in`} />
                     <div className={`${loading ? 'opacity-0' : 'opacity-100 '} duration-500 absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center fade-in`}>
-                      No results.
+                      Tidak ada data.
                     </div>
                   </TableCell>
                 </TableRow>
@@ -234,12 +234,12 @@ export default function DataTable<TData, TValue>({
           {table.getFilteredSelectedRowModel().rows.length == 0 ?
             <>
               {table.getFilteredRowModel().rows.length} of{" "}
-              {count} row(s) retrieved.
+              {count} baris ditampilkan.
             </>
             :
             <>
               {table.getFilteredSelectedRowModel().rows.length} of{" "}
-              {count} row(s) selected.
+              {count} baris terpilih.
             </>
           }
         </div>

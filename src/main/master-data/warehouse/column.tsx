@@ -5,30 +5,30 @@ import { ColumnDef } from "@tanstack/react-table"
 export const columns: ColumnDef<Warehouse>[] = [
   {
     accessorKey: "code",
-    header: "Code",
+    header: "Kode",
     enableSorting: true,
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: "Nama",
     enableSorting: true,
   },
   {
     accessorKey: "priority",
-    header: "Priority",
+    header: "Prioritas",
     enableSorting: true,
   },
   {
     accessorKey: "is_deleted",
-    header: "Deleted",
+    header: "Status gudang",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
       switch (data.is_deleted) {
         case true:
-          return <Badge variant="destructive">Deleted</Badge>
+          return <Badge variant="destructive">Nonaktif</Badge>
         case false:
-          return <Badge variant="secondary">Active</Badge>
+          return <Badge variant="success">Aktif</Badge>
       }
     })
   }

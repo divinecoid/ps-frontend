@@ -8,20 +8,20 @@ import Services from "@/services";
 import React from "react";
 import VariantListItem from "./form-request-detail-variant-list-item";
 import ConfirmDetail from "./form-request-detail-confirm";
-import { ProductModelViewResponse } from "@/interfaces/product-model";
 
 export default function ProductList<T>({ form, index, parentKey, handleDelete }: { form: UseFormReturn<FieldValues, T, FieldValues>, index: number, parentKey: string, handleDelete: React.Dispatch<React.SetStateAction<number | undefined>> }) {
-    const [deleteId, setDeleteId] = React.useState<number | undefined>();
+    const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
     const fieldName = `${parentKey}.${index}.'variant_detail'`
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: fieldName
     })
-    const handleAddVariants = async (index: number) => {
-        const res = await Services.MasterProductModel.show(index);
-        const model: ProductModelViewResponse = await res.json();
-        console.log(model.data); //TODO:
+    const handleAddVariants = async (value: any) => {
+        // const res = await Services.MasterProductModel.show(index);
+        // const model: ProductModelViewResponse = await res.json();
+        // console.log(model.data); //TODO:
+        console.log(value)
         append({
             size_id: undefined,
             dozen_qty: "",
@@ -33,7 +33,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
         // handleAddVariants(form.watch('model_id'));
     }, [form.watch('model_id')]);
     return <>
-        <ConfirmDetail id={deleteId} setId={setDeleteId} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus ukuran terpilih secara permanen!" />
+        <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus ukuran terpilih secara permanen!" />
         <Card className="p-4 rounded-lg flex gap-0 h-min @container">
             <CardHeader className="p-0">
                 <div className="flex gap-2">
@@ -87,13 +87,13 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
                 <FormField
                     control={form.control}
                     name={`${parentKey}.${index}.variant_detail`}
-                    render={() => (
+                    render={({field}) => (
                         <>
                             {fields.map((row, index) => (
-                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteId} rowKey={fieldName} />
+                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} />
                             ))}
                             <div className="flex items-end">
-                                <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants(index)}><Plus /> Tambah varian</Button>
+                                <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants(field.value)}><Plus /> Tambah varian</Button>
                             </div>
                             <FormMessage />
                         </>

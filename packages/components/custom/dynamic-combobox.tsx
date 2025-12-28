@@ -27,7 +27,7 @@ interface DynamicComboboxProps {
   variant?: "outline" | "link" | "default" | "destructive" | "secondary" | "ghost" | null | undefined;
   type?: 'single' | 'multi';
   value: string | number | (string | number)[];
-  onValueChange: (values: number | number[]) => void;
+  onValueChange: (values: string | string[]) => void;
   className?: string | undefined;
   "aria-invalid"?: boolean
 }
@@ -85,9 +85,9 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
       </PopoverTrigger>
       <PopoverContent className="p-0">
         <Command shouldFilter={false}>
-          <CommandInput placeholder="Search..." className="h-9" value={filter} onValueChange={setFilter} />
+          <CommandInput placeholder="Telusuri..." className="h-9" value={filter} onValueChange={setFilter} />
           <CommandList>
-            <CommandEmpty>No data found.</CommandEmpty>
+            <CommandEmpty>Data tidak ditemukan.</CommandEmpty>
             <CommandGroup>
               {options.map((item) => (
                 <CommandItem
@@ -95,7 +95,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
                   value={item.value}
                   onSelect={() => {
                     if (type === 'single') {
-                      onValueChange(Number(item.value))
+                      onValueChange(item.value)
                       setOpen(false)
                     } else {
                       const current = Array.isArray(value) ? value.map(String) : [];
@@ -103,7 +103,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
                       const next = exists
                         ? current.filter(v => v !== item.value)
                         : [...current, item.value];
-                      onValueChange(next.map(Number));
+                      onValueChange(next);
                     }
                   }}
                 >

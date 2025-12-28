@@ -10,7 +10,7 @@ interface OverviewProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     selectable?: boolean;
     actions?: (utils: { services: BaseApiCallProps<TValue>, onSubmit: () => void }) => React.ReactNode[];
-    rowActions?: (cell: { row: TData, id: number | undefined, setId: React.Dispatch<React.SetStateAction<number | undefined>> }) => React.ReactNode;
+    rowActions?: (cell: { row: TData, id: string | undefined, setId: React.Dispatch<React.SetStateAction<string | undefined>> }) => React.ReactNode;
     onLoadedRef?: (refreshFn: () => void) => void;
 }
 
@@ -20,7 +20,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     const [count, setCount] = useState(0);
     const [filter, setFilter] = useState<string>("");
     const [data, setData] = useState<TData[]>();
-    const [id, setId] = useState<number>();
+    const [id, setId] = useState<string>();
     const [loading, setLoading] = useState<boolean>(true);
     const getData = async () => {
         try {
@@ -67,7 +67,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 ) : undefined}
                 filterComponents={
                     <Input
-                        placeholder="Search..."
+                        placeholder="Telusuri..."
                         value={filter}
                         onChange={e => setFilter(e.target.value)}
                         className="max-w-sm"

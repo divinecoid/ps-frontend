@@ -5,27 +5,27 @@ import { z } from "zod/v3";
 
 export default function ModalProductModel(props: BaseModalForm) {
     return <ModalItem<ProductModel>
-        title={props.isEdit ? "Edit Product Model" : "Add Product Model"}
-        description={props.isEdit ? "Edit product model" : "Add new product model"}
+        title={props.isEdit ? "Sunting Model Produk" : "Tambah Model Produk"}
+        description={props.isEdit ? "Sunting model produk yang sudah ada" : "Tambah model produk baru"}
         {...props}
         formShape={[
             {
-                key: "code",
+                key: "sku",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Code must be at least 2 characters.",
+                    message: "SKU setidaknya memiliki 2 karakter.",
                 }),
-                label: "Code",
-                description: "Input product model's code.",
+                label: "SKU",
+                description: "Masukkan SKU model produk.",
                 placeholder: "PRD-001",
             },
             {
                 key: "name",
                 type: "text",
                 schema: z.string(),
-                label: "Name",
-                description: "Input product model's name.",
-                placeholder: "Product model name",
+                label: "Nama",
+                description: "Masukkan nama model produk.",
+                placeholder: "Nama model produk",
             },
         ]} />
 }

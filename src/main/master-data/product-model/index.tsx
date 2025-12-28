@@ -8,9 +8,9 @@ import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
 
 export default function MasterProductModels() {
-    const [editRow, setEditRow] = useState<number>();
-    const [restoreRow, setRestoreRow] = useState<number>();
-    const [deleteRow, setDeleteRow] = useState<number>();
+    const [editRow, setEditRow] = useState<string|undefined>();
+    const [restoreRow, setRestoreRow] = useState<string|undefined>();
+    const [deleteRow, setDeleteRow] = useState<string|undefined>();
     return <OverviewPage
         columns={columns}
         source={Services.MasterProductModel}
@@ -18,16 +18,16 @@ export default function MasterProductModels() {
         actions={(props) => [
             <ModalProductModel {...props} />,
             <ModalProductModel {...props} isEdit id={editRow} setId={setEditRow} />,
-            <ModalConfirm {...props} action={Services.MasterProductModel.restore} id={restoreRow} setId={setRestoreRow} title="Are you want to restore this object?" description="This action will restore this object back to active state." />,
-            <ModalConfirm {...props} action={Services.MasterProductModel.destroy} id={deleteRow} setId={setDeleteRow} title="Are you want to delete this object?" description="This action will set this object to inactive state." />
+            <ModalConfirm {...props} action={Services.MasterProductModel.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan model ini?" description="Aksi ini akan memunculkan model ini kembali ke dalam daftar pilihan." />,
+            <ModalConfirm {...props} action={Services.MasterProductModel.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk menghapus model ini?" description="Aksi ini akan menghilangkan model ini dari daftar pilihan." />
         ]}
         rowActions={({ row }) => (
             <DropdownRowActions>
                 {row.is_deleted ?
-                    <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Kembalikan</DropdownMenuItem>
                     : <>
-                        <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Sunting</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
                     </>
                 }
             </DropdownRowActions>
