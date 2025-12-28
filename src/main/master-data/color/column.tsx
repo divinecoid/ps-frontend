@@ -15,7 +15,7 @@ export const columns: ColumnDef<Color>[] = [
   },
   {
     accessorKey: "is_deleted",
-    header: "Deleted",
+    header: "Status warna",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;

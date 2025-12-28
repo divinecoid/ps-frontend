@@ -5,27 +5,27 @@ import { z } from "zod/v3";
 
 export default function ModalColor(props: BaseModalForm) {
     return <ModalItem<Color>
-        title={props.isEdit ? "Edit Color" : "Add Color"}
-        description={props.isEdit ? "Edit Color" : "Add new color"}
+        title={props.isEdit ? "Sunting Warna" : "Tambah Warna"}
+        description={props.isEdit ? "Sunting warna yang sudah ada" : "Tambah warna baru"}
         {...props}
         formShape={[
             {
                 key: "code",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Code must be at least 2 characters.",
+                    message: "Kode warna setidaknya memiliki 2 karakter.",
                 }),
-                label: "Code",
-                description: "Input color's code.",
+                label: "Kode",
+                description: "Masukkan kode warna.",
                 placeholder: "COL-001",
             },
             {
                 key: "name",
                 type: "text",
                 schema: z.string(),
-                label: "Name",
-                description: "Input color's name.",
-                placeholder: "Color name",
+                label: "Nama",
+                description: "Masukkan nama warna.",
+                placeholder: "Nama warna",
             },
         ]}
     />

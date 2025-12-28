@@ -6,57 +6,57 @@ import { z } from "zod/v3";
 
 export default function ModalUser(props: BaseModalForm) {
     return <ModalItem<User>
-        title={props.isEdit ? "Edit User" : "Add User"}
-        description={props.isEdit ? "Edit User" : "Add new User"}
+        title={props.isEdit ? "Sunting Pengguna" : "Tambah pengguna"}
+        description={props.isEdit ? "Sunting pengguna yang sudah ada" : "Tambah pengguna baru"}
         {...props}
         formShape={[
             {
                 key: "name",
                 type: "text",
-                schema: z.string().nonempty("Name is required"),
-                label: "Name",
-                description: "Input User's name.",
-                placeholder: "User name",
+                schema: z.string().nonempty("Nama lengkap dibutuhkan"),
+                label: "Nama lengkap",
+                description: "Masukkan nama lengkap.",
+                placeholder: "Nama lengkap",
             },
             {
                 key: "username",
                 type: "text",
-                schema: z.string().nonempty("Username is required"),
-                label: "Username",
-                description: "Input User's username.",
-                placeholder: "Username",
+                schema: z.string().nonempty("Nama pengguna dibutuhkan"),
+                label: "Nama pengguna",
+                description: "Masukkan nama pengguna.",
+                placeholder: "Nama pengguna",
             },
             {
                 key: "email",
                 type: "text",
-                schema: z.string().nonempty("Email is required"),
+                schema: z.string().nonempty("Email dibutuhkan"),
                 label: "Email",
-                description: "Input User's email.",
-                placeholder: "User email",
+                description: "Masukkan email.",
+                placeholder: "Email pengguna",
             },
             {
                 key: "password",
                 type: "password",
                 passwordEdit: props.isEdit,
-                schema: props.isEdit ? z.string().optional() : z.string().nonempty("Password is required"),
-                label: "Password",
-                description: "Input User's password.",
-                placeholder: "User password",
+                schema: props.isEdit ? z.string().optional() : z.string().nonempty("Kata sandi dibutuhkan"),
+                label: "Kata sandi",
+                description: "Masukkan kata sandi pengguna.",
+                placeholder: "Kata sandi pengguna",
             },
             {
                 key: "role_id",
                 type: "multi-combobox",
                 schema: z.array(z.string()).nonempty({
-                    message: "Role is required"
+                    message: "Peran dibutuhkan"
                 }),
                 source: {
                     api: Services.MasterRole.index,
                     id: "id",
                     label: "name"
                 },
-                label: "Role",
-                description: "Input User's roles.",
-                placeholder: "User roles",
+                label: "Peran",
+                description: "Masukkan peran pengguna.",
+                placeholder: "Peran pengguna",
             },
         ]} />
 }

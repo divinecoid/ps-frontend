@@ -70,7 +70,7 @@ export const columns: ColumnDef<OnlineStore>[] = [
   },
   {
     accessorKey: "is_deleted",
-    header: "Deleted",
+    header: "Status toko online",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;

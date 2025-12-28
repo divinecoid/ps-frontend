@@ -15,7 +15,7 @@ export const columns: ColumnDef<ProductModel>[] = [
   },
   {
     accessorKey: "is_deleted",
-    header: "Status Model",
+    header: "Status model",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;

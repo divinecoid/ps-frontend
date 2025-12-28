@@ -15,7 +15,7 @@ export const columns: ColumnDef<Factory>[] = [
   },
   {
     accessorKey: "is_deleted",
-    header: "Deleted",
+    header: "Status pabrik",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
