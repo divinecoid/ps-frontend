@@ -5,7 +5,7 @@ interface TokenData extends JwtPayload {
     email?: string,
     roles?: string[]
 }
-const decodeToken = (token: string | null) => {
+export const decodeToken = (token: string | null) => {
     try {
         if (!token) return null;
         return jwtDecode<TokenData>(token);

@@ -1,10 +1,6 @@
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
 } from "lucide-react"
 
 import {
@@ -15,7 +11,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -30,14 +25,16 @@ import {
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/provider/auth-provider"
 import { toast } from "sonner"
+import { initials } from "@/lib/initials"
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
+    name?: string
+    roles?: string[]
+    email?: string
+    avatar?: string
   }
 }) {
   const { isMobile, setOpenMobile } = useSidebar();
@@ -48,12 +45,12 @@ export function NavUser({
     try {
       setOpenMobile(false);
       setTimeout(async () => {
-      const success = await logout();
-      if (success) {
+        const success = await logout();
+        if (success) {
           navigate('/login');
         }
       }, 200);
-      } catch (error) {
+    } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message, { richColors: true })
       }
@@ -71,10 +68,10 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">{initials(user.name)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium capitalize">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -90,16 +87,17 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">{initials(user.name)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium capitalize">{user.name}</span>
                   <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-light text-xs">{user.roles?.map((r, index) => index != 0 ? r.toLowerCase() : r).join(", ")}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
                 Upgrade to Pro
@@ -120,7 +118,7 @@ export function NavUser({
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuItem onClick={onLogout}>
               <LogOut />
               Log out

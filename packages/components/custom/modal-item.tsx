@@ -155,9 +155,9 @@ export default function ModalItem<T extends FieldValues>({
                         </ScrollArea>
                         <DialogFooter className="sm:justify-end px-6 pb-6">
                             <DialogClose asChild>
-                                <Button variant="outline">Cancel</Button>
+                                <Button variant="outline">Batal</Button>
                             </DialogClose>
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit">Simpan</Button>
                         </DialogFooter>
                     </form>
                 </Form>

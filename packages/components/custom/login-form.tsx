@@ -45,45 +45,45 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6 select-none", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Masuk ke dalam akun anda</CardTitle>
           <CardDescription>
-            Enter your credential below to login to your account
+            Masukkan kredensial anda di bawah untuk masuk ke akun anda
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit}>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="username">Username</FieldLabel>
+                <FieldLabel htmlFor="username">Nama pengguna</FieldLabel>
                 <Input
                   id="username"
                   name="username"
                   type="text"
-                  placeholder="user.example"
+                  placeholder="pengguna.contoh"
                   required
                   autoFocus
                 />
               </Field>
               <Field>
                 <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <FieldLabel htmlFor="password">Kata sandi</FieldLabel>
                   <a
                     href="#"
                     tabIndex={1}
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
-                    Forgot your password?
+                    Lupa kata sandi anda?
                   </a>
                 </div>
                 <Input id="password" type="password" required placeholder="password.example.123" />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit">Masuk</Button>
                 {/* <Button variant="outline" type="button">
                   Login with Google
                 </Button> */}
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <Link tabIndex={2} to="/register">Sign up</Link>
+                  Tidak memiliki akun? <Link tabIndex={2} to="/register">Daftar</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

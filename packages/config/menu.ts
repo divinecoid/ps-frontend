@@ -1,4 +1,4 @@
-import { Frame, Map, PieChart, Repeat2, SquareTerminal, UserCog, Construction } from "lucide-react";
+import { Repeat2, SquareTerminal, UserCog, Construction } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -129,11 +129,11 @@ import { Frame, Map, PieChart, Repeat2, SquareTerminal, UserCog, Construction } 
 //   ],
 // }
 export const Menu = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+  // user: {
+  //   name: "shadcn",
+  //   email: "m@example.com",
+  //   avatar: "/avatars/shadcn.jpg",
+  // },
   // teams: [
   //   {
   //     name: "PS Frontend",
@@ -153,7 +153,7 @@ export const Menu = {
   // ],
   navTransaction: [
     {
-      title: "Transaction",
+      title: "Transaksi",
       url: "#",
       icon: Repeat2,
       role: [
@@ -163,7 +163,7 @@ export const Menu = {
       ],
       items: [
         {
-          title: "Request",
+          title: "Permintaan",
           url: "/transaction/request",
           role: [
             'preparist',
@@ -172,7 +172,7 @@ export const Menu = {
           ]
         },
         {
-          title: "Order",
+          title: "Pesanan",
           url: "/transaction/order",
           role: [
             'preparist',
@@ -193,14 +193,14 @@ export const Menu = {
       ],
       items: [
         {
-          title: "Rack",
+          title: "Rak",
           url: "/master-data/rack",
           role: [
             'admin'
           ]
         },
         {
-          title: "Warehouse",
+          title: "Gudang",
           url: "/master-data/warehouse",
           role: [
             'admin'
@@ -221,42 +221,42 @@ export const Menu = {
         //   ]
         // },
         {
-          title: "Product",
+          title: "Produk",
           url: "/master-data/product",
           role: [
             'admin'
           ]
         },
         {
-          title: "Product Model",
+          title: "Model",
           url: "/master-data/product-model",
           role: [
             'admin'
           ]
         },
         {
-          title: "Size",
+          title: "Ukuran",
           url: "/master-data/size",
           role: [
             'admin'
           ]
         },
         {
-          title: "Color",
+          title: "Warna",
           url: "/master-data/color",
           role: [
             'admin'
           ]
         },
         {
-          title: "Factory",
+          title: "Pabrik",
           url: "/master-data/factory",
           role: [
             'admin'
           ]
         },
         {
-          title: "Online Store",
+          title: "Toko online",
           url: "/master-data/online-store",
           role: [
             'admin'
@@ -272,7 +272,7 @@ export const Menu = {
       ],
     },
     {
-      title: "Administration",
+      title: "Administrasi",
       url: "#",
       icon: UserCog,
       role: [
@@ -281,14 +281,14 @@ export const Menu = {
       ],
       items: [
         {
-          title: "User",
+          title: "Pengguna",
           url: "/master-data/user",
           role: [
             'admin'
           ]
         },
         {
-          title: "Role",
+          title: "Peran",
           url: "/master-data/role",
           role: [
             'admin'
@@ -297,23 +297,23 @@ export const Menu = {
       ]
     }
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+  // projects: [
+  //   {
+  //     name: "Design Engineering",
+  //     url: "#",
+  //     icon: Frame,
+  //   },
+  //   {
+  //     name: "Sales & Marketing",
+  //     url: "#",
+  //     icon: PieChart,
+  //   },
+  //   {
+  //     name: "Travel",
+  //     url: "#",
+  //     icon: Map,
+  //   },
+  // ],
   tests: [
     {
       name: "Basic CRUD",
