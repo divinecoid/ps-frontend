@@ -1,8 +1,8 @@
 import { Badge } from "@/components/ui/badge";
-import { Rack } from "@/interfaces/rack"
+import { CMT } from "@/interfaces/cmt";
 import { ColumnDef } from "@tanstack/react-table"
 
-export const columns: ColumnDef<Rack>[] = [
+export const columns: ColumnDef<CMT>[] = [
   {
     accessorKey: "code",
     header: "Kode",
@@ -11,6 +11,21 @@ export const columns: ColumnDef<Rack>[] = [
   {
     accessorKey: "name",
     header: "Nama",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "contact_person",
+    header: "Kontak",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "phone",
+    header: "Telepon",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "address",
+    header: "Alamat",
     enableSorting: true,
   },
   {

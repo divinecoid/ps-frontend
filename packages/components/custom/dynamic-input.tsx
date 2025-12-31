@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/custom/date-picker";
 import { Mode } from "react-day-picker";
 
-export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea" | "custom";
+export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea" | "custom" | "tel";
 
 export interface InputMeta {
     label?: string;
@@ -52,7 +52,6 @@ export default function DynamicInput<T extends FieldValues>({
         case 'text':
         case 'email':
         case 'search':
-        case 'tel':
         case 'url':
         case 'number':
         case 'color':
@@ -63,6 +62,16 @@ export default function DynamicInput<T extends FieldValues>({
                 type={type}
                 value={field.value ?? ""}
                 onChange={field.onChange}
+                onBlur={field.onBlur}
+                name={field.name}
+                ref={field.ref}
+            />
+        case "tel":
+            return <Input
+                type="tel"
+                placeholder={placeholder}
+                value={field.value ?? ""}
+                onChange={e => field.onChange(e.target.value.replace(/[^0-9]/g, ""))}
                 onBlur={field.onBlur}
                 name={field.name}
                 ref={field.ref}

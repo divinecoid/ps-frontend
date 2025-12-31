@@ -14,6 +14,22 @@ export const columns: ColumnDef<ProductModel>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "sizes",
+    header: "Ukuran",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return row.original.sizes.map(s => s.name).join(", ")
+    })
+  },
+  {
+    accessorKey: "colors",
+    header: "Warna",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return row.original.colors.map(c => c.name).join(", ")
+    })
+  },
+  {
     accessorKey: "is_deleted",
     header: "Status model",
     enableSorting: true,

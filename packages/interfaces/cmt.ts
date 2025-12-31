@@ -3,6 +3,9 @@ import { BaseResponse, IndexResponse, MasterData } from "./base"
 export interface CMT extends MasterData {
   code: string
   name: string
+  contact_person: string
+  phone: string
+  address: string
 }
 
 export interface CMTResponse extends IndexResponse {

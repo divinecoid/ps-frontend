@@ -27,5 +27,29 @@ export default function ModalCMT(props: BaseModalForm) {
                 description: "Masukkan nama CMT.",
                 placeholder: "Nama CMT",
             },
+            {
+                key: "contact_person",
+                type: "text",
+                schema: z.string(),
+                label: "Kontak",
+                description: "Masukkan nama kontak CMT.",
+                placeholder: "Nama kontak CMT",
+            },
+            {
+                key: "phone",
+                type: "tel",
+                schema: z.string().regex(/^\d{10,13}$/, { message: `Telepon harus sekitar 10–13 digit`}),
+                label: "Telepon",
+                description: "Masukkan telepon CMT.",
+                placeholder: "Telepon CMT",
+            },
+            {
+                key: "address",
+                type: "textarea",
+                schema: z.string(),
+                label: "Alamat",
+                description: "Masukkan alamat CMT.",
+                placeholder: "Alamat CMT",
+            },
         ]} />
 }

@@ -7,8 +7,8 @@ export interface ProductModel extends MasterData {
   name: string
   color_id: string[]
   size_id: string[]
-  color: Color[]
-  size: Size[]
+  colors: Color[]
+  sizes: Size[]
 }
 
 export interface ProductModelResponse extends IndexResponse {
