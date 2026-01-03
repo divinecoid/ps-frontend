@@ -37,10 +37,12 @@ interface DynamicInputProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>;
     meta: InputMeta;
     api?: BaseApiCallIndexProps | null;
+    disabled?: boolean
     "aria-invalid"?: boolean
 }
 
 export default function DynamicInput<T extends FieldValues>({
+    disabled,
     field,
     meta,
     api,
@@ -65,6 +67,7 @@ export default function DynamicInput<T extends FieldValues>({
                 onBlur={field.onBlur}
                 name={field.name}
                 ref={field.ref}
+                disabled={disabled}
             />
         case "tel":
             return <Input
@@ -75,6 +78,7 @@ export default function DynamicInput<T extends FieldValues>({
                 onBlur={field.onBlur}
                 name={field.name}
                 ref={field.ref}
+                disabled={disabled}
             />
         case 'password':
             return <div className="flex gap-3">
@@ -88,11 +92,13 @@ export default function DynamicInput<T extends FieldValues>({
                         onBlur={field.onBlur}
                         name={field.name}
                         ref={field.ref}
+                        disabled={disabled}
                     />
                 )}
                 {passwordEdit && (
                     <Button type="button"
                         variant={edit ? 'default' : 'secondary'}
+                        disabled={disabled}
                         onClick={() => { setEdit(!edit); field.onChange(undefined) }}>
                         {edit ? 'Cancel' : 'Update Password'}
                     </Button>
@@ -104,6 +110,7 @@ export default function DynamicInput<T extends FieldValues>({
                 onValueChange={field.onChange}
                 max={max}
                 step={step}
+                disabled={disabled}
             />
         case 'textarea':
             return <Textarea
@@ -112,11 +119,13 @@ export default function DynamicInput<T extends FieldValues>({
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 name={field.name}
-                ref={field.ref} />
+                ref={field.ref}
+                disabled={disabled} />
         case 'checkbox':
             return <Checkbox
                 checked={!!field.value}
-                onCheckedChange={field.onChange} />
+                onCheckedChange={field.onChange}
+                disabled={disabled} />
         case 'combobox':
         case 'multi-combobox':
             return api != undefined && source != undefined ? <DynamicCombobox
@@ -127,7 +136,8 @@ export default function DynamicInput<T extends FieldValues>({
                 type={type == "multi-combobox" ? "multi" : "single"}
                 source={api}
                 value={field.value}
-                onValueChange={field.onChange} /> :
+                onValueChange={field.onChange}
+                disabled={disabled} /> :
                 <div className="border-destructive rounded-md p-2 bg-destructive/20">
                     <p className="text-xs text-destructive">
                         Dynamic Combobox needs API as options source: {type}
@@ -136,7 +146,8 @@ export default function DynamicInput<T extends FieldValues>({
         case 'radio':
             return <RadioGroup
                 value={String(field.value ?? defaultValue ?? "")}
-                onValueChange={field.onChange}>
+                onValueChange={field.onChange}
+                disabled={disabled}>
                 {options && Object.entries(options).map(([value, label]) => {
                     return <div
                         className="flex items-center gap-3"
@@ -155,6 +166,7 @@ export default function DynamicInput<T extends FieldValues>({
                 value={String(field.value ?? defaultValue ?? "")}
                 onValueChange={field.onChange}
                 name={field.name}
+                disabled={disabled}
             >
                 <SelectTrigger>
                     <SelectValue
@@ -174,7 +186,8 @@ export default function DynamicInput<T extends FieldValues>({
                 <Switch
                     id={meta.label}
                     checked={!!field.value}
-                    onCheckedChange={field.onChange} />
+                    onCheckedChange={field.onChange}
+                    disabled={disabled} />
                 <Label
                     htmlFor={meta.label}>
                     {meta.label}
@@ -186,7 +199,8 @@ export default function DynamicInput<T extends FieldValues>({
                 value={field.value}
                 onChange={field.onChange}
                 numberOfMonths={numberOfMonths}
-                mode={mode} />
+                mode={mode}
+                disabled={disabled} />
         case 'custom':
             return undefined;
         default:

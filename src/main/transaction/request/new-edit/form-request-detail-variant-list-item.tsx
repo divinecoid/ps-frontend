@@ -7,7 +7,14 @@ import { Input } from "@/components/ui/input";
 import Services from "@/services";
 import { cn } from "@/lib/utils";
 
-export default function VariantListItem<T>({ control, index, rowKey, handleRemove }: { control: Control<FieldValues, T, FieldValues>, rowKey: string, index: number, handleRemove: (index: number) => void }) {
+interface DetailVariantListProps<T> {
+    control: Control<FieldValues, T, FieldValues>
+    rowKey: string
+    index: number
+    handleRemove: (index: number) => void
+    disabled?: boolean
+}
+export default function VariantListItem<T>({ control, index, rowKey, handleRemove, disabled }: DetailVariantListProps<T>) {
 
     return <div className="flex flex-1 gap-0 items-end">
         <FormField
@@ -25,7 +32,8 @@ export default function VariantListItem<T>({ control, index, rowKey, handleRemov
                             className={cn("w-full rounded-none rounded-l-md border border-r-0 shadow-none", fieldState.error && "border-destructive")}
                             source={Services.MasterSize.index}
                             value={field.value}
-                            onValueChange={field.onChange} />
+                            onValueChange={field.onChange}
+                            disabled={disabled} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>
@@ -42,7 +50,8 @@ export default function VariantListItem<T>({ control, index, rowKey, handleRemov
                             type="number"
                             className="w-full rounded-none border border-r-0 shadow-none"
                             value={field.value}
-                            onChange={field.onChange} />
+                            onChange={field.onChange}
+                            disabled={disabled} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>
@@ -57,16 +66,21 @@ export default function VariantListItem<T>({ control, index, rowKey, handleRemov
                         <Input
                             placeholder="Potongan"
                             type="number"
-                            className="w-full rounded-none border border-r-0 shadow-none"
+                            className={cn(`w-full border rounded-l-none shadow-none`,
+                                !disabled && 'border-r-0 rounded-none'
+                            )}
                             value={field.value}
-                            onChange={field.onChange} />
+                            onChange={field.onChange}
+                            disabled={disabled} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>
             )}
         />
         <div className="h-full">
-            <Button tabIndex={-1} variant="outline" className="border rounded-none rounded-r-md" type="button" onClick={() => handleRemove(index)}><X color="red" /></Button>
+            {!disabled && (
+                <Button tabIndex={-1} variant="outline" className="border rounded-none rounded-r-md" type="button" onClick={() => handleRemove(index)}><X color="red" /></Button>
+            )}
         </div>
     </div>
 }

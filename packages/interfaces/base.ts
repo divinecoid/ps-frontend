@@ -62,6 +62,7 @@ export interface BaseModalForm extends BaseModal {
 
 export interface BaseForm {
   id?: string
+  disabled?: boolean
 };
 
 export interface BaseDialog extends BaseModal {

@@ -193,15 +193,15 @@ export const Menu = {
       ],
       items: [
         {
-          title: "Rak",
-          url: "/master-data/rack",
+          title: "Gudang",
+          url: "/master-data/warehouse",
           role: [
             'admin'
           ]
         },
         {
-          title: "Gudang",
-          url: "/master-data/warehouse",
+          title: "Rak",
+          url: "/master-data/rack",
           role: [
             'admin'
           ]
@@ -221,8 +221,15 @@ export const Menu = {
         //   ]
         // },
         {
-          title: "Produk",
-          url: "/master-data/product",
+          title: "Ukuran",
+          url: "/master-data/size",
+          role: [
+            'admin'
+          ]
+        },
+        {
+          title: "Warna",
+          url: "/master-data/color",
           role: [
             'admin'
           ]
@@ -235,15 +242,8 @@ export const Menu = {
           ]
         },
         {
-          title: "Ukuran",
-          url: "/master-data/size",
-          role: [
-            'admin'
-          ]
-        },
-        {
-          title: "Warna",
-          url: "/master-data/color",
+          title: "Produk",
+          url: "/master-data/product",
           role: [
             'admin'
           ]

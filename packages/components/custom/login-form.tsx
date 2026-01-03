@@ -75,7 +75,7 @@ export function LoginForm({
                     Lupa kata sandi anda?
                   </a>
                 </div>
-                <Input id="password" type="password" required placeholder="password.example.123" />
+                <Input id="password" type="password" required placeholder="kata-sandi.contoh.123" />
               </Field>
               <Field>
                 <Button type="submit">Masuk</Button>

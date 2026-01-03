@@ -20,7 +20,7 @@ export default function Request() {
         ]}
         rowActions={({ row }) => (
             <DropdownRowActions>
-                <DropdownMenuItem asChild><Link to={`./edit/${row.id}`}>Sunting</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to={`./view/${row.id}`}>Lihat</Link></DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
             </DropdownRowActions>
         )}

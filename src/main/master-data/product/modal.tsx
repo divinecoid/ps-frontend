@@ -11,21 +11,6 @@ export default function ModalProduct(props: BaseModalForm) {
         {...props}
         formShape={[
             {
-                key: "color_id",
-                type: "combobox",
-                schema: z.string().nonempty({
-                    message: "Warna dibutuhkan.",
-                }),
-                source: {
-                    id: "id",
-                    label: "name",
-                    api: Services.MasterColor.index
-                },
-                label: "Warna",
-                description: "Masukkan warna produk.",
-                placeholder: "Warna produk",
-            },
-            {
                 key: "model_id",
                 type: "combobox",
                 schema: z.string().nonempty({
@@ -41,29 +26,30 @@ export default function ModalProduct(props: BaseModalForm) {
                 placeholder: "Model produk",
             },
             {
-                key: "size_id",
+                key: "rack_id",
                 type: "combobox",
                 schema: z.string().nonempty({
-                    message: "Ukuran dibutuhkan.",
+                    message: "Rak dibutuhkan.",
                 }),
                 source: {
                     id: "id",
                     label: "name",
-                    api: Services.MasterSize.index
+                    api: Services.MasterRack.index
                 },
-                label: "Ukuran",
-                description: "Masukkan ukuran produk.",
-                placeholder: "Ukuran produk",
+                label: "Rak",
+                description: "Masukkan rak produk.",
+                placeholder: "Rak produk",
             },
+            
             {
-                key: "sku",
+                key: "barcode",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "SKU produk setidaknya memiliki 2 karakter.",
+                    message: "Barcode produk setidaknya memiliki 2 karakter.",
                 }),
-                label: "SKU",
-                description: "Masukkan SKU produk.",
-                placeholder: "SKU produk",
+                label: "Barcode",
+                description: "Masukkan barcode produk.",
+                placeholder: "Barcode produk",
             },
         ]}
     />

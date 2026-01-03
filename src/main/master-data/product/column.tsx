@@ -4,23 +4,18 @@ import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Product>[] = [
   {
-    accessorKey: "sku",
-    header: "SKU",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "color.name",
-    header: "Warna",
-    enableSorting: true,
-  },
-  {
     accessorKey: "model.name",
     header: "Model",
     enableSorting: true,
   },
   {
-    accessorKey: "size.name",
-    header: "Ukuran",
+    accessorKey: "rack.name",
+    header: "Rak",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "barcode",
+    header: "Barcode",
     enableSorting: true,
   },
   {

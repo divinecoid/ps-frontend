@@ -9,7 +9,14 @@ import React from "react";
 import VariantListItem from "./form-request-detail-variant-list-item";
 import ConfirmDetail from "./form-request-detail-confirm";
 
-export default function ProductList<T>({ form, index, parentKey, handleDelete }: { form: UseFormReturn<FieldValues, T, FieldValues>, index: number, parentKey: string, handleDelete: React.Dispatch<React.SetStateAction<number | undefined>> }) {
+interface DetailProductListProps<T> {
+    form: UseFormReturn<FieldValues, T, FieldValues>
+    index: number
+    parentKey: string
+    handleDelete: React.Dispatch<React.SetStateAction<number | undefined>>
+    disabled?: boolean
+}
+export default function ProductList<T>({ form, index, parentKey, handleDelete, disabled }: DetailProductListProps<T>) {
     const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
     const fieldName = `${parentKey}.${index}.'variant_detail'`
 
@@ -52,7 +59,8 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
                                             type={"single"}
                                             source={Services.MasterProductModel.index}
                                             value={field.value}
-                                            onValueChange={field.onChange} />
+                                            onValueChange={field.onChange}
+                                            disabled={disabled} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -72,14 +80,17 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
                                             type={"single"}
                                             source={Services.MasterColor.index}
                                             value={field.value}
-                                            onValueChange={field.onChange} />
+                                            onValueChange={field.onChange}
+                                            disabled={disabled} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                     </div>
-                    <Button tabIndex={-1} variant="destructive" type="button" onClick={() => handleDelete(index)}><Trash /></Button>
+                    {!disabled && (
+                        <Button tabIndex={-1} variant="destructive" type="button" onClick={() => handleDelete(index)}><Trash /></Button>
+                    )}
                 </div>
             </CardHeader>
             <FormLabel className="mt-2">Varian</FormLabel>
@@ -87,13 +98,15 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
                 <FormField
                     control={form.control}
                     name={`${parentKey}.${index}.variant_detail`}
-                    render={({field}) => (
+                    render={({ field }) => (
                         <>
                             {fields.map((row, index) => (
-                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} />
+                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} />
                             ))}
                             <div className="flex items-end">
-                                <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants(field.value)}><Plus /> Tambah varian</Button>
+                                {!disabled && (
+                                    <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants(field.value)}><Plus /> Tambah varian</Button>
+                                )}
                             </div>
                             <FormMessage />
                         </>

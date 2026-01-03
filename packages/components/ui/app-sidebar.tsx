@@ -23,10 +23,7 @@ import { useAuth } from "@/provider/auth-provider"
 import { decodeToken } from "@/lib/jwt-decode"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-
   const { token } = useAuth();
-
-  console.log(decodeToken(token ?? "")?.name);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>

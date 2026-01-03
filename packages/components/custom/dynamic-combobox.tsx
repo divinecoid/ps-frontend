@@ -24,6 +24,7 @@ interface DynamicComboboxProps {
   id: string;
   label: string;
   placeholder?: string;
+  disabled?: boolean;
   variant?: "outline" | "link" | "default" | "destructive" | "secondary" | "ghost" | null | undefined;
   type?: 'single' | 'multi';
   value: string | number | (string | number)[];
@@ -37,7 +38,7 @@ interface Options {
   label: string;
 }
 
-export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, value, onValueChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
+export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, disabled, value, onValueChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
@@ -71,6 +72,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
           role="combobox"
           aria-expanded={open}
           aria-invalid={ariaInvalid}
+          disabled={disabled}
           className={cn("justify-between aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive truncate", className)}
         >
           <span className="truncate flex-1 text-left">

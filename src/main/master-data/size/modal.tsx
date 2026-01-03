@@ -12,7 +12,7 @@ export default function ModalSize(props: BaseModalForm) {
             {
                 key: "code",
                 type: "text",
-                schema: z.string().min(2, {
+                schema: z.string().min(1, {
                     message: "Kode setidaknya memiliki 2 karakter.",
                 }),
                 label: "Kode",

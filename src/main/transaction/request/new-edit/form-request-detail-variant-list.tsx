@@ -10,9 +10,10 @@ import { cn } from "@/lib/utils";
 
 interface DetailProps {
     rowKey: string
+    disabled?: boolean
 }
 
-export default function DetailList({ rowKey }: DetailProps) {
+export default function DetailList({ rowKey, disabled }: DetailProps) {
     const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
 
     const form = useFormContext()
@@ -36,13 +37,15 @@ export default function DetailList({ rowKey }: DetailProps) {
             render={() => (
                 <div className="mb-3">
                     <div className="flex my-2">
-                        <FormLabel className="flex-1">Produk</FormLabel>
-                        <Button type="button" variant="default" onClick={() => handleAdd()}><Plus />Tambah produk</Button>
+                        <FormLabel className="flex-1 py-3">Produk</FormLabel>
+                        {!disabled && (
+                            <Button type="button" variant="default" onClick={() => handleAdd()}><Plus />Tambah produk</Button>
+                        )}
                     </div>
                     <Card className={cn("shadow-none bg-secondary p-2 gap-2 grid lg:grid-cols-2 sm:grid-cols-1", (form.formState.errors[rowKey]?.message || form.formState.errors?.[rowKey]?.root?.message) && "border-destructive bg-destructive/10")}>
                         {fields.length == 0 && <CardDescription className="text-center col-span-2 h-full m-4">Daftar permintaan Anda masih kosong, silahkan tekan tambah produk yang akan dijahit!</CardDescription>}
                         {fields.map((row, index) => (
-                            <ProductList key={row.id} form={form} index={index} parentKey={rowKey} handleDelete={setDeleteIndex} />
+                            <ProductList key={row.id} form={form} index={index} parentKey={rowKey} handleDelete={setDeleteIndex} disabled={disabled} />
                         ))}
                     </Card>
                 </div>
