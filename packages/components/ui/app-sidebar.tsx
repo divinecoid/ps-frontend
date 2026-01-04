@@ -21,6 +21,7 @@ import { Menu } from "@/config/menu"
 import { Link } from "react-router-dom"
 import { useAuth } from "@/provider/auth-provider"
 import { decodeToken } from "@/lib/jwt-decode"
+import { NavInventories } from "../custom/nav-inventories"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { token } = useAuth();
@@ -44,6 +45,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
+        <NavInventories label="Gudang" items={Menu.navInventory} />
         <NavMain label="Transaksi" items={Menu.navTransaction} />
         <NavMain label="Sistem" items={Menu.navMaster} />
         {/* <NavProjects projects={Menu.projects} /> */}

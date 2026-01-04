@@ -70,7 +70,7 @@ function App() {
               <Route path="/transaction/request/new" element={<FormRequest/>} />
               <Route path="/transaction/request/view/:id" element={<FormRequest disabled={true} />} />
               <Route path="/transaction/order" element={<></>} />
-
+              <Route path="/inventory" element={<MasterProducts/> } />
             </>
           )}
 

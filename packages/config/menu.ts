@@ -1,4 +1,4 @@
-import { Repeat2, SquareTerminal, UserCog, Construction } from "lucide-react";
+import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2 } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -151,6 +151,18 @@ export const Menu = {
   //     plan: "Free",
   //   },
   // ],
+  navInventory: [
+    {
+      name: "Produk",
+      url: "/inventory",
+      icon: Grid2X2,
+      role: [
+        'preparist',
+        'checker',
+        'admin',
+      ]
+    }
+  ],
   navTransaction: [
     {
       title: "Transaksi",

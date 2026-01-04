@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useTheme } from "next-themes";
 import React from "react";
 import Barcode from "react-barcode";
+import QRCode from "react-qr-code";
 
 interface ModalBarcodeProps {
     id?: string,
@@ -22,7 +23,8 @@ export default function ModalBarcode({ id, setId }: ModalBarcodeProps) {
                 <DialogDescription>Lihat Kode Batang CMT</DialogDescription>
             </DialogHeader>
             {id && (
-                <Barcode value={String(id)} className="w-full" background='transparent' lineColor={resolvedTheme === 'dark' ? 'white' : 'black'} />
+                // <Barcode value={String(id)} className="w-full" background='transparent' lineColor={resolvedTheme === 'dark' ? 'white' : 'black'} />
+                <QRCode value={id} className="w-full mb-10" fgColor={resolvedTheme === 'dark' ? "white" : "black"} bgColor={resolvedTheme === 'dark' ? "black" : "white"} />
             )}
         </DialogContent>
     </Dialog>
