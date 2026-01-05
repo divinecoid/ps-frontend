@@ -9,6 +9,8 @@ export const ENDPOINT = {
     MARKETPLACE: "marketplace",
     ONLINE_STORE: "onlinestore",
     PRODUCT_MODEL: "model",
+    MODEL_COLOR: "model_color",
+    MODEL_SIZE: "model_size",
     PRODUCT: "product",
     RACK: "rack",
     SIZE: "size",

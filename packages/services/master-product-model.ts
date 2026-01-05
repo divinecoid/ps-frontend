@@ -30,3 +30,11 @@ export const restore: BaseApiCallRestoreProps = async (id) => {
 export const destroy: BaseApiCallDeleteProps = async (id) => {
     return await DELETE(`${ENDPOINT.PRODUCT_MODEL}/${id}`);
 }
+
+export const model_color = async (id: string, page?: number, per_page?: number, search?: string) => {
+    return await GET(`${ENDPOINT.MODEL_COLOR}/${id}`, {page, per_page, search});
+}
+
+export const model_size = async (id: string) => {
+    return await GET(`${ENDPOINT.MODEL_SIZE}/${id}`);
+}

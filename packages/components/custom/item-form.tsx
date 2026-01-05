@@ -16,7 +16,6 @@ import DynamicInput from "@/components/custom/dynamic-input";
 import { BaseApiCallProps, FormShape } from "@/interfaces/base";
 import { toast } from "sonner";
 import React from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import generateSchema from "@/lib/generate-schema";
 import { useNavigate } from "react-router-dom";
 

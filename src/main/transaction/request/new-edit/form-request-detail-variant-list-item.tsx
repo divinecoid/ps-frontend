@@ -1,20 +1,21 @@
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Control, FieldValues } from "react-hook-form";
-import { DynamicCombobox } from "@/components/custom/dynamic-combobox";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Services from "@/services";
 import { cn } from "@/lib/utils";
+import React from "react";
+import { Combobox } from "@/components/custom/combobox";
 
-interface DetailVariantListProps<T> {
-    control: Control<FieldValues, T, FieldValues>
+interface DetailVariantListProps {
+    control: Control<FieldValues>
     rowKey: string
     index: number
     handleRemove: (index: number) => void
     disabled?: boolean
+    sizes: {id: string, name: string}[];
 }
-export default function VariantListItem<T>({ control, index, rowKey, handleRemove, disabled }: DetailVariantListProps<T>) {
+function VariantListItem({ control, index, rowKey, handleRemove, disabled, sizes }: DetailVariantListProps) {
 
     return <div className="flex flex-1 gap-0 items-end">
         <FormField
@@ -23,14 +24,14 @@ export default function VariantListItem<T>({ control, index, rowKey, handleRemov
             render={({ field, fieldState }) => (
                 <FormItem className="w-full h-full">
                     <FormControl>
-                        <DynamicCombobox
+                        <Combobox
                             id="id"
                             label="name"
                             placeholder="Ukuran"
                             type="single"
                             variant="ghost"
+                            data={sizes}
                             className={cn("w-full rounded-none rounded-l-md border border-r-0 shadow-none", fieldState.error && "border-destructive")}
-                            source={Services.MasterSize.index}
                             value={field.value}
                             onValueChange={field.onChange}
                             disabled={disabled} />
@@ -84,3 +85,5 @@ export default function VariantListItem<T>({ control, index, rowKey, handleRemov
         </div>
     </div>
 }
+
+export default React.memo(VariantListItem);

@@ -1,7 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useTheme } from "next-themes";
 import React from "react";
-import Barcode from "react-barcode";
 import QRCode from "react-qr-code";
 
 interface ModalBarcodeProps {

@@ -7,6 +7,7 @@ import ProductList from "./form-request-detail-product-list";
 import ConfirmDetail from "./form-request-detail-confirm";
 import { FormDescription, FormField, FormLabel } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
+import { ModelSize } from "@/interfaces/model-size";
 
 interface DetailProps {
     rowKey: string
@@ -15,6 +16,7 @@ interface DetailProps {
 
 export default function DetailList({ rowKey, disabled }: DetailProps) {
     const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
+    const sizeCache = React.useRef<Record<string, ModelSize[]>>({});
 
     const form = useFormContext()
     const { append, fields, remove } = useFieldArray({
@@ -45,7 +47,7 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
                     <Card className={cn("shadow-none bg-secondary p-2 gap-2 grid lg:grid-cols-2 sm:grid-cols-1", (form.formState.errors[rowKey]?.message || form.formState.errors?.[rowKey]?.root?.message) && "border-destructive bg-destructive/10")}>
                         {fields.length == 0 && <CardDescription className="text-center col-span-2 h-full m-4">Daftar permintaan Anda masih kosong, silahkan tekan tambah produk yang akan dijahit!</CardDescription>}
                         {fields.map((row, index) => (
-                            <ProductList key={row.id} form={form} index={index} parentKey={rowKey} handleDelete={setDeleteIndex} disabled={disabled} />
+                            <ProductList key={row.id} form={form} index={index} parentKey={rowKey} handleDelete={setDeleteIndex} disabled={disabled} sizeCache={sizeCache} />
                         ))}
                     </Card>
                 </div>
