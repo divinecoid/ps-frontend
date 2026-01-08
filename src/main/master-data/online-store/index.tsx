@@ -10,9 +10,9 @@ import { toast } from "sonner";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
 
 export default function MasterOnlineStores() {
-    const [editRow, setEditRow] = useState<number>();
-    const [restoreRow, setRestoreRow] = useState<number>();
-    const [deleteRow, setDeleteRow] = useState<number>();
+    const [editRow, setEditRow] = useState<string|undefined>();
+    const [restoreRow, setRestoreRow] = useState<string|undefined>();
+    const [deleteRow, setDeleteRow] = useState<string|undefined>();
     const refreshTableRef = useRef<() => void>(() => { });
 
     useEffect(() => {
@@ -23,7 +23,7 @@ export default function MasterOnlineStores() {
         return () => window.electronAPI.removeOauthListener();
     }, []);
 
-    const getMarketplaceAlias = async (id: number): Promise<string|undefined> => {
+    const getMarketplaceAlias = async (id: string): Promise<string|undefined> => {
         try {
             if (id != undefined) {
                 const res = await Services.MasterMarketplace.show(id);
@@ -43,7 +43,7 @@ export default function MasterOnlineStores() {
         }
     }
 
-    const authOnlineStore = async (id: number, marketplace_id: number, successUrl: string) => {
+    const authOnlineStore = async (id: string, marketplace_id: string, successUrl: string) => {
         const url = `${import.meta.env.VITE_APP_BASE_URL}/${await getMarketplaceAlias(marketplace_id)}/login/${id}`;
         await window.electronAPI.startOauth(url, successUrl);
     }
@@ -56,17 +56,17 @@ export default function MasterOnlineStores() {
         actions={(props) => [
             <ModalOnlineStore {...props} />,
             <ModalOnlineStore {...props} isEdit id={editRow} setId={setEditRow} />,
-            <ModalConfirm {...props} action={Services.MasterOnlineStore.restore} id={restoreRow} setId={setRestoreRow} title="Are you want to restore this object?" description="This action will restore this object back to active state." />,
-            <ModalConfirm {...props} action={Services.MasterOnlineStore.destroy} id={deleteRow} setId={setDeleteRow} title="Are you want to delete this object?" description="This action will set this object to inactive state." />
+            <ModalConfirm {...props} action={Services.MasterOnlineStore.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan toko online ini?" description="Aksi ini akan memunculkan toko online ini kembali ke dalam daftar pilihan." />,
+            <ModalConfirm {...props} action={Services.MasterOnlineStore.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk menghapus toko online ini?" description="Aksi ini akan menghilangkan toko online ini dari daftar pilihan." />
         ]}
         rowActions={({ row }) => (
             <DropdownRowActions>
                 {row.is_deleted ?
-                    <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Restore</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Kembalikan</DropdownMenuItem>
                     : <>
-                        <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.marketplace_id, row.redirect_uri)}>Connect</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.marketplace_id, row.redirect_uri)}>Sambungkan</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Sunting</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
                     </>
                 }
             </DropdownRowActions>

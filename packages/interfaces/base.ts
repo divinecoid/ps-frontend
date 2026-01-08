@@ -14,6 +14,7 @@ export interface IndexResponse extends BaseResponse {
 }
 
 export interface MasterData {
+  id: string
   is_deleted: boolean
 }
 
@@ -23,17 +24,17 @@ export interface BaseResponse {
 }
 export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: string) => Promise<Response>;
 
-type BaseApiCallCreateProps<T> = (values: T) => Promise<Response>;
+export type BaseApiCallCreateProps<T> = (values: T) => Promise<Response>;
 
-type BaseApiCallUpdateProps<T> = (id: number, values: T) => Promise<Response>;
+export type BaseApiCallUpdateProps<T> = (id: string, values: T) => Promise<Response>;
 
-type BaseApiCallViewProps = (id: number) => Promise<Response>;
+export type BaseApiCallViewProps = (id: string) => Promise<Response>;
 
-type BaseApiCallRestoreProps = (id: number) => Promise<Response>;
+export type BaseApiCallRestoreProps = (id: string) => Promise<Response>;
 
-type BaseApiCallDeleteProps = (id: number) => Promise<Response>;
+export type BaseApiCallDeleteProps = (id: string) => Promise<Response>;
 
-export interface BaseApiCallProps <T>{
+export interface BaseApiCallProps<T> {
   index?: BaseApiCallIndexProps
   master?: BaseApiCallIndexProps
   store?: BaseApiCallCreateProps<T>
@@ -45,44 +46,57 @@ export interface BaseApiCallProps <T>{
 
 interface BaseModal {
   onSubmit?: () => void
-  id?: number
-  setId?: React.Dispatch<React.SetStateAction<number|undefined>>
+  id?: string
+  setId?: React.Dispatch<React.SetStateAction<string | undefined>>
+}
+
+interface Modal {
+  onSubmit?: () => void
+  index?: number
+  setIndex?: React.Dispatch<React.SetStateAction<number | undefined>>
 }
 
 export interface BaseModalForm extends BaseModal {
-  key?: number
   isEdit?: boolean
 };
 
 export interface BaseForm {
-  id?: number
+  id?: string
+  disabled?: boolean
 };
 
 export interface BaseDialog extends BaseModal {
   title?: string
   description?: string
-  action?: (id: number) => Promise<Response> | void;
+  action?: ((id: string) => Promise<Response> | void)
+  variant?: "default" | "destructive"
+};
+
+export interface Dialog extends Modal {
+  title?: string
+  description?: string
+  action?: ((id: number) => Promise<Response> | void)
   variant?: "default" | "destructive"
 };
 
 export interface FormShape<T> {
-    key: keyof T & string;
-    type: InputTypes;
-    schema: z.ZodTypeAny;
-    mode?: Mode;
-    numberOfMonths?: number;
-    label?: string;
-    description?: string;
-    placeholder?: string;
-    max?: number;
-    step?: number;
-    options?: Record<string, string>;
-    passwordEdit?: boolean;
-    source?: {
-        id: string;
-        label: string;
-        api: BaseApiCallIndexProps | null;
-    },
-    defaultValue?: string | number | (string | number)[];
-    custom?: | React.ReactElement | ((index: number) => React.ReactNode)
+  key: keyof T & string;
+  type: InputTypes;
+  schema: z.ZodTypeAny;
+  mode?: Mode;
+  numberOfMonths?: number;
+  label?: string;
+  description?: string;
+  placeholder?: string;
+  max?: number;
+  step?: number;
+  options?: Record<string, string>;
+  passwordEdit?: boolean;
+  source?: {
+    id: string;
+    label: string;
+    api: BaseApiCallIndexProps | null;
+  },
+  defaultValue?: string | number | (string | number)[];
+  custom?: | React.ReactElement | ((index: number) => React.ReactNode)
 }

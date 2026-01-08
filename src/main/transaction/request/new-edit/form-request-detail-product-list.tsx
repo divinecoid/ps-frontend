@@ -1,27 +1,42 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { DynamicCombobox } from "@/components/custom/dynamic-combobox";
-import { FieldValues, useFieldArray, UseFormReturn } from "react-hook-form";
+import { FieldValues, useFieldArray, UseFormReturn, useWatch } from "react-hook-form";
 import { Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Services from "@/services";
 import React from "react";
 import VariantListItem from "./form-request-detail-variant-list-item";
 import ConfirmDetail from "./form-request-detail-confirm";
-import { ProductModelViewResponse } from "@/interfaces/product-model";
+import { ModelSize } from "@/interfaces/model-size";
+import { BaseApiCallIndexProps } from "@/interfaces/base";
 
-export default function ProductList<T>({ form, index, parentKey, handleDelete }: { form: UseFormReturn<FieldValues, T, FieldValues>, index: number, parentKey: string, handleDelete: React.Dispatch<React.SetStateAction<number | undefined>> }) {
-    const [deleteId, setDeleteId] = React.useState<number | undefined>();
-    const fieldName = `${parentKey}.${index}.'variant_detail'`
+interface DetailProductListProps<T> {
+    form: UseFormReturn<FieldValues, T, FieldValues>
+    index: number
+    parentKey: string
+    handleDelete: React.Dispatch<React.SetStateAction<number | undefined>>
+    disabled?: boolean
+    sizeCache: React.RefObject<Record<string, ModelSize[]>>
+}
+export default function ProductList<T>({ form, index, parentKey, handleDelete, disabled, sizeCache }: DetailProductListProps<T>) {
+    const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
+    const fieldName = `${parentKey}.${index}.variant_detail`;
 
-    const { fields, append, remove } = useFieldArray({
+    const [sizes, setSizes] = React.useState<ModelSize[]>([]);
+
+    const sizeOptions = React.useMemo(
+        () => sizes.map(s => ({ id: s.id, name: s.name })),
+        [sizes]
+    );
+
+
+    const { fields, append, remove, replace } = useFieldArray({
         control: form.control,
         name: fieldName
     })
-    const handleAddVariants = async (index: number) => {
-        const res = await Services.MasterProductModel.show(index);
-        const model: ProductModelViewResponse = await res.json();
-        console.log(model.data); //TODO:
+
+    const handleAddVariants = async () => {
         append({
             size_id: undefined,
             dozen_qty: "",
@@ -29,11 +44,58 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
         })
     }
 
+    const modelId = useWatch({
+        control: form.control,
+        name: `${parentKey}.${index}.model_id`,
+    });
+
     React.useEffect(() => {
-        // handleAddVariants(form.watch('model_id'));
-    }, [form.watch('model_id')]);
+        if (!modelId) {
+            setSizes([]);
+            return;
+        }
+
+        const applySizes = (data: ModelSize[]) => {
+            setSizes(data);
+
+            const next = data.map(s => ({
+                size_id: s.id,
+                dozen_qty: "",
+                piece_qty: "",
+            }));
+
+            const current = form.getValues(fieldName) ?? [];
+            const same =
+                current.length === next.length &&
+                current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
+
+            if (!same) {
+                replace(next);
+            }
+        };
+
+        if (sizeCache.current[modelId]) {
+            applySizes(sizeCache.current[modelId]);
+            return;
+        }
+
+        Services.MasterProductModel.model_size(modelId)
+            .then(res => res.json())
+            .then(json => {
+                sizeCache.current[modelId] = json.data;
+                applySizes(json.data);
+            });
+    }, [modelId]);
+
+
+    const colorSource = React.useMemo((): BaseApiCallIndexProps | undefined => {
+        if (!modelId) return undefined;
+        return (page, limit, search) =>
+            Services.MasterProductModel.model_color(modelId, page, limit, search);
+    }, [modelId]);
+
     return <>
-        <ConfirmDetail id={deleteId} setId={setDeleteId} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus ukuran terpilih secara permanen!" />
+        <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus ukuran terpilih secara permanen!" />
         <Card className="p-4 rounded-lg flex gap-0 h-min @container">
             <CardHeader className="p-0">
                 <div className="flex gap-2">
@@ -52,7 +114,8 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
                                             type={"single"}
                                             source={Services.MasterProductModel.index}
                                             value={field.value}
-                                            onValueChange={field.onChange} />
+                                            onValueChange={field.onChange}
+                                            disabled={disabled} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -70,16 +133,19 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
                                             label="name"
                                             placeholder="Warna"
                                             type={"single"}
-                                            source={Services.MasterColor.index}
+                                            source={colorSource}
                                             value={field.value}
-                                            onValueChange={field.onChange} />
+                                            onValueChange={field.onChange}
+                                            disabled={disabled} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                     </div>
-                    <Button tabIndex={-1} variant="destructive" type="button" onClick={() => handleDelete(index)}><Trash /></Button>
+                    {!disabled && (
+                        <Button tabIndex={-1} variant="destructive" type="button" onClick={() => handleDelete(index)}><Trash /></Button>
+                    )}
                 </div>
             </CardHeader>
             <FormLabel className="mt-2">Varian</FormLabel>
@@ -90,10 +156,12 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete }:
                     render={() => (
                         <>
                             {fields.map((row, index) => (
-                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteId} rowKey={fieldName} />
+                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
                             ))}
                             <div className="flex items-end">
-                                <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants(index)}><Plus /> Tambah varian</Button>
+                                {!disabled && (
+                                    <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants()}><Plus /> Tambah varian</Button>
+                                )}
                             </div>
                             <FormMessage />
                         </>

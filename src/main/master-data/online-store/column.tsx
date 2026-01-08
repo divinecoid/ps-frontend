@@ -40,45 +40,45 @@ export const columns: ColumnDef<OnlineStore>[] = [
   },
   {
     accessorKey: "is_active",
-    header: "Active",
+    header: "Aktif",
     enableSorting: true,
   },
   {
     accessorKey: "redirect_uri",
-    header: "Redirect URL",
+    header: "URL pengalihan",
     enableSorting: true,
   },
   {
     accessorKey: "access_tokent",
-    header: "Access Token",
+    header: "Token akses",
     enableSorting: true,
   },
   {
     accessorKey: "refresh_token",
-    header: "Refresh Token",
+    header: "Token refresh",
     enableSorting: true,
   },
   {
     accessorKey: "access_token_expires_at",
-    header: "Access Token Expires At",
+    header: "Tanggal kadaluarsa token akses",
     enableSorting: true,
   },
   {
     accessorKey: "refresh_token_expires_at",
-    header: "Refresh Token Expires At",
+    header: "Tanggal kadaluarsa token refresh",
     enableSorting: true,
   },
   {
     accessorKey: "is_deleted",
-    header: "Deleted",
+    header: "Status toko online",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
       switch (data.is_deleted) {
         case true:
-          return <Badge variant="destructive">Deleted</Badge>
+          return <Badge variant="destructive">Nonaktif</Badge>
         case false:
-          return <Badge variant="secondary">Active</Badge>
+          return <Badge variant="success">Aktif</Badge>
       }
     })
   }

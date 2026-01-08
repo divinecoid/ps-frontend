@@ -10,12 +10,12 @@ export default function DropdownRowActions({ children }: DropdownRowActionProps)
     return <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
+                    <span className="sr-only">Buka menu</span>
                     <MoreHorizontal />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel className="select-none">Actions</DropdownMenuLabel>
+                <DropdownMenuLabel className="select-none">Aksi</DropdownMenuLabel>
                 {children}
             </DropdownMenuContent>
         </DropdownMenu>

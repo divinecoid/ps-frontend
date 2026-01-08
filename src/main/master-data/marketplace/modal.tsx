@@ -5,63 +5,63 @@ import { z } from "zod/v3";
 
 export default function ModalMarketplace(props: BaseModalForm) {
     return <ModalItem<Marketplace>
-        title={props.isEdit ? "Edit Marketplace" : "Add Marketplace"}
-        description={props.isEdit ? "Edit Marketplace" : "Add new marketplace"}
+        title={props.isEdit ? "Sunting Marketplace" : "Tambah Marketplace"}
+        description={props.isEdit ? "Sunting marketplace yang sudah ada" : "Tambah marketplace baru"}
         {...props}
         formShape={[
             {
                 key: "code",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Code must be at least 2 characters.",
+                    message: "Kode setidaknya memiliki 2 karakter.",
                 }),
-                label: "Code",
-                description: "Input marketplace's code.",
+                label: "Kode",
+                description: "Masukkan kode marketplace.",
                 placeholder: "MKP-001",
             },
             {
                 key: "name",
                 type: "text",
                 schema: z.string(),
-                label: "Name",
-                description: "Input marketplace's name.",
-                placeholder: "Marketplace name",
+                label: "Nama",
+                description: "Masukkan nama marketplace.",
+                placeholder: "Nama marketplace",
             },
             {
                 key: "alias",
                 type: "text",
                 schema: z.string(),
                 label: "Alias",
-                description: "Input marketplace's alias.",
-                placeholder: "store-name",
+                description: "Masukkan alias marketplace.",
+                placeholder: "nama-toko",
             },
             {
                 key: "base_api_url",
                 type: "text",
                 schema: z.string().url({
-                    message: "Base API URL not valid"
+                    message: "Base API URL tidak valid"
                 }).min(2, {
-                    message: "Base API URL must be at least 2 characters."
+                    message: "Base API URL setidaknya memiliki 2 karakter."
                 }),
                 label: "Base API URL",
-                description: "Input marketplace's base API URL.",
+                description: "Masukkan base API URL marketplace.",
                 placeholder: "https://api.example.com/rest",
             },
             {
                 key: "description",
                 type: "textarea",
                 schema: z.string(),
-                label: "Description",
-                description: "Input marketplace's description.",
-                placeholder: "Marketplace description",
+                label: "Deskripsi",
+                description: "Masukkan deskripsi marketplace.",
+                placeholder: "Deskripsi marketplace",
             },
             {
                 key: "is_need_checker",
                 type: "switch",
                 schema: z.coerce.boolean(),
-                label: "Need checker",
-                description: "Is marketplace need checker.",
-                placeholder: "Marketplace need checker state",
+                label: "Membutuhkan pemeriksa",
+                description: "Tentukan apakah marketplace membutuhkan pemeriksa atau tidak.",
+                placeholder: "Status kebutuhan checker pada marketplace",
             },
         ]} />
 }

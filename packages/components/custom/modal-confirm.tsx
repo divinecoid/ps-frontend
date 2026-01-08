@@ -28,7 +28,7 @@ export default function ModalConfirm({ id, setId, action, onSubmit, title, descr
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>Batal</AlertDialogCancel>
                 <AlertDialogAction onClick={confirm}>OK</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>

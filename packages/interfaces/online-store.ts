@@ -1,8 +1,7 @@
 import { BaseResponse, IndexResponse, MasterData } from "./base"
 
 export interface OnlineStore extends MasterData {
-  id: number
-  marketplace_id: number
+  marketplace_id: string
   store_code: string
   store_name: string
   api_key: string

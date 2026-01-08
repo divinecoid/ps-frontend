@@ -5,27 +5,27 @@ import { z } from "zod/v3";
 
 export default function ModalFactory(props: BaseModalForm) {
     return <ModalItem<Factory>
-        title={props.isEdit ? "Edit Factory" : "Add Factory"}
-        description={props.isEdit ? "Edit factory" : "Add new factory"}
+        title={props.isEdit ? "Sunting Pabrik" : "Tambah Pabrik"}
+        description={props.isEdit ? "Sunting pabrik yang sudah ada" : "Tambah pabrik baru"}
         {...props}
         formShape={[
             {
                 key: "code",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Code must be at least 2 characters.",
+                    message: "Kode pabrik setidaknya memiliki 2 karakter.",
                 }),
-                label: "Code",
-                description: "Input factory's code.",
+                label: "Kode",
+                description: "Masukkan kode pabrik.",
                 placeholder: "FCT-001",
             },
             {
                 key: "name",
                 type: "text",
                 schema: z.string(),
-                label: "Name",
-                description: "Input factory's name.",
-                placeholder: "Factory name",
+                label: "Nama",
+                description: "Masukkan nama pabrik.",
+                placeholder: "Nama pabrik",
             },
         ]}
     />

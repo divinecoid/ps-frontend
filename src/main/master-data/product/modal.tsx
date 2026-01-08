@@ -6,30 +6,15 @@ import { z } from "zod/v3";
 
 export default function ModalProduct(props: BaseModalForm) {
     return <ModalItem<Product>
-        title={props.isEdit ? "Edit Product" : "Add Product"}
-        description={props.isEdit ? "Edit Product" : "Add new product"}
+        title={props.isEdit ? "Sunting Produk" : "Tambah Produk"}
+        description={props.isEdit ? "Sunting produk yang sudah ada" : "Tambah produk baru"}
         {...props}
         formShape={[
             {
-                key: "color_id",
-                type: "combobox",
-                schema: z.number().positive({
-                    message: "Color must be selected.",
-                }),
-                source: {
-                    id: "id",
-                    label: "name",
-                    api: Services.MasterColor.index
-                },
-                label: "Color",
-                description: "Input product's color.",
-                placeholder: "Product's color",
-            },
-            {
                 key: "model_id",
                 type: "combobox",
-                schema: z.number().positive({
-                    message: "Model must be selected.",
+                schema: z.string().nonempty({
+                    message: "Model dibutuhkan.",
                 }),
                 source: {
                     id: "id",
@@ -37,33 +22,34 @@ export default function ModalProduct(props: BaseModalForm) {
                     api: Services.MasterProductModel.index
                 },
                 label: "Model",
-                description: "Input product's model.",
-                placeholder: "Product's model",
+                description: "Masukkan model produk.",
+                placeholder: "Model produk",
             },
             {
-                key: "size_id",
+                key: "rack_id",
                 type: "combobox",
-                schema: z.number().positive({
-                    message: "Size must be selected.",
+                schema: z.string().nonempty({
+                    message: "Rak dibutuhkan.",
                 }),
                 source: {
                     id: "id",
                     label: "name",
-                    api: Services.MasterSize.index
+                    api: Services.MasterRack.index
                 },
-                label: "Size",
-                description: "Input product's size.",
-                placeholder: "Product's size",
+                label: "Rak",
+                description: "Masukkan rak produk.",
+                placeholder: "Rak produk",
             },
+            
             {
-                key: "sku",
+                key: "barcode",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Product SKU must be at least 2 characters.",
+                    message: "Barcode produk setidaknya memiliki 2 karakter.",
                 }),
-                label: "SKU",
-                description: "Input product's SKU.",
-                placeholder: "Product's SKU",
+                label: "Barcode",
+                description: "Masukkan barcode produk.",
+                placeholder: "Barcode produk",
             },
         ]}
     />

@@ -16,33 +16,30 @@ import DynamicInput from "@/components/custom/dynamic-input";
 import { BaseApiCallProps, FormShape } from "@/interfaces/base";
 import { toast } from "sonner";
 import React from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import generateSchema from "@/lib/generate-schema";
 import { useNavigate } from "react-router-dom";
 
 interface ItemProps<T extends FieldValues> {
-    id?: number;
-    setId?: React.Dispatch<React.SetStateAction<number | undefined>>
-    isEdit?: boolean,
+    id?: string;
+    setId?: React.Dispatch<React.SetStateAction<string | undefined>>
+    disabled?: boolean;
     children?: React.ReactNode;
     footer?: React.ReactNode;
     services?: BaseApiCallProps<T>;
     onError?: SubmitErrorHandler<FieldValues>;
     formShape: FormShape<T>[];
-    key?: number;
 }
 
 export default function ItemForm<T extends FieldValues>({
     id,
-    isEdit,
+    disabled,
     children,
     services,
     onError,
     formShape,
-    key,
 }: ItemProps<T>) {
     const { schema, meta, defaultValues, api, component } = generateSchema<T>(formShape);
-    const [loading, setLoading] = React.useState<boolean>(isEdit ? true : false);
+    const [loading, setLoading] = React.useState<boolean>(id ? true : false);
     const navigate = useNavigate();
     const form = useForm({
         resolver: zodResolver(schema),
@@ -51,20 +48,20 @@ export default function ItemForm<T extends FieldValues>({
     React.useEffect(() => {
         const viewData = async () => {
             try {
-                if (isEdit && id) {
+                if (id) {
                     const res = await services?.show?.(id);
                     const json = await res?.json();
                     if (res?.ok) {
                         form.reset(json.data);
                     } else {
                         toast.error(json.message, { richColors: true });
-                        navigate('../');
+                        navigate(-1);
                     }
                 }
             } catch (error) {
                 if (error instanceof Error) {
                     toast.error(error.message, { richColors: true });
-                    navigate('../');
+                    navigate(-1);
                 }
             } finally {
                 setLoading(false);
@@ -74,13 +71,12 @@ export default function ItemForm<T extends FieldValues>({
     }, [id]);
 
     const submitForm = async (values: FieldValues) => {
-        toast.info(JSON.stringify(values), { richColors: true }) //TODO:
         setLoading(true);
         try {
             const res = await (id ? services?.update?.(id, values as T) : services?.store?.(values as T));
             const json = await res?.json();
             if (res?.ok) {
-                navigate('../');
+                navigate(-1);
             } else {
                 toast.error(String(json.message), { richColors: true });
             }
@@ -92,10 +88,10 @@ export default function ItemForm<T extends FieldValues>({
             setLoading(false);
         }
     }
-    return <Form {...form} key={key}>
+    return <Form {...form}>
         <form onSubmit={form.handleSubmit(submitForm, onError)}
             className={`flex flex-col flex-1 h-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>
-            <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
+            <div className="flex-1 space-y-8 overflow-y-auto">
                 {Object.entries((schema as z.ZodObject<T>).shape).map(([key, index]) => {
                     const fieldMeta = meta[key];
                     const fieldSource = api[key];
@@ -129,6 +125,7 @@ export default function ItemForm<T extends FieldValues>({
                                             field={field}
                                             meta={fieldMeta}
                                             api={fieldSource}
+                                            disabled={disabled}
                                         />
                                     </FormControl>
                                     <FormDescription>{fieldMeta.description}</FormDescription>
@@ -139,10 +136,16 @@ export default function ItemForm<T extends FieldValues>({
                     )
                 })}
                 {children}
-            </ScrollArea>
+            </div>
             <div className="sticky bottom-0 border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
-                <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Batal</Button>
-                <Button type="submit">Simpan</Button>
+                {disabled ? (
+                    <Button type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Tutup</Button>
+                ) : (
+                    <>
+                        <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Batal</Button>
+                        <Button type="submit">Simpan</Button>
+                    </>
+                )}
             </div>
         </form>
     </Form>

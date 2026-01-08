@@ -11,9 +11,9 @@ export default function FormExample2(props: BaseForm) {
     const param = useParams();
 
     const variantDetailSchema = {
-        size_id: z.number().min(1, {
+        size_id: z.string().nonempty({
             message: "Ukuran dibutuhkan.",
-        }).default(0),
+        }),
         dozen_qty: z.coerce.number().min(1, {
             message: "Jumlah dibutuhkan.",
         }).default(0),
@@ -23,19 +23,19 @@ export default function FormExample2(props: BaseForm) {
     }
 
     const detailSchema = {
-        model_id: z.number().min(1, {
+        model_id: z.string().nonempty({
             message: "Model dibutuhkan.",
-        }).default(0),
-        color_id: z.number().min(1, {
+        }),
+        color_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
-        }).default(0),
+        }),
         variant_detail: z.array(z.object(variantDetailSchema)).min(1, {
             message: "Minimal tambahkan 1 model yang akan dijahit."
         })
     }
 
     return <ItemForm<Request>
-        id={Number(param)}
+        id={String(param)}
         {...props}
         services={Services.Request}
         formShape={[

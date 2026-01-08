@@ -10,18 +10,18 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function MasterExample() {
-    const [deleteRow, setDeleteRow] = useState<number>();
+    const [deleteRow, setDeleteRow] = useState<string>();
     return <OverviewPage
         columns={columns}
         source={Services.Request}
         actions={(props) => [
-            <Button asChild variant="outline"><Link to={`./new`}><Plus />Create</Link></Button>,
+            <Button asChild variant="outline"><Link to={`./new`}><Plus />Tambah</Link></Button>,
             <ConfirmRack {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
         ]}
         rowActions={({ row }) => (
             <DropdownRowActions>
-                <DropdownMenuItem asChild><Link to={`./edit/${row.id}`}>Edit</Link></DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Delete</DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to={`./edit/${row.id}`}>Sunting</Link></DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
             </DropdownRowActions>
         )}
     />

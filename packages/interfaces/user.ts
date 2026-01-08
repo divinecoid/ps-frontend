@@ -2,7 +2,6 @@ import { BaseResponse, IndexResponse, MasterData } from "./base"
 import { Role } from "./role"
 
 export interface User extends MasterData {
-  id: number
   name: string
   username: string
   email: string

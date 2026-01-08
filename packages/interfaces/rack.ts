@@ -1,10 +1,9 @@
 import { BaseResponse, IndexResponse, MasterData } from "./base"
 
 export interface Rack extends MasterData {
-  id: number
   code: string
   name: string
-  warehouse_id: number
+  warehouse_id: string
   warehouse: {
     name: string
   }

@@ -6,15 +6,15 @@ import { z } from "zod/v3"
 
 export default function ModalOnlineStore(props: BaseModalForm) {
     return <ModalItem<OnlineStore>
-        title={props.isEdit ? "Edit Online Store" : "Add Online Store"}
-        description={props.isEdit ? "Edit Online Store" : "Add new online store"}
+        title={props.isEdit ? "Sunting Toko Online" : "Tambah Toko Online"}
+        description={props.isEdit ? "Sunting toko online yang sudah ada" : "Tambah toko online baru"}
         {...props}
         formShape={[
             {
                 key: "marketplace_id",
                 type: "combobox",
-                schema: z.number().positive({
-                    message: "Marketplace is required.",
+                schema: z.string().nonempty({
+                    message: "Marketplace dibutuhkan.",
                 }),
                 source: {
                     id: "id",
@@ -22,89 +22,89 @@ export default function ModalOnlineStore(props: BaseModalForm) {
                     api: Services.MasterMarketplace.index
                 },
                 label: "Marketplace",
-                description: "Input online store's marketplace.",
-                placeholder: "MKP-001",
+                description: "Masukkan marketplace dari online store ini.",
+                placeholder: "Tokopedia/Shopee/Tiktok",
             },
             {
                 key: "store_code",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Store code must be at least 2 characters."
+                    message: "Kode toko setidaknya memiliki 2 karakter."
                 }),
-                label: "Store code",
-                description: "Input online store's code.",
+                label: "Kode toko",
+                description: "Masukkan kode toko online.",
                 placeholder: "OLS-001",
             },
             {
                 key: "store_name",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Store name must be at least 2 characters."
+                    message: "Nama toko setidaknya memiliki 2 karakter."
                 }),
-                label: "Store name",
-                description: "Input online store's name.",
-                placeholder: "Online store's name",
+                label: "Nama toko",
+                description: "Masukkan nama toko online.",
+                placeholder: "Nama toko online",
             },
             {
                 key: "api_key",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Api key must be at least 2 characters."
+                    message: "Kode kunci API setidaknya memiliki 2 karakter."
                 }),
-                label: "API key",
-                description: "Input online store's API key.",
-                placeholder: "1020281",
+                label: "Kode kunci API",
+                description: "Masukkan kode kunci API toko online.",
+                placeholder: "AIzaSyDaGmWKa4JsXZ-HjGw7ISLn_3namBGewQe",
             },
             {
                 key: "client_id",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Client id must be at least 2 characters."
+                    message: "ID klien setidaknya memiliki 2 karakter."
                 }),
-                label: "Client id",
-                description: "Input online store's name.",
-                placeholder: "qwawjd-9f3101-31n1w1-dq0apw",
+                label: "ID klien",
+                description: "Masukkan ID klien toko online.",
+                placeholder: "d153e353-2a32-4763-b930-b27fbc980da5",
             },
             {
                 key: "client_secret",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Client secret must be at least 2 characters."
+                    message: "Kode rahasia klien setidaknya memiliki 2 karakter."
                 }),
-                label: "Client secret",
-                description: "Input online store's client secret.",
-                placeholder: "09ewiOhihajkAOpasmQU12BE2902adwj2",
+                label: "Kode rahasia klien",
+                description: "Masukkan kode rahasia klien toko online.",
+                placeholder: "7I6uN1rjneirxiMW",
             },
             {
                 key: "store_url",
                 type: "text",
                 schema: z.string().url({
-                    message: "Store URL not valid"
+                    message: "URL toko online tidak valid"
                 }).min(2, {
-                    message: "Store URL must be at least 2 characters."
+                    message: "URL toko online setidaknya memiliki 2 karakter."
                 }),
-                label: "Store URL",
-                description: "Input online store's URL.",
+                label: "URL toko",
+                description: "Masukkan URL toko online.",
                 placeholder: "https://www.example.com/officialstore",
             },
             {
                 key: "is_active",
                 type: "switch",
                 schema: z.coerce.boolean(),
-                label: "Is active",
-                description: "Online store's state.",
-                placeholder: "Online store's state",
+                label: "Kondisi toko",
+                description: "Kondisi toko online aktif.",
+                placeholder: "Kondisi toko online",
             },
             {
                 key: "redirect_uri",
                 type: "text",
                 schema: z.string().url({
-                    message: "Redirect URL not valid"
+                    message: "URL pengalihan tidak valid"
                 }).min(2, {
-                    message: "Redirect URL must be at least 2 characters."
+                    message: "URL pengalihan setidaknya memiliki 2 karakter."
                 }),
-                label: "Redirect URL",
-                description: "Input online store's redirect URL.",
+                label: "URL pengalihan",
+                description: "Masukkan URL pengalihan toko online.",
                 placeholder: "https://www.example.com/callback?",
             },
         ]} />

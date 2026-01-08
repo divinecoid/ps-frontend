@@ -5,36 +5,36 @@ import { z } from "zod/v3";
 
 export default function ModalWarehouse(props: BaseModalForm) {
     return <ModalItem<Warehouse>
-        title={props.isEdit ? "Edit Warehouse" : "Add Warehouse"}
-        description={props.isEdit ? "Edit Warehouse" : "Add new warehouse"}
+        title={props.isEdit ? "Sunting Gudang" : "Tambah Gudang"}
+        description={props.isEdit ? "Sunting gudang yang sudah ada" : "Tambah gudang baru"}
         {...props}
         formShape={[
             {
                 key: "code",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Code must be at least 2 characters.",
+                    message: "Kode setidaknya memiliki 2 karakter.",
                 }),
-                label: "Code",
-                description: "Input warehouse's code.",
+                label: "Kode",
+                description: "Masukkan kode gudang.",
                 placeholder: "WH-001",
             },
             {
                 key: "name",
                 type: "text",
                 schema: z.string(),
-                label: "Name",
-                description: "Input warehouse's name.",
-                placeholder: "Warehouse name",
+                label: "Nama",
+                description: "Masukkan nama gudang.",
+                placeholder: "Nama gudang",
             },
             {
                 key: "priority",
                 type: "number",
                 schema: z.coerce.number().min(1, {
-                    message: "Number must be positive"
+                    message: "Prioritas harus positif"
                 }),
-                label: "Priority",
-                description: "Warehouse's priority",
+                label: "Prioritas",
+                description: "Prioritas gudang",
                 placeholder: "1",
             },
         ]} />

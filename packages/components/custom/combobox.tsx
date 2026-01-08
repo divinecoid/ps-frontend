@@ -16,11 +16,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { BaseApiCallIndexProps } from "@/interfaces/base"
-import { toast } from "sonner"
 
-interface DynamicComboboxProps {
-  source?: BaseApiCallIndexProps;
+interface ComboboxProps {
+  data: Record<string, string>[];
   id: string;
   label: string;
   placeholder?: string;
@@ -38,31 +36,19 @@ interface Options {
   label: string;
 }
 
-export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, disabled, value, onValueChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
+export function Combobox({ data, id, label, type = 'single', variant = 'outline', placeholder, disabled, value, onValueChange, className, "aria-invalid": ariaInvalid }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
 
   React.useEffect(() => {
-    const getData = async () => {
-      try {
-        const result = await source?.(1, 10, filter);
-        if (result?.ok) {
-          const json = (await result.json());
-          const mapped = json.data.map((item: Record<string, string>) => ({
-            value: item[id],
-            label: item[label]
-          }))
-          setOptions(mapped);
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message, { richColors: true })
-        }
-      }
-    }
-    getData();
-  }, [source, filter]);
+    const mapped = data.map((item: Record<string, string>) => ({
+      value: item[id],
+      label: item[label],
+    }))
+    setOptions(mapped);
+  }, [data]);
+
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal>

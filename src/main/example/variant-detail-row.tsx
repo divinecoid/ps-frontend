@@ -29,7 +29,7 @@ export default function VariantDetailRow({
     parentIndex,
     rowKey
 }: DetailProps) {
-    const [deleteId, setDeleteId] = useState<number | undefined>();
+    const [deleteIndex, setDeleteIndex] = useState<number | undefined>();
     const { control } = useFormContext()
     const fieldName = `${parentKey}.${parentIndex}.${rowKey}` as const
 
@@ -47,7 +47,7 @@ export default function VariantDetailRow({
     }
 
     return <div className={`flex flex-col h-full select-none`}>
-        <ConfirmDetail id={deleteId} setId={setDeleteId} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus baris terpilih secara permanen!" />
+        <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus baris terpilih secara permanen!" />
         <Table>
             <TableCaption>
                 <Button type="button" className="self-end" onClick={handleAdd}><Plus />Tambah</Button>
@@ -66,7 +66,7 @@ export default function VariantDetailRow({
                     control={control}
                     fields={fields}
                     rowKey={fieldName}
-                    handleRemove={(index) => setDeleteId(index)}
+                    handleRemove={(index) => setDeleteIndex(index)}
                     formShape={[
                         {
                             key: "size_id",

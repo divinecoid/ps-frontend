@@ -5,27 +5,27 @@ import { z } from "zod/v3";
 
 export default function ModalSize(props: BaseModalForm) {
     return <ModalItem<Size>
-        title={props.isEdit ? "Edit Size" : "Add Size"}
-        description={props.isEdit ? "Edit size" : "Add new size"}
+        title={props.isEdit ? "Sunting Ukuran" : "Tambah Ukuran"}
+        description={props.isEdit ? "Sunting ukuran yang sudah ada" : "Tambah ukuran baru"}
         {...props}
         formShape={[
             {
                 key: "code",
                 type: "text",
-                schema: z.string().min(2, {
-                    message: "Code must be at least 2 characters.",
+                schema: z.string().min(1, {
+                    message: "Kode setidaknya memiliki 2 karakter.",
                 }),
-                label: "Code",
-                description: "Input size's code.",
+                label: "Kode",
+                description: "Masukkan kode ukuran.",
                 placeholder: "SZ-001",
             },
             {
                 key: "name",
                 type: "text",
                 schema: z.string(),
-                label: "Name",
-                description: "Input size's name.",
-                placeholder: "Size name",
+                label: "Nama",
+                description: "Masukkan nama ukuran.",
+                placeholder: "Nama ukuran",
             },
         ]} />
 }

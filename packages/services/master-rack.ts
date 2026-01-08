@@ -1,4 +1,4 @@
-import { BaseApiCallIndexProps } from "@/interfaces/base";
+import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallRestoreProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
 import { DELETE, GET, PATCH, POST } from "./api"
 import { Rack } from "@/interfaces/rack";
 import { ENDPOINT } from "./endpoints";
@@ -11,22 +11,22 @@ export const master: BaseApiCallIndexProps = async (page, per_page, search) => {
     return await GET(`${ENDPOINT.RACK}/master`, { page, per_page, search });
 }
 
-export const store = async (values: Rack) => {
+export const store: BaseApiCallCreateProps<Rack> = async (values) => {
     return await POST(ENDPOINT.RACK, values);
 }
 
-export const update = async (id: number, values: Rack) => {
+export const update: BaseApiCallUpdateProps<Rack> = async (id, values) => {
     return await PATCH(`${ENDPOINT.RACK}/${id}`, values);
 }
 
-export const show = async (id: number) => {
+export const show: BaseApiCallViewProps = async (id) => {
     return await GET(`${ENDPOINT.RACK}/${id}`);
 }
 
-export const restore = async (id: number) => {
+export const restore: BaseApiCallRestoreProps = async (id) => {
     return await POST(`${ENDPOINT.RACK}/${id}/restore`);
 }
 
-export const destroy = async (id: number) => {
+export const destroy: BaseApiCallDeleteProps = async (id) => {
     return await DELETE(`${ENDPOINT.RACK}/${id}`);
 }

@@ -24,7 +24,7 @@ interface DetailProps {
 }
 
 export default function DetailRow({ schema, variantSchema, rowKey }: DetailProps) {
-    const [deleteId, setDeleteId] = useState<number | undefined>();
+    const [deleteIndex, setDeleteIndex] = useState<number | undefined>();
     const { control } = useFormContext()
     const { append, fields, remove } = useFieldArray({
         control,
@@ -46,7 +46,7 @@ export default function DetailRow({ schema, variantSchema, rowKey }: DetailProps
     }
 
     return <div className={`flex flex-col h-full select-none`}>
-        <ConfirmDetail id={deleteId} setId={setDeleteId} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus baris terpilih secara permanen!" />
+        <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus baris terpilih secara permanen!" />
         <Button type="button" className="self-end" onClick={handleAdd}><Plus />Tambah</Button>
         <Table>
             {fields.length == 0 && <TableCaption>Daftar permintaan Anda.</TableCaption>}
@@ -63,7 +63,7 @@ export default function DetailRow({ schema, variantSchema, rowKey }: DetailProps
                     control={control}
                     fields={fields}
                     rowKey={rowKey}
-                    handleRemove={(index) => setDeleteId(index)}
+                    handleRemove={(index) => setDeleteIndex(index)}
                     formShape={[
                         {
                             key: "model_id",
