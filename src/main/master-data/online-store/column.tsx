@@ -49,7 +49,7 @@ export const columns: ColumnDef<OnlineStore>[] = [
     enableSorting: true,
   },
   {
-    accessorKey: "access_tokent",
+    accessorKey: "access_token",
     header: "Token akses",
     enableSorting: true,
   },

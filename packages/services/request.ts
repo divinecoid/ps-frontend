@@ -26,3 +26,7 @@ export const show: BaseApiCallViewProps = async (id) => {
 export const destroy: BaseApiCallDeleteProps = async (id) => {
     return await DELETE(`${ENDPOINT.REQUEST}/${id}`);
 }
+
+export const barcode: BaseApiCallViewProps = async (id) => {
+    return await GET(`${ENDPOINT.REQUEST}/barcode/${id}`);
+}

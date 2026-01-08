@@ -253,13 +253,13 @@ export const Menu = {
             'admin'
           ]
         },
-        {
-          title: "Produk",
-          url: "/master-data/product",
-          role: [
-            'admin'
-          ]
-        },
+        // {
+        //   title: "Produk",
+        //   url: "/master-data/product",
+        //   role: [
+        //     'admin'
+        //   ]
+        // },
         {
           title: "Pabrik",
           url: "/master-data/factory",
