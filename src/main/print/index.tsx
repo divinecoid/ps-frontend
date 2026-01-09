@@ -1,16 +1,11 @@
-import { Button } from "@/components/ui/button";
 import { PrintOptions } from "@/interfaces/print";
-import { Printer } from "lucide-react";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-import { useNavigate } from "react-router-dom";
 
 export default function Print() {
     const [barcodes, setBarcodes] = useState<string[]>();
     const [paper, setPaper] = useState<{ width: number, height: number }>();
-    const navigate = useNavigate();
 
-    const mmToPx = (mm: number) => mm * 8;
     const [readyToPrint, setReadyToPrint] = useState(false);
 
     useEffect(() => {
@@ -29,35 +24,23 @@ export default function Print() {
     useEffect(() => {
         window.electronAPI.notifyPrintReady();
         const unsubscribe = window.electronAPI.onSetPrintData((data: PrintOptions) => {
-            console.log(data);
             setBarcodes(data.barcodes);
             setPaper(data.paper);
         });
         return unsubscribe;
     }, []);
 
-    return <>
-        <div className="sticky top-0 border-b backdrop-blur-md bg-background/70 flex gap-2 flex-row px-7 py-2 items-center">
-            <h3 className="font-semibold flex-1">Barcode Preview</h3>
-            <Button type="button" className="self-end"><Printer />Cetak</Button>
+    return <div className="flex">
+        <div className="grid grid-cols-3 gap-4 p-4 shrink-0">
+            {barcodes?.map((code, i) => (
+                <div
+                    key={i}
+                    className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1"
+                >
+                    <QRCode value={code} size={200} bgColor="transparent" fgColor="black" />
+                    {code}
+                </div>
+            ))}
         </div>
-        <div className="grid grid-cols-2">
-            <div className="grid gap-2">
-                {barcodes?.map((code, i) => (
-                    <div
-                        key={i}
-                        className="print-page border border-black flex items-center justify-center"
-                        style={{
-                            width: mmToPx(paper!.width),
-                            height: mmToPx(paper!.height),
-                        }}
-                    >
-                        <QRCode value={code} />
-                        {code}
-                    </div>
-                ))}
-            </div>
-        </div>
-
-    </>
+    </div>
 }

@@ -212,6 +212,7 @@ ipcMain.on("start-print", () => {
 
   printWin.webContents.print({
     silent: false,
+    preview: true,
     printBackground: true,
     margins: {
       marginType: "custom",

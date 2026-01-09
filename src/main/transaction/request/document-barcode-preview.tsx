@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Services from "@/services";
 import { useEffect, useState } from "react";
+import QRCode from "react-qr-code";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -21,6 +22,9 @@ export default function DocumentBarcodePreview() {
 
     const [barcodes, setBarcodes] = useState<string[]>();
     const [loading, setLoading] = useState(id ? true : false);
+
+    const paperWidthMm = 240;
+    const paperHeightMm = 300;
 
     useEffect(() => {
         const getData = async () => {
@@ -59,21 +63,29 @@ export default function DocumentBarcodePreview() {
         await window.electronAPI.printPreview({
             barcodes: barcodes,
             paper: {
-                width: 50,
-                height: 25,
+                width: paperWidthMm,
+                height: paperHeightMm,
             },
         });
     };
 
-    return <div className={`flex flex-col flex-1 h-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>
-        <div className={`flex-1 flex`}>
-            <div className="grid grid-cols-3 flex-1">
-                {barcodes?.map((item, index) => {
-                    return <div key={index}>{item}</div>
-                })}
+    return <div className={`flex flex-col flex-1 h-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'} bg-black/20 dark:bg-white/20`}>
+        {!loading && (
+            <div className={`flex-1 flex justify-center p-4 overflow-auto`}>
+                <div className={`grid grid-cols-3 gap-4 bg-white p-4 drop-shadow-xl drop-shadow-black/50 mb-16 shrink-0`}>
+                    {barcodes?.map((code, i) => (
+                        <div
+                            key={i}
+                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1"
+                        >
+                            <QRCode value={code} size={200} bgColor="transparent" fgColor="black" />
+                            {code}
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
-        <div className="sticky bottom-0 border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
+        )}
+        <div className="fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
             <>
                 <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Kembali</Button>
                 <Button type="button" onClick={handlePrint}>Cetak</Button>

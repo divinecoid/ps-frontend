@@ -69,6 +69,7 @@ export default function Request() {
         rowActions={({ row }) => (
             <DropdownRowActions>
                 <DropdownMenuItem asChild><Link to={`./view/${row.id}`}>Lihat</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to={`./barcode/${row.id}`}>Barcode</Link></DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => handlePrint(row.id)}>Cetak Kode</DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
             </DropdownRowActions>
