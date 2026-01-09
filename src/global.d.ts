@@ -1,3 +1,5 @@
+import { PrintOptions } from "@/interfaces/print";
+
 export { };
 
 declare global {
@@ -15,6 +17,10 @@ declare global {
       onOauthDone: (callback: () => void) => void;
       removeOauthListener: () => void;
       onFullscreenChange: (callback: (isFullscreen: boolean) => void) => void;
+      notifyPrintReady: () => void;
+      printPreview: (options: PrintOptions) => Promise<boolean>;
+      startPrint: () => void;
+      onSetPrintData: (callback: (data: PrintOptions) => void) => () => void;
     };
   }
 

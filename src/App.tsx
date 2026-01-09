@@ -25,6 +25,7 @@ import WidgetPreviewPage from './main/example/widget-preview';
 import Request from './main/transaction/request';
 import FormRequest from './main/transaction/request/new-edit/form-request';
 import DocumentBarcodePreview from './main/transaction/request/document-barcode-preview';
+import Print from './main/print';
 
 function App() {
   const { token } = useAuth();
@@ -40,14 +41,14 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route element={token ? <NavigationLayout /> : <Navigate to="/login" replace />}>
           <Route path="/home" element={<Home />} />
-        {dummiesEnabled && (
-          <>
-            <Route path="/example" element={<Example />} />
-            <Route path="/example/new" element={<FormExample />} />
-            <Route path="/example/edit/:id" element={<FormExample />} />
-            <Route path="/example/preview" element={<WidgetPreviewPage/>} />
-          </>
-        )}
+          {dummiesEnabled && (
+            <>
+              <Route path="/example" element={<Example />} />
+              <Route path="/example/new" element={<FormExample />} />
+              <Route path="/example/edit/:id" element={<FormExample />} />
+              <Route path="/example/preview" element={<WidgetPreviewPage />} />
+            </>
+          )}
           {isAdmin && (
             <>
               <Route path="/master-data/user" element={<MasterUsers />} />
@@ -67,12 +68,13 @@ function App() {
 
           {(isAdmin || isChecker || isPreparist) && (
             <>
-              <Route path="/transaction/request" element={<Request/>} />
-              <Route path="/transaction/request/new" element={<FormRequest/>} />
+              <Route path="/transaction/request" element={<Request />} />
+              <Route path="/transaction/request/new" element={<FormRequest />} />
               <Route path="/transaction/request/view/:id" element={<FormRequest disabled={true} />} />
               <Route path="/transaction/request/barcode/:id" element={<DocumentBarcodePreview />} />
               <Route path="/transaction/order" element={<></>} />
-              <Route path="/inventory" element={<MasterProducts/> } />
+              <Route path="/inventory" element={<MasterProducts />} />
+
             </>
           )}
 
@@ -81,6 +83,7 @@ function App() {
 
           <Route path="*" element={<EmptyPage />} />
         </Route>
+        <Route path="/print" element={<Print/>} />
       </Routes>
     </HashRouter>
   );
