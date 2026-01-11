@@ -1,19 +1,32 @@
-import { BaseApiCallIndexProps } from "@/interfaces/base";
-import { GET, PATCH, POST } from "./api"
+import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallRestoreProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
+import { DELETE, GET, PATCH, POST } from "./api"
 import { Color } from "@/interfaces/color";
-
-const URL = {
-    COLOR: "color"
-}
+import { ENDPOINT } from "./endpoints";
 
 export const index: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(URL.COLOR, { page, per_page, search });
+    return await GET(ENDPOINT.COLOR, { page, per_page, search });
 }
 
-export const store = async (values: Color) => {
-    return await POST(URL.COLOR, values);
+export const master: BaseApiCallIndexProps = async (page, per_page, search) => {
+    return await GET(`${ENDPOINT.COLOR}/master`, { page, per_page, search });
 }
 
-export const update = async (id: string, values: Color) => {
-    return await PATCH(`${URL.COLOR}/${id}`, values);
+export const store: BaseApiCallCreateProps<Color> = async (values) => {
+    return await POST(ENDPOINT.COLOR, values);
+}
+
+export const update: BaseApiCallUpdateProps<Color> = async (id, values) => {
+    return await PATCH(`${ENDPOINT.COLOR}/${id}`, values);
+}
+
+export const show: BaseApiCallViewProps = async (id) => {
+    return await GET(`${ENDPOINT.COLOR}/${id}`);
+}
+
+export const restore: BaseApiCallRestoreProps = async (id) => {
+    return await POST(`${ENDPOINT.COLOR}/${id}/restore`);
+}
+
+export const destroy: BaseApiCallDeleteProps = async (id) => {
+    return await DELETE(`${ENDPOINT.COLOR}/${id}`);
 }

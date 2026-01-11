@@ -1,4 +1,4 @@
-import { AudioWaveform, BookOpen, Bot, Command, Construction, Frame, GalleryVerticalEnd, Map, PieChart, Settings2, SquareTerminal } from "lucide-react";
+import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2 } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -129,102 +129,212 @@ import { AudioWaveform, BookOpen, Bot, Command, Construction, Frame, GalleryVert
 //   ],
 // }
 export const Menu = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
+  // user: {
+  //   name: "shadcn",
+  //   email: "m@example.com",
+  //   avatar: "/avatars/shadcn.jpg",
+  // },
+  // teams: [
+  //   {
+  //     name: "PS Frontend",
+  //     logo: GalleryVerticalEnd,
+  //     plan: "Enterprise",
+  //   },
+  //   {
+  //     name: "Acme Corp.",
+  //     logo: AudioWaveform,
+  //     plan: "Startup",
+  //   },
+  //   {
+  //     name: "Evil Corp.",
+  //     logo: Command,
+  //     plan: "Free",
+  //   },
+  // ],
+  navInventory: [
     {
-      name: "PS Frontend",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
+      name: "Produk",
+      url: "/inventory",
+      icon: Grid2X2,
+      role: [
+        'preparist',
+        'checker',
+        'admin',
+      ]
+    }
   ],
-  navMain: [
+  navTransaction: [
+    {
+      title: "Transaksi",
+      url: "#",
+      icon: Repeat2,
+      role: [
+        'preparist',
+        'checker',
+        'admin'
+      ],
+      items: [
+        {
+          title: "Permintaan",
+          url: "/transaction/request",
+          role: [
+            'preparist',
+            'checker',
+            'admin'
+          ]
+        },
+        {
+          title: "Pesanan",
+          url: "/transaction/order",
+          role: [
+            'preparist',
+            'checker'
+          ]
+        },
+      ]
+    }
+  ],
+  navMaster: [
     {
       title: "Master Data",
       url: "#",
       icon: SquareTerminal,
+      role: [
+        'admin',
+        'user'
+      ],
       items: [
         {
-          title: "Rack",
-          url: "/master-data/rack",
+          title: "Gudang",
+          url: "/master-data/warehouse",
+          role: [
+            'admin'
+          ]
         },
         {
-          title: "Warehouse",
-          url: "/master-data/warehouse",
+          title: "Rak",
+          url: "/master-data/rack",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "CMT",
           url: "/master-data/cmt",
+          role: [
+            'admin'
+          ]
         },
+        // {
+        //   title: "Inventory",
+        //   url: "/master-data/inventory",
+        //   role: [
+        //     'admin'
+        //   ]
+        // },
         {
-          title: "Inventory",
-          url: "/master-data/inventory",
-        },
-        {
-          title: "Product",
-          url: "/master-data/product",
-        },
-        {
-          title: "Product Model",
-          url: "/master-data/product-model",
-        },
-        {
-          title: "Size",
+          title: "Ukuran",
           url: "/master-data/size",
+          role: [
+            'admin'
+          ]
         },
         {
-          title: "Color",
+          title: "Warna",
           url: "/master-data/color",
+          role: [
+            'admin'
+          ]
         },
         {
-          title: "Factory",
+          title: "Model",
+          url: "/master-data/product-model",
+          role: [
+            'admin'
+          ]
+        },
+        // {
+        //   title: "Produk",
+        //   url: "/master-data/product",
+        //   role: [
+        //     'admin'
+        //   ]
+        // },
+        {
+          title: "Pabrik",
           url: "/master-data/factory",
+          role: [
+            'admin'
+          ]
         },
         {
-          title: "Online Store",
+          title: "Toko online",
           url: "/master-data/online-store",
+          role: [
+            'admin'
+          ]
         },
         {
           title: "Marketplace",
           url: "/master-data/marketplace",
+          role: [
+            'admin'
+          ]
         },
       ],
     },
+    {
+      title: "Administrasi",
+      url: "#",
+      icon: UserCog,
+      role: [
+        'admin',
+        'user'
+      ],
+      items: [
+        {
+          title: "Pengguna",
+          url: "/master-data/user",
+          role: [
+            'admin'
+          ]
+        },
+        {
+          title: "Peran",
+          url: "/master-data/role",
+          role: [
+            'admin'
+          ]
+        },
+      ]
+    }
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+  // projects: [
+  //   {
+  //     name: "Design Engineering",
+  //     url: "#",
+  //     icon: Frame,
+  //   },
+  //   {
+  //     name: "Sales & Marketing",
+  //     url: "#",
+  //     icon: PieChart,
+  //   },
+  //   {
+  //     name: "Travel",
+  //     url: "#",
+  //     icon: Map,
+  //   },
+  // ],
   tests: [
     {
       name: "Basic CRUD",
       url: "/example",
+      icon: Construction,
+    },
+    {
+      name: "Widget Test",
+      url: "/example/preview",
       icon: Construction,
     },
   ],

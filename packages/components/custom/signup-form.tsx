@@ -19,50 +19,49 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   return (
     <Card {...props} className="select-none">
       <CardHeader>
-        <CardTitle>Create an account</CardTitle>
+        <CardTitle>Membuat akun</CardTitle>
         <CardDescription>
-          Enter your information below to create your account
+          Masukkan informasi anda di bawah untuk membuat akun anda
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="name">Full Name</FieldLabel>
-              <Input id="name" type="text" placeholder="John Doe" required />
+              <FieldLabel htmlFor="name">Nama Lengkap</FieldLabel>
+              <Input id="name" type="text" placeholder="John Doe" required autoFocus />
             </Field>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="email@contoh.com"
                 required
               />
               <FieldDescription>
-                We&apos;ll use this to contact you. We will not share your email
-                with anyone else.
+                Kami akan menggunakan ini untuk menghubungi anda. Kami tidak akan membagikan email anda kepada siapapun.
               </FieldDescription>
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <FieldLabel htmlFor="password">Kata Sandi</FieldLabel>
               <Input id="password" type="password" required />
               <FieldDescription>
-                Must be at least 8 characters long.
+                Setidaknya memiliki 8 karakter.
               </FieldDescription>
             </Field>
             <Field>
               <FieldLabel htmlFor="confirm-password">
-                Confirm Password
+                Konfirmasi Kata Sandi
               </FieldLabel>
               <Input id="confirm-password" type="password" required />
-              <FieldDescription>Please confirm your password.</FieldDescription>
+              <FieldDescription>Tolong konfirmasikan kata sandi anda.</FieldDescription>
             </Field>
             <FieldGroup>
               <Field>
-                <Button type="submit">Create Account</Button>
+                <Button type="submit">Membuat Akun</Button>
                 <FieldDescription className="px-6 text-center">
-                  Already have an account? <Link to="/login">Sign in</Link>
+                  Sudah memiliki akun? <Link to="/login">Masuk</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

@@ -1,22 +1,21 @@
-import { BaseResponse } from "./base"
+import { BaseResponse, IndexResponse, MasterData } from "./base"
 
-export interface Product {
-  id: number
-  sku: string
-  color_id: number
-  model_id: number
-  size_id: number
-  color: {
-    name: string
-  }
+export interface Product extends MasterData {
+  model_id: string
+  rack_id: string
   model: {
     name: string
   }
-  size: {
+  rack: {
     name: string
   }
+  barcode: string
 }
 
-export interface ProductResponse extends BaseResponse {
+export interface ProductResponse extends IndexResponse {
   data: Product[]
+}
+
+export interface ProductViewResponse extends BaseResponse {
+  data: Product
 }

@@ -4,7 +4,7 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/custom/nav-main"
-import { NavProjects } from "@/components/custom/nav-projects"
+// import { NavProjects } from "@/components/custom/nav-projects"
 import { NavTests } from "@/components/custom/nav-tests"
 import { NavUser } from "@/components/ui/nav-user"
 import {
@@ -19,8 +19,12 @@ import {
 } from "@/components/ui/sidebar"
 import { Menu } from "@/config/menu"
 import { Link } from "react-router-dom"
+import { useAuth } from "@/provider/auth-provider"
+import { decodeToken } from "@/lib/jwt-decode"
+import { NavInventories } from "../custom/nav-inventories"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { token } = useAuth();
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -41,12 +45,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={Menu.navMain} />
+        <NavInventories label="Gudang" items={Menu.navInventory} />
+        <NavMain label="Transaksi" items={Menu.navTransaction} />
+        <NavMain label="Sistem" items={Menu.navMaster} />
         {/* <NavProjects projects={Menu.projects} /> */}
         <NavTests tests={Menu.tests} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={Menu.user} />
+        <NavUser user={{ avatar: "", ...decodeToken(token ?? "") }} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

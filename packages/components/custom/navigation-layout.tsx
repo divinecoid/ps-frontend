@@ -25,7 +25,7 @@ export default function NavigationLayout() {
     <SidebarProvider>
       <AppSidebar className="select-none" />
       <SidebarInset>
-        <header className="select-none sticky top-0 bg-background/90 backdrop-blur-2xl flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <header className="select-none border-b sticky top-0 z-10 bg-background/70 backdrop-blur-md flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex flex-1 items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator

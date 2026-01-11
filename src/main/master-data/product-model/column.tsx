@@ -1,46 +1,46 @@
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Badge } from "@/components/ui/badge";
 import { ProductModel } from "@/interfaces/product-model"
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
 
 export const columns: ColumnDef<ProductModel>[] = [
   {
-    accessorKey: "code",
-    header: "Code",
+    accessorKey: "sku",
+    header: "SKU",
     enableSorting: true,
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: "Model",
     enableSorting: true,
   },
   {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const data = row.original
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(data.id.toString())}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
+    accessorKey: "sizes",
+    header: "Ukuran",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return row.original.sizes.map(s => s.name).join(", ")
+    })
   },
+  {
+    accessorKey: "colors",
+    header: "Warna",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return row.original.colors.map(c => c.name).join(", ")
+    })
+  },
+  {
+    accessorKey: "is_deleted",
+    header: "Status model",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const data = row.original;
+      switch (data.is_deleted) {
+        case true:
+          return <Badge variant="destructive">Nonaktif</Badge>
+        case false:
+          return <Badge variant="success">Aktif</Badge>
+      }
+    })
+  }
 ]

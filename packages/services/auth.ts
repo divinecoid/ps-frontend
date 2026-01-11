@@ -1,17 +1,12 @@
 import { POST } from "./api"
-
-const URL = {
-    LOGIN: "auth/login",
-    LOGOUT: "auth/logout",
-    REFRESH: "auth/refresh"
-}
+import { ENDPOINT } from "./endpoints"
 
 export const login = async (username: string, password: string) => {
     const body = {
         username: username,
         password: password,
     }
-    return await POST(URL.LOGIN, body)
+    return await POST(ENDPOINT.LOGIN, body)
 }
 
 export const refresh = async () => {
@@ -19,7 +14,7 @@ export const refresh = async () => {
     const body = {
         refresh_token: refresh_token,
     }
-    return await POST(URL.REFRESH, body)
+    return await POST(ENDPOINT.REFRESH, body)
 }
 
 export const logout = async () => {
@@ -27,7 +22,7 @@ export const logout = async () => {
     const body = {
         refresh_token: refresh_token,
     }
-    const result = await POST(URL.LOGOUT, body);
+    const result = await POST(ENDPOINT.LOGOUT, body);
     if (result.ok) {
         await window.electronAPI.deleteRefreshToken();
         await window.electronAPI.deleteToken();

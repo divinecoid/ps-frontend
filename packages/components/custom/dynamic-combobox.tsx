@@ -17,14 +17,20 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { BaseApiCallIndexProps } from "@/interfaces/base"
+import { toast } from "sonner"
 
 interface DynamicComboboxProps {
-  source: BaseApiCallIndexProps;
+  source?: BaseApiCallIndexProps;
   id: string;
   label: string;
   placeholder?: string;
+  disabled?: boolean;
+  variant?: "outline" | "link" | "default" | "destructive" | "secondary" | "ghost" | null | undefined;
+  type?: 'single' | 'multi';
   value: string | number | (string | number)[];
-  onValueChange: (...event: any[]) => void;
+  onValueChange: (values: string | string[]) => void;
+  className?: string | undefined;
+  "aria-invalid"?: boolean
 }
 
 interface Options {
@@ -32,7 +38,7 @@ interface Options {
   label: string;
 }
 
-export function DynamicCombobox({ source, id, label, placeholder, value, onValueChange }: DynamicComboboxProps) {
+export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, disabled, value, onValueChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
@@ -40,57 +46,80 @@ export function DynamicCombobox({ source, id, label, placeholder, value, onValue
   React.useEffect(() => {
     const getData = async () => {
       try {
-        const result = await source(1, 10, filter);
-        if (result.ok) {
+        const result = await source?.(1, 10, filter);
+        if (result?.ok) {
           const json = (await result.json());
-          const mapped = json.data.map((item: any) => ({
-            value: String(item[id]),
+          const mapped = json.data.map((item: Record<string, string>) => ({
+            value: item[id],
             label: item[label]
           }))
           setOptions(mapped);
         }
       } catch (error) {
-        console.error(error);
+        if (error instanceof Error) {
+          toast.error(error.message, { richColors: true })
+        }
       }
     }
     getData();
-  }, [filter]);
+  }, [source, filter]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant={variant}
           role="combobox"
           aria-expanded={open}
-          className="justify-between"
+          aria-invalid={ariaInvalid}
+          disabled={disabled}
+          className={cn("justify-between aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive truncate", className)}
         >
-          {value
-            ? options.find((item) => item.value === value)?.label
-            : <p className="opacity-50">{placeholder}</p>}
+          <span className="truncate flex-1 text-left">
+            {value && Array.isArray(value) && value.length > 0 ? (              // multiselect
+              value.map(v => options.find(o => o.value === v)?.label).join(", ")
+            ) : !Array.isArray(value) && value ? (                              // singleselect
+              options.find(o => o.value === value)?.label
+            ) : (
+              <p className="opacity-50">{placeholder}</p>
+            )}
+          </span>
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0">
         <Command shouldFilter={false}>
-          <CommandInput placeholder="Search..." className="h-9" value={filter} onValueChange={setFilter} />
+          <CommandInput placeholder="Telusuri..." className="h-9" value={filter} onValueChange={setFilter} />
           <CommandList>
-            <CommandEmpty>No data found.</CommandEmpty>
+            <CommandEmpty>Data tidak ditemukan.</CommandEmpty>
             <CommandGroup>
               {options.map((item) => (
                 <CommandItem
                   key={item.value}
                   value={item.value}
                   onSelect={() => {
-                    onValueChange(item.value)
-                    setOpen(false)
+                    if (type === 'single') {
+                      onValueChange(item.value)
+                      setOpen(false)
+                    } else {
+                      const current = Array.isArray(value) ? value.map(String) : [];
+                      const exists = current.includes(item.value);
+                      const next = exists
+                        ? current.filter(v => v !== item.value)
+                        : [...current, item.value];
+                      onValueChange(next);
+                    }
                   }}
                 >
                   {item.label}
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === item.value ? "opacity-100" : "opacity-0"
+                      (type === "single"
+                        ? value === item.value
+                        : Array.isArray(value) && value.includes(item.value))
+                        ? "opacity-100"
+                        : "opacity-0"
                     )}
                   />
                 </CommandItem>

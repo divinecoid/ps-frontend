@@ -1,18 +1,21 @@
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Badge } from "@/components/ui/badge";
 import { Marketplace } from "@/interfaces/marketplace"
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
 
 export const columns: ColumnDef<Marketplace>[] = [
   {
     accessorKey: "code",
-    header: "Code",
+    header: "Kode",
     enableSorting: true,
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: "Nama",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "alias",
+    header: "Alias",
     enableSorting: true,
   },
   {
@@ -22,40 +25,26 @@ export const columns: ColumnDef<Marketplace>[] = [
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: "Deskripsi",
     enableSorting: true,
   },
   {
     accessorKey: "is_need_checker",
-    header: "Need checker",
+    header: "Membutuhkan checker",
     enableSorting: true,
   },
   {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const data = row.original
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(data.id.toString())}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  },
+    accessorKey: "is_deleted",
+    header: "Status marketplace",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const data = row.original;
+      switch (data.is_deleted) {
+        case true:
+          return <Badge variant="destructive">Nonaktif</Badge>
+        case false:
+          return <Badge variant="success">Aktif</Badge>
+      }
+    })
+  }
 ]

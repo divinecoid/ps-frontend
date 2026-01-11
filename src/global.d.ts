@@ -1,4 +1,6 @@
-export {};
+import { PrintOptions } from "@/interfaces/print";
+
+export { };
 
 declare global {
   interface Window {
@@ -11,6 +13,14 @@ declare global {
       deleteRefreshToken: () => Promise<boolean>;
       onNavigate: (callback: (path: string) => void) => void;
       getInitialToken: () => Promise<string | null>;
+      startOauth: (url: string, successUrl: string) => Promise<void>;
+      onOauthDone: (callback: () => void) => void;
+      removeOauthListener: () => void;
+      onFullscreenChange: (callback: (isFullscreen: boolean) => void) => void;
+      notifyPrintReady: () => void;
+      printPreview: (options: PrintOptions) => Promise<boolean>;
+      startPrint: () => void;
+      onSetPrintData: (callback: (data: PrintOptions) => void) => () => void;
     };
   }
 

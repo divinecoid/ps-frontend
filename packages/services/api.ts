@@ -1,10 +1,11 @@
-import { logout, refresh } from "./auth";
+import { refresh } from "./auth";
+import { ENDPOINT } from "./endpoints";
 
 const timeout = 5000;
 
 let onTokenRefreshed: ((token: string) => void) | null = null;
 
-export const setTokenRefreshListener = (callback: (token: string) => void) => {
+export const setTokenRefreshListener = (callback: ((token: string) => void)|null) => {
     onTokenRefreshed = callback;
 };
 
@@ -23,7 +24,7 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
             signal: controller.signal
         });
         clearTimeout(timeoutId);
-        if (result.status === 401 && token) {
+        if (result.status === 401 && token && !String(input).includes(ENDPOINT.REFRESH)) {
             if (count <= 1) {
                 const refreshResult = await refresh();
                 if (refreshResult.ok) {
@@ -33,11 +34,15 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
                     onTokenRefreshed?.(newToken);
                     return await fetchWithTimeout(input, init, count + 1);
                 } else {
-                    await logout();
+                    await window.electronAPI.deleteRefreshToken();
+                    await window.electronAPI.deleteToken();
+                    window.location.reload();
                     throw new Error("Unauthorized: Token refresh failed");
                 }
             } else {
-                await logout();
+                await window.electronAPI.deleteRefreshToken();
+                await window.electronAPI.deleteToken();
+                window.location.reload();
                 throw new Error("Too many refresh attempts");
             }
         }
@@ -55,8 +60,8 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
     }
 }
 
-export const GET = async (path: string, params?: Record<string, any>) => {
-    const url = new URL(import.meta.env.VITE_APP_BASE_URL + path);
+export const GET = async (path: string, params?: Record<string, unknown>) => {
+    const url = new URL(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path);
     if (params) {
         Object.entries(params).forEach(([key, value]) => {
             if (value !== undefined && value !== null && value !== "") {
@@ -69,36 +74,36 @@ export const GET = async (path: string, params?: Record<string, any>) => {
     });
 }
 
-export const POST = async (path: string, body: {}) => {
-    return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path, {
+export const POST = async (path: string, body?: object) => {
+    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
         method: 'POST',
         body: JSON.stringify(body),
     })
 }
 
-export const PATCH = async (path: string, body: {}) => {
-    return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path, {
+export const PATCH = async (path: string, body?: object) => {
+    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
         method: 'PATCH',
         body: JSON.stringify(body),
     })
 }
 
-export const PUT = async (path: string, body: {}) => {
-    return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path, {
+export const PUT = async (path: string, body?: object) => {
+    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
         method: 'PUT',
         body: JSON.stringify(body),
     })
 }
 
-export const DELETE = async (path: string, body: {}) => {
-    return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path, {
+export const DELETE = async (path: string, body?: object) => {
+    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
         method: 'DELETE',
         body: JSON.stringify(body),
     })
 }
 
 export const DELETE_ALL = async (path: string) => {
-    return await fetchWithTimeout(import.meta.env.VITE_APP_BASE_URL + path, {
+    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
         method: 'DELETE',
     })
 }
