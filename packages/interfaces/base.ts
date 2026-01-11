@@ -92,6 +92,7 @@ export interface FormShape<T> {
   step?: number;
   options?: Record<string, string>;
   passwordEdit?: boolean;
+  disabled?: boolean;
   source?: {
     id: string;
     label: string;

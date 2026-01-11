@@ -125,7 +125,7 @@ export default function ItemForm<T extends FieldValues>({
                                             field={field}
                                             meta={fieldMeta}
                                             api={fieldSource}
-                                            disabled={disabled}
+                                            disabled={disabled || fieldMeta.disabled}
                                         />
                                     </FormControl>
                                     <FormDescription>{fieldMeta.description}</FormDescription>

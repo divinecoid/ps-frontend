@@ -34,6 +34,7 @@ interface ModalItemProps<T extends FieldValues> {
     id?: string;
     setId?: React.Dispatch<React.SetStateAction<string | undefined>>
     isEdit?: boolean,
+    disabled?: boolean;
     title?: string;
     description?: string;
     children?: React.ReactNode;
@@ -48,6 +49,7 @@ export default function ModalItem<T extends FieldValues>({
     id,
     setId,
     isEdit,
+    disabled,
     title,
     description,
     children,
@@ -142,6 +144,7 @@ export default function ModalItem<T extends FieldValues>({
                                                         field={field}
                                                         meta={fieldMeta}
                                                         api={fieldSource}
+                                                        disabled={disabled || fieldMeta.disabled}
                                                     />
                                                 </FormControl>
                                                 <FormDescription>{fieldMeta.description}</FormDescription>
@@ -154,10 +157,18 @@ export default function ModalItem<T extends FieldValues>({
                             {children}
                         </ScrollArea>
                         <DialogFooter className="sm:justify-end px-6 pb-6">
-                            <DialogClose asChild>
-                                <Button variant="outline">Batal</Button>
-                            </DialogClose>
-                            <Button type="submit">Simpan</Button>
+                            {disabled ? (
+                                <DialogClose asChild>
+                                    <Button variant="outline">Tutup</Button>
+                                </DialogClose>
+                            ) : (
+                                <>
+                                    <DialogClose asChild>
+                                        <Button variant="outline">Batal</Button>
+                                    </DialogClose>
+                                    <Button type="submit">Simpan</Button>
+                                </>
+                            )}
                         </DialogFooter>
                     </form>
                 </Form>

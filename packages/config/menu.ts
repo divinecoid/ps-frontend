@@ -165,34 +165,24 @@ export const Menu = {
   ],
   navTransaction: [
     {
-      title: "Transaksi",
-      url: "#",
+      name: "Permintaan",
+      url: "/transaction/request",
       icon: Repeat2,
       role: [
         'preparist',
         'checker',
         'admin'
-      ],
-      items: [
-        {
-          title: "Permintaan",
-          url: "/transaction/request",
-          role: [
-            'preparist',
-            'checker',
-            'admin'
-          ]
-        },
-        {
-          title: "Pesanan",
-          url: "/transaction/order",
-          role: [
-            'preparist',
-            'checker'
-          ]
-        },
       ]
-    }
+    },
+    {
+      name: "Pesanan",
+      url: "/transaction/order",
+      icon: Repeat2,
+      role: [
+        'preparist',
+        'checker'
+      ]
+    },
   ],
   navMaster: [
     {
