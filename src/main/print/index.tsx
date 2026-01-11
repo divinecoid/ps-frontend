@@ -35,7 +35,7 @@ export default function Print() {
             {barcodes?.map((code, i) => (
                 <div
                     key={i}
-                    className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1"
+                    className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1 gap-2"
                 >
                     <QRCode value={code} size={200} bgColor="transparent" fgColor="black" />
                     {code}

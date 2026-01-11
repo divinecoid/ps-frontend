@@ -69,14 +69,14 @@ export default function DocumentBarcodePreview() {
         });
     };
 
-    return <div className={`flex flex-col flex-1 h-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'} bg-black/20 dark:bg-white/20`}>
+    return <div className={`flex flex-col flex-1 h-0 ${loading ? 'cursor-wait' : undefined} bg-black/20 dark:bg-white/20`}>
         {!loading && (
             <div className={`flex-1 flex justify-center p-4 overflow-auto`}>
                 <div className={`grid grid-cols-3 gap-4 bg-white p-4 drop-shadow-xl drop-shadow-black/50 mb-16 shrink-0`}>
                     {barcodes?.map((code, i) => (
                         <div
                             key={i}
-                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1"
+                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1 gap-2"
                         >
                             <QRCode value={code} size={200} bgColor="transparent" fgColor="black" />
                             {code}
@@ -85,7 +85,7 @@ export default function DocumentBarcodePreview() {
                 </div>
             </div>
         )}
-        <div className="fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
+        <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
             <>
                 <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Kembali</Button>
                 <Button type="button" onClick={handlePrint}>Cetak</Button>
