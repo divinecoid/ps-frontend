@@ -34,7 +34,7 @@ export default function Request() {
                     code: item.barcode,
                     count: (item.req_dozen_qty * 12) + item.req_piece_qty
                 }
-            }).map((barcode: Barcodes, index: number) => {
+            }).map((barcode: Barcodes) => {
                 for (let i = 0; i < barcode.count; i++) {
                     barcodes.push(`${barcode.code}|${i + 1}`);
                 }
