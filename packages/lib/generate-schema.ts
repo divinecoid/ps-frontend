@@ -22,6 +22,7 @@ export default function generateSchema<T>(fields: FormShape<T>[]) {
             passwordEdit: field.passwordEdit,
             max: field.max,
             step: field.step,
+            disabled: field.disabled,
             ...(field.source && {
                 source: {
                     id: field.source.id,

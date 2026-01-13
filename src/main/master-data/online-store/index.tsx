@@ -47,6 +47,9 @@ export default function MasterOnlineStores() {
         const url = `${import.meta.env.VITE_APP_BASE_URL}/${await getMarketplaceAlias(marketplace_id)}/login/${id}`;
         await window.electronAPI.startOauth(url, successUrl);
     }
+    const refreshOnlineStore = async (_id: string) => {
+        //TODO:
+    }
 
     return <OverviewPage
         columns={columns}
@@ -65,6 +68,7 @@ export default function MasterOnlineStores() {
                     <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Kembalikan</DropdownMenuItem>
                     : <>
                         <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.marketplace_id, row.redirect_uri)}>Sambungkan</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => refreshOnlineStore(row.id)}>Refresh Token</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Sunting</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
                     </>

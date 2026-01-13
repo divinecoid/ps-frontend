@@ -3,6 +3,8 @@ const path = require('path');
 const { getToken, saveToken, getRefreshToken, saveRefreshToken, deleteToken, deleteRefreshToken } = require(path.join(__dirname, "keytar.js"));
 
 let win = null;
+let printWin = null;
+
 function createWindow() {
   win = new BrowserWindow({
     title: "PS Frontend",
@@ -169,5 +171,55 @@ ipcMain.handle("open-oauth", async (event, url, successUrl) => {
       win.webContents.send("oauth-done");
       oauthWin.close();
     }
+  });
+});
+
+function createPrintWindow() {
+  if (printWin) return printWin;
+  printWin = new BrowserWindow({
+    show: true,
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
+  const isDev = process.argv.includes("--dev");
+  if (isDev) {
+    printWin.loadURL("http://localhost:5173/#/print");
+  } else {
+    printWin.loadFile(path.join(__dirname, "dist/index.html"), {
+      hash: "/print",
+    });
+  }
+  printWin.on("closed", () => {
+    printWin = null;
+  })
+  return printWin;
+}
+
+ipcMain.handle("print-barcodes", async (_, options) => {
+  const win = createPrintWindow();
+  await new Promise(resolve => {
+    ipcMain.once("print-ready", resolve);
+  });
+  win.webContents.send("set-print-data", options);
+  return true;
+});
+
+ipcMain.on("start-print", () => {
+  if (!printWin) return;
+
+  printWin.webContents.print({
+    silent: false,
+    preview: true,
+    printBackground: true,
+    margins: {
+      marginType: "custom",
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+    },
   });
 });

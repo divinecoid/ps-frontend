@@ -28,6 +28,7 @@ export interface InputMeta {
     defaultValue?: string | number | (string | number)[];   //radio, select, checkbox, slider, input, textarea
     max?: number;                                           //slider
     step?: number;                                          //slider
+    disabled?: boolean;
     source?: {
         id: string;
         label: string;
