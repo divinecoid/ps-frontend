@@ -5,11 +5,11 @@ import {
 } from "@/components/ui/tooltip"
 import { ReactElement } from "react"
 
-interface TooltipButtonProps {
+interface TooltipHoverProps {
   children?: ReactElement
   tooltip?: string
 }
-export function TooltipButton({ children, tooltip }: TooltipButtonProps) {
+export function TooltipHover({ children, tooltip }: TooltipHoverProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>

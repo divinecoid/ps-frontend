@@ -23,7 +23,7 @@ import { hasRole } from '@/lib/jwt-decode';
 import FormExample from './main/example/form';
 import WidgetPreviewPage from './main/example/widget-preview';
 import Request from './main/transaction/request';
-import FormRequest from './main/transaction/request/new-edit/form-request';
+import FormRequest from './main/transaction/request/new/form-request';
 import DocumentBarcodePreview from './main/transaction/request/document-barcode-preview';
 import Print from './main/print';
 

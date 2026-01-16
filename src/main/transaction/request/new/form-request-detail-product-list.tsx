@@ -10,6 +10,7 @@ import VariantListItem from "./form-request-detail-variant-list-item";
 import ConfirmDetail from "./form-request-detail-confirm";
 import { ModelSize } from "@/interfaces/model-size";
 import { BaseApiCallIndexProps } from "@/interfaces/base";
+import { TooltipHover } from "@/components/custom/tooltip-hover";
 
 interface DetailProductListProps<T> {
     form: UseFormReturn<FieldValues, T, FieldValues>
@@ -144,7 +145,10 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                         />
                     </div>
                     {!disabled && (
-                        <Button tabIndex={-1} variant="destructive" type="button" onClick={() => handleDelete(index)}><Trash /></Button>
+                        <TooltipHover
+                            tooltip="Hapus">
+                            <Button tabIndex={-1} variant="destructive" type="button" onClick={() => handleDelete(index)}><Trash /></Button>
+                        </TooltipHover>
                     )}
                 </div>
             </CardHeader>
