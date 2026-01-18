@@ -86,7 +86,7 @@ export default function FormRequest(props: BaseForm) {
     return <ItemForm<Request>
         id={id}
         {...props}
-        services={Services.Request}
+        services={Services.TransactionRequest}
         formShape={[
             {
                 key: "cmt_id",

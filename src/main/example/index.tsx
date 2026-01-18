@@ -13,7 +13,7 @@ export default function MasterExample() {
     const [deleteRow, setDeleteRow] = useState<string>();
     return <OverviewPage
         columns={columns}
-        source={Services.Request}
+        source={Services.TransactionRequest}
         actions={(props) => [
             <Button asChild variant="outline"><Link to={`./new`}><Plus />Tambah</Link></Button>,
             <ConfirmRack {...props} action={Services.MasterRack.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />

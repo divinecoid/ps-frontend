@@ -118,7 +118,7 @@ export default function ModalItem<T extends FieldValues>({
                     <Button variant="outline"><Plus /> Tambah</Button>
                 </DialogTrigger>
             )}
-            <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none ${loading ? 'cursor-wait' : undefined}`}>
+            <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none ${loading ? 'cursor-progress' : undefined}`}>
                 <DialogHeader className="px-6 pt-6">
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>

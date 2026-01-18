@@ -24,8 +24,9 @@ import FormExample from './main/example/form';
 import WidgetPreviewPage from './main/example/widget-preview';
 import Request from './main/transaction/request';
 import FormRequest from './main/transaction/request/new/form-request';
-import DocumentBarcodePreview from './main/transaction/request/document-barcode-preview';
+import DocumentBarcodePreview from './main/transaction/request/barcode/preview';
 import Print from './main/print';
+import Receive from './main/transaction/receive';
 
 function App() {
   const { token } = useAuth();
@@ -72,6 +73,7 @@ function App() {
               <Route path="/transaction/request/new" element={<FormRequest />} />
               <Route path="/transaction/request/view/:id" element={<FormRequest disabled={true} />} />
               <Route path="/transaction/request/barcode/:id" element={<DocumentBarcodePreview />} />
+              <Route path="/transaction/receive/" element={<Receive />} />
               <Route path="/transaction/order" element={<></>} />
               <Route path="/inventory" element={<MasterProducts />} />
 

@@ -37,7 +37,7 @@ export default function FormExample2(props: BaseForm) {
     return <ItemForm<Request>
         id={String(param)}
         {...props}
-        services={Services.Request}
+        services={Services.TransactionRequest}
         formShape={[
             {
                 key: "cmt_id",

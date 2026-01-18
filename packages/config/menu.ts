@@ -1,4 +1,4 @@
-import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2 } from "lucide-react";
+import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2, ArrowDownLeft, History } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -163,7 +163,7 @@ export const Menu = {
       ]
     }
   ],
-  navTransaction: [
+  navCMTTransaction: [
     {
       name: "Permintaan",
       url: "/transaction/request",
@@ -174,6 +174,28 @@ export const Menu = {
         'admin'
       ]
     },
+    {
+      name: "Penerimaan",
+      url: "/transaction/receive",
+      icon: ArrowDownLeft,
+      role: [
+        'preparist',
+        'checker',
+        'admin'
+      ]
+    },
+    {
+      name: "Riwayat penerimaan",
+      url: "/transaction/receive-logs",
+      icon: History,
+      role: [
+        'preparist',
+        'checker',
+        'admin'
+      ]
+    },
+  ],
+  navStoreTransaction: [
     {
       name: "Pesanan",
       url: "/transaction/order",

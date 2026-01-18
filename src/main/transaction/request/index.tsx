@@ -1,10 +1,8 @@
 import { columns } from "./column";
 import Services from "@/services";
 import OverviewPage from "@/components/custom/overview-page";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ConfirmRequest from "./confirm";
-import DropdownRowActions from "@/components/custom/dropdown-row-actions";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Eye, Import, Plus, Printer, QrCode, Trash } from "lucide-react";
@@ -27,7 +25,7 @@ export default function Request() {
 
     const handlePrint = async (id: string) => {
         try {
-            const res = await Services.Request.barcode(id);
+            const res = await Services.TransactionRequest.barcode(id);
             const json = await res.json();
             const barcodes: string[] = [];
             json.data.request_detail.map((item: RequestDetail) => {
@@ -62,10 +60,10 @@ export default function Request() {
 
     return <OverviewPage
         columns={columns}
-        source={Services.Request}
+        source={Services.TransactionRequest}
         actions={(props) => [
             <Button asChild variant="outline"><Link to={`./new`}><Plus />Pengajuan Baru</Link></Button>,
-            <ConfirmRequest {...props} action={Services.Request.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
+            <ConfirmRequest {...props} action={props.services.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
         ]}
         rowActions={({ row }) => (
             <div className="flex gap-2">

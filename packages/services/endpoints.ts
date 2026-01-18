@@ -17,5 +17,6 @@ export const ENDPOINT = {
     WAREHOUSE: "warehouse",
     USER: "user",
     ROLE: "role",
-    REQUEST: "request"
+    REQUEST: "request",
+    INBOUND: "inbound"
 }

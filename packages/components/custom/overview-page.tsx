@@ -49,7 +49,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
         onLoadedRef?.(getData);
     }, []);
 
-    return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-wait' : undefined}`}>
+    return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-progress' : undefined}`}>
         <div className="px-4 lg:px-6">
             <DataTable
                 data={data ?? []}

@@ -29,17 +29,29 @@ export default function DocumentBarcodePreview() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const res = await Services.Request.barcode(String(id));
+                const res = await Services.TransactionRequest.barcode(String(id));
                 const json = await res.json();
                 const temp: string[] = [];
                 json.data.request_detail.map((item: RequestDetail) => {
                     return {
                         code: item.barcode,
-                        count: (item.req_dozen_qty * 12) + item.req_piece_qty
+                        count: item.req_dozen_qty * 12 + item.req_piece_qty
                     }
                 }).map((barcode: Barcodes) => {
+                    let dozen = 0;
+                    let sequence = 0;
                     for (let i = 0; i < barcode.count; i++) {
-                        temp.push(`${barcode.code}|${i + 1}`);
+                        if (i % 12 == 0) {
+                            dozen++;
+                            sequence = 0;
+                        } else {
+                            sequence++;
+                        }
+                        if (i < Math.floor(barcode.count / 12) * 12) {
+                            temp.push(`${barcode.code}|${dozen}|${sequence + 1}`);
+                        } else {
+                            temp.push(`${barcode.code}||${sequence + 1}`);
+                        }
                     }
                 });
                 setBarcodes(temp);
@@ -69,7 +81,7 @@ export default function DocumentBarcodePreview() {
         });
     };
 
-    return <div className={`flex flex-col flex-1 h-0 ${loading ? 'cursor-wait' : undefined} bg-black/20 dark:bg-white/20`}>
+    return <div className={`flex flex-col flex-1 h-0 ${loading ? 'cursor-progress' : undefined} bg-black/20 dark:bg-white/20`}>
         {!loading && (
             <div className={`flex-1 flex justify-center p-4 overflow-auto`}>
                 <div className={`grid grid-cols-3 gap-4 bg-white p-4 drop-shadow-xl drop-shadow-black/50 mb-16 shrink-0`}>
@@ -78,7 +90,8 @@ export default function DocumentBarcodePreview() {
                             key={i}
                             className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1 gap-2"
                         >
-                            <QRCode value={code} size={200} bgColor="transparent" fgColor="black" />
+                            <QRCode value={code} size={200} bgColor="transparent" fgColor="black"
+                                viewBox={`0 0 256 256`} />
                             {code}
                         </div>
                     ))}

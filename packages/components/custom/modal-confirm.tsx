@@ -2,7 +2,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { BaseDialog } from "@/interfaces/base";
 import { toast } from "sonner";
 
-export default function ModalConfirm({ id, setId, action, onSubmit, title, description }: BaseDialog) {
+export default function ModalConfirm({ id, setId, action, onSubmit, title, description, variant }: BaseDialog) {
     const confirm = async () => {
         if (id != undefined) {
             try {
@@ -22,14 +22,14 @@ export default function ModalConfirm({ id, setId, action, onSubmit, title, descr
     return <AlertDialog open={id != undefined ? true : false} onOpenChange={() => { setId?.(undefined) }}>
         <AlertDialogContent className="select-none">
             <AlertDialogHeader>
-                <AlertDialogTitle>{title}</AlertDialogTitle>
+                <AlertDialogTitle className={`${variant === 'destructive' ? 'text-destructive' : ''}`}>{title}</AlertDialogTitle>
                 <AlertDialogDescription>
                     {description}
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Batal</AlertDialogCancel>
-                <AlertDialogAction onClick={confirm}>OK</AlertDialogAction>
+                <AlertDialogAction variant={variant} onClick={confirm}>OK</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>
