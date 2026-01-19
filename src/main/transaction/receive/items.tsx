@@ -15,6 +15,7 @@ export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
         {rows.length == 0 && <TableCaption>Daftar penerimaan Anda.</TableCaption>}
         <TableHeader>
             <TableRow>
+                <TableHead>CMT</TableHead>
                 <TableHead>Model</TableHead>
                 <TableHead>Warna</TableHead>
                 <TableHead>Ukuran</TableHead>
@@ -26,6 +27,7 @@ export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
         <TableBody>
             {rows.map((row: Item, index) => (
                 <TableRow key={index}>
+                    <TableCell>{row.cmt}</TableCell>
                     <TableCell>{row.model}</TableCell>
                     <TableCell>{row.color}</TableCell>
                     <TableCell>{row.size}</TableCell>

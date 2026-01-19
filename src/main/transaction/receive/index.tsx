@@ -11,6 +11,7 @@ import { InboundValidateResponse } from "@/interfaces/inbound";
 import ModalConfirm from "@/components/custom/modal-confirm";
 
 export interface Item {
+    cmt: string
     barcode: string
     model: string
     color: string
@@ -21,6 +22,7 @@ export interface Item {
 
 export interface Barcode {
     barcode: string
+    full_barcode: string
 }
 
 export default function Receive() {
@@ -33,23 +35,22 @@ export default function Receive() {
     const [loading, setLoading] = useState(false);
 
     const findProduct = async (event: KeyboardEvent<HTMLInputElement>) => {
-        const [prefix, group, sequence] = splitBarcode();
+        const [prefix, group, sequence] = splitBarcode(search);
         if (event.key === "Enter") {
-            if (group !== '') {
+            if (sequence == '') {
+                toast.error("Barcode tidak valid!", { richColors: true })
+            } else if (group !== '') {
                 if (barcodes.some(item => item.barcode == `${prefix}|${group}|`)) {
                     toast.error("Barcode sudah ada!", { richColors: true })
-                    setSearch("");
                 } else if (await validateBarcode()) {
-                    setSearch("");
                 }
             } else if (group === '') {
                 if (barcodes.some(item => item.barcode == `${prefix}|${group}|${sequence}`)) {
                     toast.error("Barcode sudah ada!", { richColors: true })
-                    setSearch("");
                 } else if (await validateBarcode()) {
-                    setSearch("");
                 }
             }
+            setSearch("");
         }
     }
     const validateBarcode = async (): Promise<boolean> => {
@@ -57,14 +58,16 @@ export default function Receive() {
             setLoading(true);
             const res = await Services.TransactionInbound.validate({ barcode: search });
             setLoading(false);
-            const [prefix, group, sequence] = splitBarcode();
+            const [prefix, group, sequence] = splitBarcode(search);
             const json: InboundValidateResponse = await res.json();
             const data = json.data;
             if (res.ok) {
-                addRow({ barcode: prefix, model: data.model.name, color: data.color.name, size: data.size.name, rec_dozen_qty: data.is_dozen ? 1 : 0, rec_piece_qty: data.is_dozen ? 0 : 1 }, { barcode: group != '' ? `${prefix}|${group}|` : `${prefix}|${group}|${sequence}` })
+                addRow({ barcode: prefix, cmt: data.cmt.name, model: data.model.name, color: data.color.name, size: data.size.name, rec_dozen_qty: data.is_dozen ? 1 : 0, rec_piece_qty: data.is_dozen ? 0 : 1 }, { barcode: group != '' ? `${prefix}|${group}|` : `${prefix}|${group}|${sequence}`, full_barcode: search })
+                setSearch("");
                 return true;
             } else {
                 toast.error(json.message, { richColors: true })
+                setSearch("");
                 return false;
             }
         } catch (error) {
@@ -96,20 +99,44 @@ export default function Receive() {
     }
 
     const removeRow = (barcode: string) => {
-        setItems(prev => prev.filter(item => item.barcode !== barcode))//TODO: kalau item yang dihapus, semua kode batang yang berkaitan juga dihapus
+        console.log(barcode);
+        // setItems(prev => prev.filter(item => item.barcode !== barcode))//TODO: kalau item yang dihapus, semua kode batang yang berkaitan juga dihapus
+        // setBarcodes(prev => prev.filter(item => item.barcode !== barcode));
     }
 
     const removeBarcodeRow = (barcode: string) => {
-        setItems(prev => prev.filter(item => item.barcode !== barcode))//TODO: kalau kode batang yang dihapus, qty dari barang yang diterima dikurangi
+        const [prefix, group, _sequence] = splitBarcode(barcode);
+        setItems(prev => {
+            const index = prev.findIndex(i => i.barcode === prefix);
+            if (index !== -1) {
+                return prev.map((i, idx) =>
+                    idx === index
+                        ? {
+                            ...i,
+                            rec_dozen_qty: i.rec_dozen_qty - (group === '' ? 0 : 1),
+                            rec_piece_qty: i.rec_piece_qty - (group === '' ? 1 : 0),
+                        }
+                        : i
+                ).filter(
+                    item =>
+                        !(item.rec_dozen_qty === 0 && item.rec_piece_qty === 0)
+                )
+            }
+            return prev;
+        });
+        setBarcodes(prev => prev.filter(item => item.barcode !== barcode));
     }
 
-    const splitBarcode = () => {
-        const split = search.split("|");
+    const splitBarcode = (barcode: string) => {
+        const split = barcode.split("|");
         const prefix = split.slice(0, 5).join("|");
         const group = split[5];
         const sequence = split[6];
-        console.log([prefix, group, sequence])
         return [prefix, group, sequence];
+    }
+    const Submit = () => {
+        const final = barcodes.map(item => item.full_barcode);
+        console.log(JSON.stringify(final));
     }
 
     return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-progress' : undefined}`}>
@@ -133,7 +160,7 @@ export default function Receive() {
         </div>
         <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
             <Button variant="destructive" type="button" onClick={(e) => { e.preventDefault(); }}>Atur Ulang</Button>
-            <Button type="button" onClick={undefined}>Kirim</Button>
+            <Button type="button" onClick={Submit}>Kirim</Button>
         </div>
     </div>
 }

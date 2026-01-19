@@ -15,6 +15,7 @@ export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
         <TableHeader>
             <TableRow>
                 <TableHead>Barcode</TableHead>
+                <TableHead>Tipe</TableHead>
                 <TableHead className="w-[50px]">Aksi</TableHead>
             </TableRow>
         </TableHeader>
@@ -22,7 +23,8 @@ export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
 
             {rows.map((row: Barcode, index) => (
                 <TableRow key={index}>
-                    <TableCell>{row.barcode}</TableCell>
+                    <TableCell>{row.barcode.includes('||') ? row.barcode : `${row.barcode}1 - ${row.barcode}12`}</TableCell>
+                    <TableCell>{row.barcode.includes('||') ? 'Satuan' : `Lusin`}</TableCell>
                     <TableCell>
                         <Button type="button" variant="destructive" onClick={() => removeRow(row.barcode)}><Trash /></Button>
                     </TableCell>
