@@ -20,7 +20,6 @@ export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
             </TableRow>
         </TableHeader>
         <TableBody>
-
             {rows.map((row: Barcode, index) => (
                 <TableRow key={index}>
                     <TableCell>{row.barcode.includes('||') ? row.barcode : `${row.barcode}1 - ${row.barcode}12`}</TableCell>
@@ -30,8 +29,6 @@ export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
                     </TableCell>
                 </TableRow>
             ))}
-
-
         </TableBody>
     </Table>
 }

@@ -38,9 +38,6 @@ export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
                     </TableCell>
                 </TableRow>
             ))}
-
-
-
         </TableBody>
     </Table>
 }

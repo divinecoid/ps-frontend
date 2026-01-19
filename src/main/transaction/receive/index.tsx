@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Barcodes } from "./barcodes";
 import { InboundValidateResponse } from "@/interfaces/inbound";
 import ModalConfirm from "@/components/custom/modal-confirm";
+import ModalConfirmItemPiece from "./confirm-item-piece";
 
 export interface Item {
     cmt: string
@@ -22,6 +23,7 @@ export interface Item {
 
 export interface Barcode {
     barcode: string
+    rack_id?: string
     full_barcode: string
 }
 
@@ -33,6 +35,7 @@ export default function Receive() {
     const [deleteRow, setDeleteRow] = useState<string>();
     const [deleteBarcodeRow, setDeleteBarcodeRow] = useState<string>();
     const [loading, setLoading] = useState(false);
+    const [tempBarcode, setTempBarcode] = useState<Barcode>();
 
     const findProduct = async (event: KeyboardEvent<HTMLInputElement>) => {
         const [prefix, group, sequence] = splitBarcode(search);
@@ -62,7 +65,13 @@ export default function Receive() {
             const json: InboundValidateResponse = await res.json();
             const data = json.data;
             if (res.ok) {
-                addRow({ barcode: prefix, cmt: data.cmt.name, model: data.model.name, color: data.color.name, size: data.size.name, rec_dozen_qty: data.is_dozen ? 1 : 0, rec_piece_qty: data.is_dozen ? 0 : 1 }, { barcode: group != '' ? `${prefix}|${group}|` : `${prefix}|${group}|${sequence}`, full_barcode: search })
+                const item = { barcode: prefix, cmt: data.cmt.name, model: data.model.name, color: data.color.name, size: data.size.name, rec_dozen_qty: data.is_dozen ? 1 : 0, rec_piece_qty: data.is_dozen ? 0 : 1 };
+                if (group == "") {//jika piece
+                    setTempBarcode({ barcode: prefix, full_barcode: search, rack_id: "" });
+                    confirmItemPiece(item);
+                } else {
+                    addRow(item, { barcode: group != '' ? `${prefix}|${group}|` : `${prefix}|${group}|${sequence}`, rack_id: "", full_barcode: search })
+                }
                 setSearch("");
                 return true;
             } else {
@@ -77,6 +86,10 @@ export default function Receive() {
             setLoading(false);
             return false;
         }
+    }
+
+    const confirmItemPiece = (item: Item) => {
+
     }
 
     const addRow = (item: Item, barcode: Barcode) => {
@@ -134,14 +147,30 @@ export default function Receive() {
         const sequence = split[6];
         return [prefix, group, sequence];
     }
-    const Submit = () => {
-        const final = barcodes.map(item => item.full_barcode);
-        console.log(JSON.stringify(final));
+
+    const submit = async () => {
+        try {
+            const final = barcodes.map(item => item.full_barcode);
+            console.log(JSON.stringify(final));
+
+            const barcodesDozen = final.filter(item => !item.includes('||'));
+            const barcodesPiece = final.filter(item => item.includes('||'));
+
+            // Services.TransactionInbound.store({
+            //     barcodes_dozen: barcodesDozen,
+
+            // });
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message, { richColors: true })
+            }
+        }
     }
 
     return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-progress' : undefined}`}>
         <ModalConfirm action={removeRow} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirm action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
+        <ModalConfirmItemPiece barcode={tempBarcode} setBarcode={setTempBarcode} onSubmit={console.log} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
             <Input onKeyDown={findProduct} value={search} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
@@ -160,7 +189,7 @@ export default function Receive() {
         </div>
         <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
             <Button variant="destructive" type="button" onClick={(e) => { e.preventDefault(); }}>Atur Ulang</Button>
-            <Button type="button" onClick={Submit}>Kirim</Button>
+            <Button type="button" onClick={submit}>Kirim</Button>
         </div>
     </div>
 }
