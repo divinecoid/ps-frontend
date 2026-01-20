@@ -10,6 +10,7 @@ import { Barcodes } from "./barcodes";
 import { InboundValidateResponse } from "@/interfaces/inbound";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import ModalConfirmItemPiece from "./confirm-item-piece";
+import { RackViewResponse } from "@/interfaces/rack";
 
 export interface Item {
     cmt: string
@@ -23,7 +24,10 @@ export interface Item {
 
 export interface Barcode {
     barcode: string
-    rack_id?: string
+    rack_id: string
+    rack: {
+        name: string
+    }
     full_barcode: string
 }
 
@@ -35,61 +39,114 @@ export default function Receive() {
     const [deleteRow, setDeleteRow] = useState<string>();
     const [deleteBarcodeRow, setDeleteBarcodeRow] = useState<string>();
     const [loading, setLoading] = useState(false);
-    const [tempBarcode, setTempBarcode] = useState<Barcode>();
+    const [barcodeConfirm, setBarcodeConfirm] = useState<string>();
 
     const findProduct = async (event: KeyboardEvent<HTMLInputElement>) => {
         const [prefix, group, sequence] = splitBarcode(search);
-        if (event.key === "Enter") {
-            if (sequence == '') {
-                toast.error("Barcode tidak valid!", { richColors: true })
-            } else if (group !== '') {
-                if (barcodes.some(item => item.barcode == `${prefix}|${group}|`)) {
-                    toast.error("Barcode sudah ada!", { richColors: true })
-                } else if (await validateBarcode()) {
-                }
-            } else if (group === '') {
-                if (barcodes.some(item => item.barcode == `${prefix}|${group}|${sequence}`)) {
-                    toast.error("Barcode sudah ada!", { richColors: true })
-                } else if (await validateBarcode()) {
-                }
+        if (event.key === "Enter" && prefix != '' && sequence != '') {//barcode valid harus punya prefix dan sequence, sedangkan group boleh ada, boleh tidak
+            switch (group) {
+                case ''://kalau group tidak ada
+                    if (barcodes.some(item => item.barcode == `${prefix}||${sequence}`)) {
+                        toast.error("Barcode sudah ada!", { richColors: true })
+                    } else {
+                        setBarcodeConfirm(search);
+                    }
+                    break;
+                default://kalau group ada
+                    if (barcodes.some(item => item.barcode == `${prefix}|${group}|`)) {
+                        toast.error("Barcode sudah ada!", { richColors: true })
+                    } else {
+                        await validateDozenBarcode(search);
+                    }
+                    break;
             }
             setSearch("");
         }
     }
-    const validateBarcode = async (): Promise<boolean> => {
+
+    const validateDozenBarcode = async (full_barcode: string) => {
+        const [prefix, group, _sequence] = splitBarcode(full_barcode);
+        const item = await validateBarcode(full_barcode);
+        if (item) {
+            const barcode: Barcode = {
+                barcode: `${prefix}|${group}|`,
+                full_barcode: full_barcode,
+                rack: {
+                    name: ""
+                },
+                rack_id: ""
+            }
+            addRow(item, barcode);
+        }
+    }
+
+    const validatePieceBarcode = async (full_barcode: string, rack_id: string) => {
+        const [prefix, _group, sequence] = splitBarcode(full_barcode);
+        const rackName = await getRack(rack_id);
+        const item = await validateBarcode(full_barcode);
+        if (item) {
+            const barcode: Barcode = {
+                barcode: `${prefix}||${sequence}`,
+                full_barcode: full_barcode,
+                rack: {
+                    name: rackName ?? ""
+                },
+                rack_id: rack_id
+            }
+            addRow(item, barcode);
+        }
+    }
+
+    const getRack = async (rack_id: string): Promise<string | undefined> => {
         try {
             setLoading(true);
-            const res = await Services.TransactionInbound.validate({ barcode: search });
-            setLoading(false);
-            const [prefix, group, sequence] = splitBarcode(search);
-            const json: InboundValidateResponse = await res.json();
-            const data = json.data;
+            const res = await Services.MasterRack.show(rack_id);
+            const json: RackViewResponse = await res.json();
             if (res.ok) {
-                const item = { barcode: prefix, cmt: data.cmt.name, model: data.model.name, color: data.color.name, size: data.size.name, rec_dozen_qty: data.is_dozen ? 1 : 0, rec_piece_qty: data.is_dozen ? 0 : 1 };
-                if (group == "") {//jika piece
-                    setTempBarcode({ barcode: prefix, full_barcode: search, rack_id: "" });
-                    confirmItemPiece(item);
-                } else {
-                    addRow(item, { barcode: group != '' ? `${prefix}|${group}|` : `${prefix}|${group}|${sequence}`, rack_id: "", full_barcode: search })
-                }
-                setSearch("");
-                return true;
+                setLoading(false);
+                const data = json.data;
+                return data.name;
             } else {
                 toast.error(json.message, { richColors: true })
-                setSearch("");
-                return false;
             }
+            setLoading(false);
         } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message, { richColors: true });
             }
             setLoading(false);
-            return false;
+
         }
     }
 
-    const confirmItemPiece = (item: Item) => {
-
+    const validateBarcode = async (barcode: string): Promise<Item | undefined> => {
+        const [prefix, _group, _sequence] = splitBarcode(barcode);
+        try {
+            setLoading(true);
+            const res = await Services.TransactionInbound.validate({ barcode: barcode });
+            const json: InboundValidateResponse = await res.json();
+            if (res.ok) {
+                setLoading(false);
+                const data = json.data;
+                return {
+                    barcode: prefix,
+                    cmt: data.cmt.name ?? "",
+                    model: data.model.name ?? "",
+                    color: data.color.name ?? "",
+                    size: data.size.name ?? "",
+                    rec_dozen_qty: data.is_dozen ? 1 : 0,
+                    rec_piece_qty: data.is_dozen ? 0 : 1
+                };
+            } else {
+                toast.error(json.message, { richColors: true })
+            }
+            setLoading(false);
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message, { richColors: true });
+            }
+            setLoading(false);
+        }
     }
 
     const addRow = (item: Item, barcode: Barcode) => {
@@ -112,9 +169,8 @@ export default function Receive() {
     }
 
     const removeRow = (barcode: string) => {
-        console.log(barcode);
-        // setItems(prev => prev.filter(item => item.barcode !== barcode))//TODO: kalau item yang dihapus, semua kode batang yang berkaitan juga dihapus
-        // setBarcodes(prev => prev.filter(item => item.barcode !== barcode));
+        setItems(prev => prev.filter(item => item.barcode !== barcode))//kalau item yang dihapus, semua kode batang yang berkaitan juga dihapus
+        setBarcodes(prev => prev.filter(item => !item.barcode.includes(barcode)));
     }
 
     const removeBarcodeRow = (barcode: string) => {
@@ -150,16 +206,21 @@ export default function Receive() {
 
     const submit = async () => {
         try {
-            const final = barcodes.map(item => item.full_barcode);
-            console.log(JSON.stringify(final));
+            const final = barcodes.map(item => ({ barcode: item.full_barcode, rack_id: item.rack_id }));
+            const barcodesDozen = final.filter(item => !item.barcode.includes('||')).map(item => item.barcode);
+            const barcodesPiece = final.filter(item => item.barcode.includes('||'));
 
-            const barcodesDozen = final.filter(item => !item.includes('||'));
-            const barcodesPiece = final.filter(item => item.includes('||'));
-
-            // Services.TransactionInbound.store({
-            //     barcodes_dozen: barcodesDozen,
-
-            // });
+            Services.TransactionInbound.store({
+                barcodes_dozen: barcodesDozen,
+                barcodes_piece: barcodesPiece,
+                warehouse_id: "",
+                notes: ""
+            });
+            const result = {
+                barcodes_dozen: barcodesDozen,
+                barcodes_piece: barcodesPiece
+            }
+            console.log((result))
         } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message, { richColors: true })
@@ -170,7 +231,7 @@ export default function Receive() {
     return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-progress' : undefined}`}>
         <ModalConfirm action={removeRow} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirm action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
-        <ModalConfirmItemPiece barcode={tempBarcode} setBarcode={setTempBarcode} onSubmit={console.log} />
+        <ModalConfirmItemPiece barcode={barcodeConfirm} setBarcode={setBarcodeConfirm} onSubmit={validatePieceBarcode} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
             <Input onKeyDown={findProduct} value={search} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />

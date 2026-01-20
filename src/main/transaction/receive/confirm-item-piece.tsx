@@ -20,22 +20,19 @@ import {
 import { z } from "zod/v3";
 import React, { useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Barcode } from ".";
 import { DynamicCombobox } from "@/components/custom/dynamic-combobox";
 import Services from "@/services";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-interface ModalConfirmItemProps {
-    barcode: Barcode | undefined
-    setBarcode: React.Dispatch<React.SetStateAction<Barcode | undefined>>
-    onSubmit: (value: FieldValues) => void
 
+interface ModalConfirmItemProps {
+    barcode: string | undefined
+    setBarcode: React.Dispatch<React.SetStateAction<string | undefined>>
+    onSubmit: (barcode: string, rack_id: string) => void
 }
 
 const schema = z.object({
-    rack_id: z.string(),
-    barcode: z.string(),
-    full_barcode: z.string()
+    rack_id: z.string()
 })
 
 export default function ModalConfirmItemPiece({ barcode, setBarcode, onSubmit }: ModalConfirmItemProps) {
@@ -43,19 +40,16 @@ export default function ModalConfirmItemPiece({ barcode, setBarcode, onSubmit }:
 
     useEffect(() => {
         setOpen(barcode != undefined);
-        form.reset({ barcode: barcode?.barcode, full_barcode: barcode?.full_barcode, rack_id: barcode?.rack_id });
+        form.reset();
     }, [barcode]);
+
     const form = useForm({
-        resolver: zodResolver(schema),
-        defaultValues: {
-            barcode: barcode?.barcode ?? "",
-            full_barcode: barcode?.full_barcode ?? ""
-        }
+        resolver: zodResolver(schema)
     });
 
     const submitForm = async (values: FieldValues) => {
-        if (values !== undefined) {
-            onSubmit(values)
+        if (values !== undefined && barcode) {
+            onSubmit(barcode, values['rack_id'])
             setBarcode(undefined)
             setOpen(false)
         }
