@@ -28,7 +28,7 @@ export default defineConfig([
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": [
         "warn",
-        { argsIgnorePattern: "^_", ignoreRestSiblings: true }
+        { argsIgnorePattern: "^_", varsIgnorePattern: '^_', ignoreRestSiblings: true }
       ],
       "react/jsx-key": "off"
     },

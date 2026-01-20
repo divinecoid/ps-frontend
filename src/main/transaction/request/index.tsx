@@ -63,7 +63,7 @@ export default function Request() {
         source={Services.TransactionRequest}
         actions={(props) => [
             <Button asChild variant="outline"><Link to={`./new`}><Plus />Pengajuan Baru</Link></Button>,
-            <ConfirmRequest {...props} action={props.services.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
+            <ConfirmRequest {...props} action={Services.TransactionRequest.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
         ]}
         rowActions={({ row }) => (
             <div className="flex gap-2">

@@ -25,23 +25,22 @@ import Services from "@/services";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
-import { Barcode } from ".";
 
 interface ModalConfirmItemProps {
-    barcodes: Barcode[]
+    hasDozen: boolean
     submitConfirm: boolean | undefined
     setSubmitConfirm: React.Dispatch<React.SetStateAction<boolean | undefined>>
     onSubmit: (notes: string, warehouse_id?: string) => void
 }
 
-export default function ModalConfirmSubmit({ barcodes, submitConfirm, setSubmitConfirm, onSubmit }: ModalConfirmItemProps) {
+export default function ModalConfirmSubmit({ hasDozen, submitConfirm, setSubmitConfirm, onSubmit }: ModalConfirmItemProps) {
     const [open, setOpen] = React.useState<boolean>(submitConfirm != undefined);
 
     const schema = z.object({
         warehouse_id: z.string().optional(),
         notes: z.string().nonempty({ message: "Catatan diperlukan" })
     }).superRefine((data, ctx) => {
-        if (barcodes.some(item => !item.full_barcode.includes('||'))) {
+        if (hasDozen) {
             if (!data.warehouse_id) {
                 ctx.addIssue({
                     path: ["warehouse_id"],
@@ -83,7 +82,7 @@ export default function ModalConfirmSubmit({ barcodes, submitConfirm, setSubmitC
                 <form onSubmit={form.handleSubmit(submitForm)}
                     className="flex flex-col flex-1 h-0 select-none">
                     <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
-                        {barcodes.some(item => !item.full_barcode.includes('||')) && (
+                        {hasDozen && (
                             <FormField
                                 control={form.control}
                                 name={"warehouse_id"}

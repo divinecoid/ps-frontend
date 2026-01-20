@@ -12,7 +12,6 @@ import ModalConfirm from "@/components/custom/modal-confirm";
 import ModalConfirmItemPiece from "./confirm-item-piece";
 import { RackViewResponse } from "@/interfaces/rack";
 import ModalConfirmSubmit from "./confirm-submit";
-import { useNavigate } from "react-router-dom";
 import { BaseResponse } from "@/interfaces/base";
 
 export interface Item {
@@ -36,7 +35,6 @@ export interface Barcode {
 
 export default function Receive() {
 
-    const navigate = useNavigate();
     const [search, setSearch] = useState<string>("");
     const [items, setItems] = useState<Item[]>([]);
     const [barcodes, setBarcodes] = useState<Barcode[]>([]);
@@ -239,8 +237,12 @@ export default function Receive() {
     }
 
     const confirm = () => {
-        barcodes.length > 0 ? setSubmitConfirm(true) : toast.error("Tambahkan minimal 1 barcode yang diterima!", { richColors: true })
-    }
+        if (barcodes.length > 0) {
+            setSubmitConfirm(true);
+        } else {
+            toast.error("Tambahkan minimal 1 barcode yang diterima!", { richColors: true });
+        }
+    };
 
     const resetState = () => {
         setItems([]);
@@ -252,7 +254,7 @@ export default function Receive() {
         <ModalConfirm action={removeRow} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirm action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirmItemPiece barcode={barcodeConfirm} setBarcode={setBarcodeConfirm} onSubmit={validatePieceBarcode} />
-        <ModalConfirmSubmit barcodes={barcodes} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
+        <ModalConfirmSubmit hasDozen={barcodes.some(item => !item.full_barcode.includes('||'))} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
             <Input onKeyDown={findProduct} value={search} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
