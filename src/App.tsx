@@ -33,7 +33,7 @@ function App() {
   const isAdmin = token ? hasRole(token, "admin") : false;
   const isPreparist = token ? hasRole(token, "preparist") : false;
   const isChecker = token ? hasRole(token, "checker") : false;
-  const dummiesEnabled = true;
+  const dummiesEnabled = false;
   return (
     <HashRouter>
       <Routes>

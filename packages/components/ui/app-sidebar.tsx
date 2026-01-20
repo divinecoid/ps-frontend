@@ -5,7 +5,7 @@ import {
 
 import { NavMain } from "@/components/custom/nav-main"
 // import { NavProjects } from "@/components/custom/nav-projects"
-import { NavTests } from "@/components/custom/nav-tests"
+// import { NavTests } from "@/components/custom/nav-tests"
 import { NavUser } from "@/components/ui/nav-user"
 import {
   Sidebar,
@@ -50,7 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavTransactions label="Transaksi CMT" items={Menu.navCMTTransaction} />
         <NavTransactions label="Transaksi Toko Online" items={Menu.navStoreTransaction} />
         <NavMain label="Sistem" items={Menu.navMaster} />
-        <NavTests tests={Menu.tests} />
+        {/* <NavTests tests={Menu.tests} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={{ avatar: "", ...decodeToken(token ?? "") }} />
