@@ -25,20 +25,32 @@ import Services from "@/services";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
+import { Barcode } from ".";
 
 interface ModalConfirmItemProps {
+    barcodes: Barcode[]
     submitConfirm: boolean | undefined
     setSubmitConfirm: React.Dispatch<React.SetStateAction<boolean | undefined>>
-    onSubmit: (warehouse_id: string, notes: string) => void
+    onSubmit: (notes: string, warehouse_id?: string) => void
 }
 
-const schema = z.object({
-    warehouse_id: z.string().nonempty({ message: "Gudang diperlukan" }),
-    notes: z.string().nonempty({ message: "Catatan diperlukan" })
-})
-
-export default function ModalConfirmSubmit({ submitConfirm, setSubmitConfirm, onSubmit }: ModalConfirmItemProps) {
+export default function ModalConfirmSubmit({ barcodes, submitConfirm, setSubmitConfirm, onSubmit }: ModalConfirmItemProps) {
     const [open, setOpen] = React.useState<boolean>(submitConfirm != undefined);
+
+    const schema = z.object({
+        warehouse_id: z.string().optional(),
+        notes: z.string().nonempty({ message: "Catatan diperlukan" })
+    }).superRefine((data, ctx) => {
+        if (barcodes.some(item => !item.full_barcode.includes('||'))) {
+            if (!data.warehouse_id) {
+                ctx.addIssue({
+                    path: ["warehouse_id"],
+                    message: "Warehouse dibutuhkan",
+                    code: z.ZodIssueCode.custom,
+                });
+            }
+        }
+    });
 
     useEffect(() => {
         setOpen(submitConfirm != undefined);
@@ -55,7 +67,7 @@ export default function ModalConfirmSubmit({ submitConfirm, setSubmitConfirm, on
 
     const submitForm = async (values: FieldValues) => {
         if (values !== undefined && submitConfirm) {
-            onSubmit(values['warehouse_id'], values['notes']);
+            onSubmit(values['notes'], values['warehouse_id']);
             setSubmitConfirm(undefined)
             setOpen(false)
         }
@@ -71,28 +83,30 @@ export default function ModalConfirmSubmit({ submitConfirm, setSubmitConfirm, on
                 <form onSubmit={form.handleSubmit(submitForm)}
                     className="flex flex-col flex-1 h-0 select-none">
                     <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
-                        <FormField
-                            control={form.control}
-                            name={"warehouse_id"}
-                            render={({ field, fieldState }) => (
-                                <FormItem className="px-7 py-2">
-                                    <FormLabel>Gudang</FormLabel>
-                                    <FormControl>
-                                        <DynamicCombobox
-                                            aria-invalid={fieldState.invalid}
-                                            source={Services.MasterWarehouse.index}
-                                            id="id"
-                                            label="name"
-                                            placeholder="Nama gudang"
-                                            value={field.value}
-                                            onValueChange={field.onChange}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>Gudang penyimpanan barang lusinan</FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {barcodes.some(item => !item.full_barcode.includes('||')) && (
+                            <FormField
+                                control={form.control}
+                                name={"warehouse_id"}
+                                render={({ field, fieldState }) => (
+                                    <FormItem className="px-7 py-2">
+                                        <FormLabel>Gudang</FormLabel>
+                                        <FormControl>
+                                            <DynamicCombobox
+                                                aria-invalid={fieldState.invalid}
+                                                source={Services.MasterWarehouse.index}
+                                                id="id"
+                                                label="name"
+                                                placeholder="Nama gudang"
+                                                value={field.value ?? ""}
+                                                onValueChange={field.onChange}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>Gudang penyimpanan barang lusinan</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                         <FormField
                             control={form.control}
                             name={"notes"}

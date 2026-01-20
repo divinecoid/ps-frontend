@@ -9,9 +9,9 @@ interface BarcodesPiece {
 }
 
 export interface Inbound {
-    barcodes_dozen: string[]
-    warehouse_id: string
-    barcodes_piece: BarcodesPiece[]
+    barcodes_dozen?: string[]
+    warehouse_id?: string
+    barcodes_piece?: BarcodesPiece[]
     notes: string
 }
 

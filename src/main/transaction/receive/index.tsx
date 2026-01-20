@@ -12,6 +12,8 @@ import ModalConfirm from "@/components/custom/modal-confirm";
 import ModalConfirmItemPiece from "./confirm-item-piece";
 import { RackViewResponse } from "@/interfaces/rack";
 import ModalConfirmSubmit from "./confirm-submit";
+import { useNavigate } from "react-router-dom";
+import { BaseResponse } from "@/interfaces/base";
 
 export interface Item {
     cmt: string
@@ -34,6 +36,7 @@ export interface Barcode {
 
 export default function Receive() {
 
+    const navigate = useNavigate();
     const [search, setSearch] = useState<string>("");
     const [items, setItems] = useState<Item[]>([]);
     const [barcodes, setBarcodes] = useState<Barcode[]>([]);
@@ -51,7 +54,10 @@ export default function Receive() {
                     if (barcodes.some(item => item.barcode == `${prefix}||${sequence}`)) {
                         toast.error("Barcode sudah ada!", { richColors: true })
                     } else {
-                        setBarcodeConfirm(search);
+                        const validation = await validateBarcode(search);
+                        if (validation) {
+                            setBarcodeConfirm(search);
+                        }
                     }
                     break;
                 default://kalau group ada
@@ -206,23 +212,25 @@ export default function Receive() {
         return [prefix, group, sequence];
     }
 
-    const submit = async (warehouse_id: string, notes: string) => {
+    const submit = async (notes: string, warehouse_id?: string) => {
         try {
             const final = barcodes.map(item => ({ barcode: item.full_barcode, rack_id: item.rack_id }));
             const barcodesDozen = final.filter(item => !item.barcode.includes('||')).map(item => item.barcode);
             const barcodesPiece = final.filter(item => item.barcode.includes('||'));
 
-            await Services.TransactionInbound.store({
-                barcodes_dozen: barcodesDozen,
-                barcodes_piece: barcodesPiece,
-                warehouse_id: warehouse_id,
+            const res = await Services.TransactionInbound.store({
+                ...(barcodesDozen.length > 0 ? { barcodes_dozen: barcodesDozen } : {}),
+                ...(barcodesPiece.length > 0 ? { barcodes_piece: barcodesPiece } : {}),
+                ...(warehouse_id ? { warehouse_id: warehouse_id } : {}),
                 notes: notes
             });
-            const result = {
-                barcodes_dozen: barcodesDozen,
-                barcodes_piece: barcodesPiece
+            const json: BaseResponse = await res.json();
+            if (res.ok) {
+                resetState();
+                toast.success(json.message, { richColors: true });
+            } else {
+                toast.error(json.message, { richColors: true });
             }
-            // console.log((result))
         } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message, { richColors: true })
@@ -231,16 +239,20 @@ export default function Receive() {
     }
 
     const confirm = () => {
-        barcodes.length > 0 ?
-            setSubmitConfirm(true) :
-            toast.error("Tambahkan minimal 1 barcode yang diterima!", { richColors: true })
+        barcodes.length > 0 ? setSubmitConfirm(true) : toast.error("Tambahkan minimal 1 barcode yang diterima!", { richColors: true })
     }
+
+    const resetState = () => {
+        setItems([]);
+        setBarcodes([]);
+    };
+
 
     return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-progress' : undefined}`}>
         <ModalConfirm action={removeRow} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirm action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirmItemPiece barcode={barcodeConfirm} setBarcode={setBarcodeConfirm} onSubmit={validatePieceBarcode} />
-        <ModalConfirmSubmit submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
+        <ModalConfirmSubmit barcodes={barcodes} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
             <Input onKeyDown={findProduct} value={search} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
