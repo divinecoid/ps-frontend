@@ -11,6 +11,7 @@ import { InboundValidateResponse } from "@/interfaces/inbound";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import ModalConfirmItemPiece from "./confirm-item-piece";
 import { RackViewResponse } from "@/interfaces/rack";
+import ModalConfirmSubmit from "./confirm-submit";
 
 export interface Item {
     cmt: string
@@ -40,6 +41,7 @@ export default function Receive() {
     const [deleteBarcodeRow, setDeleteBarcodeRow] = useState<string>();
     const [loading, setLoading] = useState(false);
     const [barcodeConfirm, setBarcodeConfirm] = useState<string>();
+    const [submitConfirm, setSubmitConfirm] = useState<boolean>();
 
     const findProduct = async (event: KeyboardEvent<HTMLInputElement>) => {
         const [prefix, group, sequence] = splitBarcode(search);
@@ -204,23 +206,23 @@ export default function Receive() {
         return [prefix, group, sequence];
     }
 
-    const submit = async () => {
+    const submit = async (warehouse_id: string, notes: string) => {
         try {
             const final = barcodes.map(item => ({ barcode: item.full_barcode, rack_id: item.rack_id }));
             const barcodesDozen = final.filter(item => !item.barcode.includes('||')).map(item => item.barcode);
             const barcodesPiece = final.filter(item => item.barcode.includes('||'));
 
-            Services.TransactionInbound.store({
+            await Services.TransactionInbound.store({
                 barcodes_dozen: barcodesDozen,
                 barcodes_piece: barcodesPiece,
-                warehouse_id: "",
-                notes: ""
+                warehouse_id: warehouse_id,
+                notes: notes
             });
             const result = {
                 barcodes_dozen: barcodesDozen,
                 barcodes_piece: barcodesPiece
             }
-            console.log((result))
+            // console.log((result))
         } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message, { richColors: true })
@@ -228,10 +230,17 @@ export default function Receive() {
         }
     }
 
+    const confirm = () => {
+        barcodes.length > 0 ?
+            setSubmitConfirm(true) :
+            toast.error("Tambahkan minimal 1 barcode yang diterima!", { richColors: true })
+    }
+
     return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-progress' : undefined}`}>
         <ModalConfirm action={removeRow} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirm action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirmItemPiece barcode={barcodeConfirm} setBarcode={setBarcodeConfirm} onSubmit={validatePieceBarcode} />
+        <ModalConfirmSubmit submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
             <Input onKeyDown={findProduct} value={search} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
@@ -250,7 +259,7 @@ export default function Receive() {
         </div>
         <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
             <Button variant="destructive" type="button" onClick={(e) => { e.preventDefault(); }}>Atur Ulang</Button>
-            <Button type="button" onClick={submit}>Kirim</Button>
+            <Button type="button" onClick={confirm}>Kirim</Button>
         </div>
     </div>
 }
