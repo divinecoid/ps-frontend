@@ -13,6 +13,7 @@ import ModalConfirmItemPiece from "./confirm-item-piece";
 import { RackViewResponse } from "@/interfaces/rack";
 import ModalConfirmSubmit from "./confirm-submit";
 import { BaseResponse } from "@/interfaces/base";
+import ModalConfirmReset from "./confirm-reset";
 
 export interface Item {
     cmt: string
@@ -43,6 +44,7 @@ export default function Receive() {
     const [loading, setLoading] = useState(false);
     const [barcodeConfirm, setBarcodeConfirm] = useState<string>();
     const [submitConfirm, setSubmitConfirm] = useState<boolean>();
+    const [resetConfirm, setResetConfirm] = useState<boolean>();
 
     const findProduct = async (event: KeyboardEvent<HTMLInputElement>) => {
         const [prefix, group, sequence] = splitBarcode(search);
@@ -249,11 +251,11 @@ export default function Receive() {
         setBarcodes([]);
     };
 
-
     return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-progress' : undefined}`}>
         <ModalConfirm action={removeRow} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirm action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirmItemPiece barcode={barcodeConfirm} setBarcode={setBarcodeConfirm} onSubmit={validatePieceBarcode} />
+        <ModalConfirmReset resetConfirm={resetConfirm} setResetConfirm={setResetConfirm} onSubmit={resetState} />
         <ModalConfirmSubmit hasDozen={barcodes.some(item => !item.full_barcode.includes('||'))} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
@@ -272,7 +274,7 @@ export default function Receive() {
             </Tabs>
         </div>
         <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
-            <Button variant="destructive" type="button" onClick={(e) => { e.preventDefault(); }}>Atur Ulang</Button>
+            <Button variant="destructive" type="button" onClick={() => setResetConfirm(true)}>Atur Ulang</Button>
             <Button type="button" onClick={confirm}>Kirim</Button>
         </div>
     </div>
