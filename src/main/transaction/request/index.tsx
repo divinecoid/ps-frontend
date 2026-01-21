@@ -67,10 +67,9 @@ export default function Request() {
         ]}
         rowActions={({ row }) => (
             <div className="flex gap-2">
-                <TooltipHover tooltip="Lihat"><Button asChild variant="outline"><Link to={`./view/${row.id}`}><Eye /></Link></Button></TooltipHover>
-                <TooltipHover tooltip="Lihat QR"><Button asChild variant="outline"><Link to={`./barcode/${row.id}`}><QrCode /></Link></Button></TooltipHover>
+                <TooltipHover tooltip="Lihat"><Button asChild variant="outline"><Link to={`./${row.id}`}><Eye /></Link></Button></TooltipHover>
+                <TooltipHover tooltip="Lihat QR"><Button asChild variant="outline"><Link to={`./${row.id}/barcode`}><QrCode /></Link></Button></TooltipHover>
                 <TooltipHover tooltip="Cetak QR"><Button variant="outline" className="cursor-pointer" onClick={() => handlePrint(row.id)}><Printer /></Button></TooltipHover>
-                <TooltipHover tooltip="Penerimaan"><Button asChild variant="outline"><Link to={`./received/${row.id}`}><Import /></Link></Button></TooltipHover>
                 <TooltipHover tooltip="Hapus"><Button variant="destructive" className="cursor-pointer" onClick={() => setDeleteRow(row.id)}><Trash /></Button></TooltipHover>
             </div>
         )}

@@ -28,6 +28,7 @@ import DocumentBarcodePreview from './main/transaction/request/barcode/preview';
 import Print from './main/print';
 import Receive from './main/transaction/receive';
 import ReceiveLogs from './main/transaction/receive-logs';
+import FormReceiveLogs from './main/transaction/receive-logs/view/form-receive-logs';
 
 function App() {
   const { token } = useAuth();
@@ -72,10 +73,11 @@ function App() {
             <>
               <Route path="/transaction/request" element={<Request />} />
               <Route path="/transaction/request/new" element={<FormRequest />} />
-              <Route path="/transaction/request/view/:id" element={<FormRequest disabled={true} />} />
-              <Route path="/transaction/request/barcode/:id" element={<DocumentBarcodePreview />} />
+              <Route path="/transaction/request/:id" element={<FormRequest disabled={true} />} />
+              <Route path="/transaction/request/:id/barcode" element={<DocumentBarcodePreview />} />
               <Route path="/transaction/receive/" element={<Receive />} />
               <Route path="/transaction/receive-logs/" element={<ReceiveLogs />} />
+              <Route path="/transaction/receive-logs/:id" element={<FormReceiveLogs />} />
               <Route path="/transaction/order" element={<></>} />
               <Route path="/inventory" element={<MasterProducts />} />
             </>
@@ -84,7 +86,7 @@ function App() {
 
           <Route path="*" element={<EmptyPage />} />
         </Route>
-        <Route path="/print" element={<Print/>} />
+        <Route path="/print" element={<Print />} />
       </Routes>
     </HashRouter>
   );
