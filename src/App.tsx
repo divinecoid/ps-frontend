@@ -27,6 +27,7 @@ import FormRequest from './main/transaction/request/new/form-request';
 import DocumentBarcodePreview from './main/transaction/request/barcode/preview';
 import Print from './main/print';
 import Receive from './main/transaction/receive';
+import ReceiveLogs from './main/transaction/receive-logs';
 
 function App() {
   const { token } = useAuth();
@@ -74,13 +75,11 @@ function App() {
               <Route path="/transaction/request/view/:id" element={<FormRequest disabled={true} />} />
               <Route path="/transaction/request/barcode/:id" element={<DocumentBarcodePreview />} />
               <Route path="/transaction/receive/" element={<Receive />} />
+              <Route path="/transaction/receive-logs/" element={<ReceiveLogs />} />
               <Route path="/transaction/order" element={<></>} />
               <Route path="/inventory" element={<MasterProducts />} />
-
             </>
           )}
-
-
 
 
           <Route path="*" element={<EmptyPage />} />

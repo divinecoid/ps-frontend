@@ -1,7 +1,15 @@
-import { BaseApiCallCreateProps } from "@/interfaces/base";
-import { POST } from "./api"
+import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps } from "@/interfaces/base";
+import { DELETE, GET, POST } from "./api"
 import { Inbound, InboundValidate } from "@/interfaces/inbound";
 import { ENDPOINT } from "./endpoints";
+
+export const index: BaseApiCallIndexProps = async (page, per_page, search) => {
+    return await GET(ENDPOINT.INBOUND, { page, per_page, search });
+}
+
+export const master: BaseApiCallIndexProps = async (page, per_page, search) => {
+    return await GET(ENDPOINT.INBOUND, { page, per_page, search });
+}
 
 export const store: BaseApiCallCreateProps<Inbound> = async (values) => {
     return await POST(`${ENDPOINT.INBOUND}`, values);
@@ -9,4 +17,8 @@ export const store: BaseApiCallCreateProps<Inbound> = async (values) => {
 
 export const validate: BaseApiCallCreateProps<InboundValidate> = async (values) => {
     return await POST(`${ENDPOINT.INBOUND}/validate`, values);
+}
+
+export const destroy: BaseApiCallDeleteProps = async (id) => {
+    return await DELETE(`${ENDPOINT.INBOUND}/${id}`);
 }

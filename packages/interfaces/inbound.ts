@@ -2,6 +2,7 @@ import { CMT } from "./cmt"
 import { Color } from "./color"
 import { ProductModel } from "./product-model"
 import { Size } from "./size"
+import { Warehouse } from "./warehouse"
 
 interface BarcodesPiece {
     barcode: string
@@ -9,9 +10,12 @@ interface BarcodesPiece {
 }
 
 export interface Inbound {
+    id?: string
     barcodes_dozen?: string[]
     warehouse_id?: string
+    warehouse?: Warehouse
     barcodes_piece?: BarcodesPiece[]
+    received_date?: Date
     notes: string
 }
 
