@@ -4,7 +4,7 @@ import { Rack } from "@/interfaces/rack";
 import Services from "@/services";
 import { z } from "zod/v3";
 
-const testing = false;
+const testing = true;
 
 export default function ModalRack(props: BaseModalForm) {
 

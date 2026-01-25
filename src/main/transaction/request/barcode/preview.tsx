@@ -83,7 +83,7 @@ export default function DocumentBarcodePreview() {
 
     return <div className={`flex flex-col flex-1 h-0 ${loading ? 'cursor-progress' : undefined} bg-black/20 dark:bg-white/20`}>
         {!loading && (
-            <div className={`flex-1 flex justify-center p-4 overflow-auto`}>
+            <div className={`flex justify-center p-4 overflow-auto`}>
                 <div className={`grid grid-cols-3 gap-4 bg-white p-4 drop-shadow-xl drop-shadow-black/50 mb-16 shrink-0`}>
                     {barcodes?.map((code, i) => (
                         <div

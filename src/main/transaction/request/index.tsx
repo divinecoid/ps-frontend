@@ -22,33 +22,46 @@ interface RequestDetail {
 
 export default function Request() {
     const [deleteRow, setDeleteRow] = useState<string>();
+    const paperWidthMm = 240;
+    const paperHeightMm = 300;
 
     const handlePrint = async (id: string) => {
         try {
             const res = await Services.TransactionRequest.barcode(id);
             const json = await res.json();
-            const barcodes: string[] = [];
+            const temp: string[] = [];
             json.data.request_detail.map((item: RequestDetail) => {
                 return {
                     code: item.barcode,
-                    count: (item.req_dozen_qty * 12) + item.req_piece_qty
+                    count: item.req_dozen_qty * 12 + item.req_piece_qty
                 }
             }).map((barcode: Barcodes) => {
+                let dozen = 0;
+                let sequence = 0;
                 for (let i = 0; i < barcode.count; i++) {
-                    barcodes.push(`${barcode.code}|${i + 1}`);
+                    if (i % 12 == 0) {
+                        dozen++;
+                        sequence = 0;
+                    } else {
+                        sequence++;
+                    }
+                    if (i < Math.floor(barcode.count / 12) * 12) {
+                        temp.push(`${barcode.code}|${dozen}|${sequence + 1}`);
+                    } else {
+                        temp.push(`${barcode.code}||${sequence + 1}`);
+                    }
                 }
             });
-
-            if (!barcodes?.length) {
+            if (!temp?.length) {
                 toast.error("Tidak ada barcode untuk dicetak", { richColors: true });
                 return;
             }
 
             await window.electronAPI.printPreview({
-                barcodes: barcodes,
+                barcodes: temp,
                 paper: {
-                    width: 50,
-                    height: 25,
+                    width: paperWidthMm,
+                    height: paperHeightMm,
                 },
             });
         } catch (error) {
