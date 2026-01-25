@@ -2,12 +2,12 @@ import { columns } from "./column";
 import Services from "@/services";
 import OverviewPage from "@/components/custom/overview-page";
 import { useState } from "react";
-import ConfirmRequest from "./confirm";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Eye, Import, Plus, Printer, QrCode, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
+import ModalConfirm from "@/components/custom/modal-confirm";
 
 interface Barcodes {
     code: string,
@@ -76,14 +76,17 @@ export default function Request() {
         source={Services.TransactionRequest}
         actions={(props) => [
             <Button asChild variant="outline"><Link to={`./new`}><Plus />Pengajuan Baru</Link></Button>,
-            <ConfirmRequest {...props} action={Services.TransactionRequest.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
+            <ModalConfirm {...props} action={Services.TransactionRequest.destroy} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
         ]}
         rowActions={({ row }) => (
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-end">
                 <TooltipHover tooltip="Lihat"><Button asChild variant="outline"><Link to={`./${row.id}`}><Eye /></Link></Button></TooltipHover>
                 <TooltipHover tooltip="Lihat QR"><Button asChild variant="outline"><Link to={`./${row.id}/barcode`}><QrCode /></Link></Button></TooltipHover>
-                <TooltipHover tooltip="Cetak QR"><Button variant="outline" className="cursor-pointer" onClick={() => handlePrint(row.id)}><Printer /></Button></TooltipHover>
-                <TooltipHover tooltip="Hapus"><Button variant="destructive" className="cursor-pointer" onClick={() => setDeleteRow(row.id)}><Trash /></Button></TooltipHover>
+                {row.status == 'OPEN' && <>
+                    <TooltipHover tooltip="Cetak QR"><Button variant="outline" className="cursor-pointer" onClick={() => handlePrint(row.id)}><Printer /></Button></TooltipHover>
+                    <TooltipHover tooltip="Hapus"><Button variant="destructive" className="cursor-pointer" onClick={() => setDeleteRow(row.id)}><Trash /></Button></TooltipHover>
+                </>
+                }
             </div>
         )}
     />

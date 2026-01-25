@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { RequestViewResponse } from "@/interfaces/request";
 import Services from "@/services";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
@@ -22,11 +23,23 @@ export default function DocumentBarcodePreview() {
 
     const [barcodes, setBarcodes] = useState<string[]>();
     const [loading, setLoading] = useState(id ? true : false);
+    const [isClosed, setClosed] = useState(true);
 
     const paperWidthMm = 240;
     const paperHeightMm = 300;
 
     useEffect(() => {
+        const getStatus = async () => {
+            try {
+                const res = await Services.TransactionRequest.show(String(id));
+                const json: RequestViewResponse = await res.json();
+                setClosed(json.data.status == 'CLOSED')
+            } catch (error) {
+                if (error instanceof Error) {
+                    toast.error(error.message, { richColors: true })
+                }
+            }
+        }
         const getData = async () => {
             try {
                 const res = await Services.TransactionRequest.barcode(String(id));
@@ -63,6 +76,7 @@ export default function DocumentBarcodePreview() {
                 setLoading(false);
             }
         }
+        getStatus();
         getData();
     }, []);
 
@@ -99,10 +113,10 @@ export default function DocumentBarcodePreview() {
             </div>
         )}
         <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
-            <>
-                <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Kembali</Button>
+            <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Kembali</Button>
+            {!isClosed &&
                 <Button type="button" onClick={handlePrint}>Cetak</Button>
-            </>
+            }
         </div>
     </div>
 
