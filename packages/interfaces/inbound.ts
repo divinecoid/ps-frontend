@@ -1,3 +1,4 @@
+import { BaseResponse } from "./base"
 import { CMT } from "./cmt"
 import { Color } from "./color"
 import { ProductModel } from "./product-model"
@@ -23,14 +24,29 @@ export interface InboundValidate {
     barcode: string
 }
 
-export interface InboundValidateResponse {
-    success: boolean
-    message: string
+export interface InboundValidateResponse extends BaseResponse {
     data: {
         cmt: CMT
         model: ProductModel
         color: Color
         size: Size
         is_dozen: boolean
+    }
+}
+
+export interface InboundResponse extends BaseResponse {
+    data: {
+        id: string
+        warehouse_id: string
+        warehouse: {
+            name: string
+        }
+        user: {
+            name: string
+        }
+        received_date: Date
+        request: {
+            cmt: CMT
+        }
     }
 }

@@ -14,6 +14,7 @@ import * as MasterOnlineStore from './master-online-store';
 import * as MasterMarketplace from './master-marketplace';
 import * as TransactionRequest from './transaction-request';
 import * as TransactionInbound from './transaction-inbound';
+import * as TransactionOrder from './transaction-order';
 
 const Services = {
     Auth,
@@ -30,7 +31,8 @@ const Services = {
     MasterOnlineStore,
     MasterMarketplace,
     TransactionRequest,
-    TransactionInbound
+    TransactionInbound,
+    TransactionOrder
 };
 
 export default Services;

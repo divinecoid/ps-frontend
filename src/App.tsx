@@ -28,7 +28,8 @@ import DocumentBarcodePreview from './main/transaction/request/barcode/preview';
 import Print from './main/print';
 import Receive from './main/transaction/receive';
 import ReceiveLogs from './main/transaction/receive-logs';
-import FormReceiveLogs from './main/transaction/receive-logs/view/form-receive-logs';
+import ViewFormRequest from './main/transaction/request/view/form-request';
+import Order from './main/transaction/order';
 
 function App() {
   const { token } = useAuth();
@@ -73,12 +74,11 @@ function App() {
             <>
               <Route path="/transaction/request" element={<Request />} />
               <Route path="/transaction/request/new" element={<FormRequest />} />
-              <Route path="/transaction/request/:id" element={<FormRequest disabled={true} />} />
+              <Route path="/transaction/request/:id" element={<ViewFormRequest disabled={true} />} />
               <Route path="/transaction/request/:id/barcode" element={<DocumentBarcodePreview />} />
               <Route path="/transaction/receive/" element={<Receive />} />
               <Route path="/transaction/receive-logs/" element={<ReceiveLogs />} />
-              <Route path="/transaction/receive-logs/:id" element={<FormReceiveLogs />} />
-              <Route path="/transaction/order" element={<></>} />
+              <Route path="/transaction/order" element={<Order />} />
               <Route path="/inventory" element={<MasterProducts />} />
             </>
           )}

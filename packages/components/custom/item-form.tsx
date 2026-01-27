@@ -91,7 +91,7 @@ export default function ItemForm<T extends FieldValues>({
     return <Form {...form}>
         <form onSubmit={form.handleSubmit(submitForm, onError)}
             className={`flex flex-col flex-1 h-0 select-none ${loading ? 'cursor-progress' : undefined}`}>
-            <div className="flex-1 space-y-8 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto">
                 {Object.entries((schema as z.ZodObject<T>).shape).map(([key, index]) => {
                     const fieldMeta = meta[key];
                     const fieldSource = api[key];
@@ -117,7 +117,7 @@ export default function ItemForm<T extends FieldValues>({
                             control={form.control}
                             name={key as Path<T>}
                             render={({ field, fieldState }) => (
-                                <FormItem className="px-7 py-2">
+                                <FormItem className={`${fieldMeta.type === 'hidden' ? 'h-0' : 'px-7 py-2'}`}>
                                     <FormLabel>{fieldMeta.label}</FormLabel>
                                     <FormControl>
                                         <DynamicInput

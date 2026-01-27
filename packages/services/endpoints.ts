@@ -18,5 +18,6 @@ export const ENDPOINT = {
     USER: "user",
     ROLE: "role",
     REQUEST: "request",
-    INBOUND: "inbound"
+    INBOUND: "inbound",
+    ORDER: "order"
 }

@@ -4,7 +4,7 @@ import OverviewPage from "@/components/custom/overview-page";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Eye, Import, Plus, Printer, QrCode, Trash } from "lucide-react";
+import { Eye, Plus, Printer, QrCode, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 import ModalConfirm from "@/components/custom/modal-confirm";
