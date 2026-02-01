@@ -33,6 +33,7 @@ export function DatePicker({ ...props }: DatePickerProps) {
           variant="outline"
           data-empty={!props.value}
           className="data-[empty=true]:text-muted-foreground justify-start text-left font-normal"
+          disabled={props.disabled}
         >
           <CalendarIcon />
           {props.value ?

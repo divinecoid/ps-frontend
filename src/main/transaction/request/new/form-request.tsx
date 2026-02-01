@@ -6,7 +6,6 @@ import { z } from "zod/v3";
 import { Request } from "@/interfaces/request";
 import DetailList from "./form-request-detail-variant-list";
 
-
 export default function FormRequest(props: BaseForm) {
     const { id } = useParams();
 

@@ -30,6 +30,7 @@ import Receive from './main/transaction/receive';
 import ReceiveLogs from './main/transaction/receive-logs';
 import ViewFormRequest from './main/transaction/request/view/form-request';
 import Order from './main/transaction/order';
+import FormOrder from './main/transaction/order/view/form-order';
 
 function App() {
   const { token } = useAuth();
@@ -79,6 +80,7 @@ function App() {
               <Route path="/transaction/receive/" element={<Receive />} />
               <Route path="/transaction/receive-logs/" element={<ReceiveLogs />} />
               <Route path="/transaction/order" element={<Order />} />
+              <Route path="/transaction/order/:id" element={<FormOrder />} />
               <Route path="/inventory" element={<MasterProducts />} />
             </>
           )}
