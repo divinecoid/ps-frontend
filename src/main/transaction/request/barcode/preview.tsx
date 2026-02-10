@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { RequestViewResponse } from "@/interfaces/request";
 import Services from "@/services";
 import { useEffect, useState } from "react";
-import QRCode from "react-qr-code";
+import QRCode from "react-qrcode-logo";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -22,6 +22,7 @@ export default function DocumentBarcodePreview() {
     const navigate = useNavigate();
 
     const [barcodes, setBarcodes] = useState<string[]>();
+    const [dozenBarcodes, setDozenBarcodes] = useState<string[]>();
     const [loading, setLoading] = useState(id ? true : false);
     const [isClosed, setClosed] = useState(true);
 
@@ -45,29 +46,23 @@ export default function DocumentBarcodePreview() {
                 const res = await Services.TransactionRequest.barcode(String(id));
                 const json = await res.json();
                 const temp: string[] = [];
+                const dozenTemp: string[] = [];
                 json.data.request_detail.map((item: RequestDetail) => {
                     return {
                         code: item.barcode,
                         count: item.req_dozen_qty * 12 + item.req_piece_qty
                     }
                 }).map((barcode: Barcodes) => {
-                    let dozen = 0;
-                    let sequence = 0;
+                    const groupCount = Math.floor(barcode.count / 12);
+                    for (let i = 0; i < groupCount; i++) {
+                        dozenTemp.push(`${barcode.code}|DOZEN|${i + 1}`);
+                    }
                     for (let i = 0; i < barcode.count; i++) {
-                        if (i % 12 == 0) {
-                            dozen++;
-                            sequence = 0;
-                        } else {
-                            sequence++;
-                        }
-                        if (i < Math.floor(barcode.count / 12) * 12) {
-                            temp.push(`${barcode.code}|${dozen}|${sequence + 1}`);
-                        } else {
-                            temp.push(`${barcode.code}||${sequence + 1}`);
-                        }
+                        temp.push(`${barcode.code}|PIECE|${i + 1}`);
                     }
                 });
                 setBarcodes(temp);
+                setDozenBarcodes(dozenTemp);
             } catch (error) {
                 if (error instanceof Error) {
                     toast.error(error.message, { richColors: true })
@@ -81,13 +76,14 @@ export default function DocumentBarcodePreview() {
     }, []);
 
     const handlePrint = async () => {
-        if (!barcodes?.length) {
+        if (!barcodes?.length || !dozenBarcodes?.length) {
             toast.error("Tidak ada barcode untuk dicetak", { richColors: true });
             return;
         }
 
         await window.electronAPI.printPreview({
             barcodes: barcodes,
+            dozenBarcodes: dozenBarcodes,
             paper: {
                 width: paperWidthMm,
                 height: paperHeightMm,
@@ -99,13 +95,21 @@ export default function DocumentBarcodePreview() {
         {!loading && (
             <div className={`flex justify-center p-4 overflow-auto`}>
                 <div className={`grid grid-cols-3 gap-4 bg-white p-4 drop-shadow-xl drop-shadow-black/50 mb-16 shrink-0`}>
+                    {dozenBarcodes?.map((code, i) => (
+                        <div
+                            key={i}
+                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1 gap-2"
+                        >
+                            <QRCode value={code} size={200} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
+                            {code}
+                        </div>
+                    ))}
                     {barcodes?.map((code, i) => (
                         <div
                             key={i}
                             className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1 gap-2"
                         >
-                            <QRCode value={code} size={200} bgColor="transparent" fgColor="black"
-                                viewBox={`0 0 256 256`} />
+                            <QRCode value={code} size={200} bgColor="transparent" fgColor="black" />
                             {code}
                         </div>
                     ))}

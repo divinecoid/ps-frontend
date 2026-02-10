@@ -30,26 +30,19 @@ export default function Request() {
             const res = await Services.TransactionRequest.barcode(id);
             const json = await res.json();
             const temp: string[] = [];
+            const dozenTemp: string[] = [];
             json.data.request_detail.map((item: RequestDetail) => {
                 return {
                     code: item.barcode,
                     count: item.req_dozen_qty * 12 + item.req_piece_qty
                 }
             }).map((barcode: Barcodes) => {
-                let dozen = 0;
-                let sequence = 0;
+                const groupCount = Math.floor(barcode.count / 12);
+                for (let i = 0; i < groupCount; i++) {
+                    dozenTemp.push(`${barcode.code}|DOZEN|${i + 1}`);
+                }
                 for (let i = 0; i < barcode.count; i++) {
-                    if (i % 12 == 0) {
-                        dozen++;
-                        sequence = 0;
-                    } else {
-                        sequence++;
-                    }
-                    if (i < Math.floor(barcode.count / 12) * 12) {
-                        temp.push(`${barcode.code}|${dozen}|${sequence + 1}`);
-                    } else {
-                        temp.push(`${barcode.code}||${sequence + 1}`);
-                    }
+                    temp.push(`${barcode.code}|PIECE|${i + 1}`);
                 }
             });
             if (!temp?.length) {
@@ -59,6 +52,7 @@ export default function Request() {
 
             await window.electronAPI.printPreview({
                 barcodes: temp,
+                dozenBarcodes: dozenTemp,
                 paper: {
                     width: paperWidthMm,
                     height: paperHeightMm,

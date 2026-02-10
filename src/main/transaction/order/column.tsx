@@ -10,24 +10,27 @@ export const columns: ColumnDef<Order>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "read_at",
+    header: "Waktu penyiapan",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return row.original.read_at ? formatDate(row.original.read_at) : "-";
+    })
+  },
+  {
     accessorKey: "prepared_at",
     header: "Waktu penyiapan",
     enableSorting: true,
     cell: (({ row }) => {
-      return formatDate(row.original.prepared_at);
+      return row.original.prepared_at ? formatDate(row.original.prepared_at) : "-";
     })
-  },
-  {
-    accessorKey: "prepare_duration",
-    header: "Waktu penyiapan",
-    enableSorting: true,
   },
   {
     accessorKey: "readytoship_at",
     header: "Tanggal siap dikirim",
     enableSorting: true,
     cell: (({ row }) => {
-      return formatDate(row.original.readytoship_at);
+      return row.original.readytoship_at ? formatDate(row.original.readytoship_at) : "-";
     })
   },
   {
@@ -61,5 +64,5 @@ export const columns: ColumnDef<Order>[] = [
       }
     })
   },
-  
+
 ]
