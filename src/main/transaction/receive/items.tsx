@@ -9,7 +9,8 @@ interface ItemProps<T> {
 }
 
 export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
-    return <Table>
+    return <div className="pb-8">
+    <Table>
         <TableCaption>
         </TableCaption>
         {rows.length == 0 && <TableCaption>Daftar penerimaan Anda.</TableCaption>}
@@ -40,4 +41,5 @@ export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
             ))}
         </TableBody>
     </Table>
+    </div>
 }

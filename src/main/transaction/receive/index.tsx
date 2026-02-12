@@ -31,7 +31,6 @@ export interface Barcode {
     rack: {
         name: string
     }
-    full_barcode: string
 }
 
 export default function Receive() {
@@ -48,10 +47,10 @@ export default function Receive() {
 
     const findProduct = async (event: KeyboardEvent<HTMLInputElement>) => {
         const [prefix, group, sequence] = splitBarcode(search);
-        if (event.key === "Enter" && prefix != '' && sequence != '') {//barcode valid harus punya prefix dan sequence, sedangkan group boleh ada, boleh tidak
+        if (event.key === "Enter" && prefix != '' && group != '' && sequence != '') {//barcode valid harus punya prefix, group dan sequence
             switch (group) {
-                case ''://kalau group tidak ada
-                    if (barcodes.some(item => item.barcode == `${prefix}||${sequence}`)) {
+                case 'PIECE'://kalau piece
+                    if (barcodes.some(item => item.barcode == search)) {
                         toast.error("Barcode sudah ada!", { richColors: true })
                     } else {
                         const validation = await validateBarcode(search);
@@ -60,12 +59,14 @@ export default function Receive() {
                         }
                     }
                     break;
-                default://kalau group ada
-                    if (barcodes.some(item => item.barcode == `${prefix}|${group}|`)) {
+                case 'DOZEN'://kalau group ada
+                    if (barcodes.some(item => item.barcode == search)) {
                         toast.error("Barcode sudah ada!", { richColors: true })
                     } else {
                         await validateDozenBarcode(search);
                     }
+                    break;
+                default:
                     break;
             }
             setSearch("");
@@ -73,12 +74,10 @@ export default function Receive() {
     }
 
     const validateDozenBarcode = async (full_barcode: string) => {
-        const [prefix, group, _sequence] = splitBarcode(full_barcode);
         const item = await validateBarcode(full_barcode);
         if (item) {
             const barcode: Barcode = {
-                barcode: `${prefix}|${group}|`,
-                full_barcode: full_barcode,
+                barcode: full_barcode,
                 rack: {
                     name: ""
                 },
@@ -89,13 +88,11 @@ export default function Receive() {
     }
 
     const validatePieceBarcode = async (full_barcode: string, rack_id: string) => {
-        const [prefix, _group, sequence] = splitBarcode(full_barcode);
         const rackName = await getRack(rack_id);
         const item = await validateBarcode(full_barcode);
         if (item) {
             const barcode: Barcode = {
-                barcode: `${prefix}||${sequence}`,
-                full_barcode: full_barcode,
+                barcode: full_barcode,
                 rack: {
                     name: rackName ?? ""
                 },
@@ -131,7 +128,7 @@ export default function Receive() {
         const [prefix, _group, _sequence] = splitBarcode(barcode);
         try {
             setLoading(true);
-            const res = await Services.TransactionInbound.validate({ barcode: barcode });
+            const res = await Services.TransactionInbound.validate({ barcode });
             const json: InboundValidateResponse = await res.json();
             if (res.ok) {
                 setLoading(false);
@@ -190,8 +187,8 @@ export default function Receive() {
                     idx === index
                         ? {
                             ...i,
-                            rec_dozen_qty: i.rec_dozen_qty - (group === '' ? 0 : 1),
-                            rec_piece_qty: i.rec_piece_qty - (group === '' ? 1 : 0),
+                            rec_dozen_qty: i.rec_dozen_qty - (group === 'PIECE' ? 0 : 1),
+                            rec_piece_qty: i.rec_piece_qty - (group === 'PIECE' ? 1 : 0),
                         }
                         : i
                 ).filter(
@@ -214,9 +211,9 @@ export default function Receive() {
 
     const submit = async (notes: string, warehouse_id?: string) => {
         try {
-            const final = barcodes.map(item => ({ barcode: item.full_barcode, rack_id: item.rack_id }));
-            const barcodesDozen = final.filter(item => !item.barcode.includes('||')).map(item => item.barcode);
-            const barcodesPiece = final.filter(item => item.barcode.includes('||'));
+            const final = barcodes.map(item => ({ barcode: item.barcode, rack_id: item.rack_id }));
+            const barcodesDozen = final.filter(item => !item.barcode.includes('|PIECE|')).map(item => item.barcode);
+            const barcodesPiece = final.filter(item => item.barcode.includes('|PIECE|'));
 
             const res = await Services.TransactionInbound.store({
                 ...(barcodesDozen.length > 0 ? { barcodes_dozen: barcodesDozen } : {}),
@@ -256,7 +253,7 @@ export default function Receive() {
         <ModalConfirm action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirmItemPiece barcode={barcodeConfirm} setBarcode={setBarcodeConfirm} onSubmit={validatePieceBarcode} />
         <ModalConfirmReset resetConfirm={resetConfirm} setResetConfirm={setResetConfirm} onSubmit={resetState} />
-        <ModalConfirmSubmit hasDozen={barcodes.some(item => !item.full_barcode.includes('||'))} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
+        <ModalConfirmSubmit hasDozen={barcodes.some(item => !item.barcode.includes('|PIECE|'))} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
             <Input onKeyDown={findProduct} value={search} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />

@@ -9,7 +9,8 @@ interface BarcodeProps<T> {
 }
 
 export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
-    return <Table>
+    return <div className="pb-8">
+    <Table>
         <TableCaption></TableCaption>
         {rows.length == 0 && <TableCaption>Daftar penerimaan Anda.</TableCaption>}
         <TableHeader>
@@ -23,9 +24,9 @@ export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
         <TableBody>
             {rows.map((row: Barcode, index) => (
                 <TableRow key={index}>
-                    <TableCell>{row.barcode.includes('||') ? row.barcode : `${row.barcode}1 - ${row.barcode}12`}</TableCell>
+                    <TableCell>{row.barcode}</TableCell>
                     <TableCell>{row.rack?.name ?? '-'}</TableCell>
-                    <TableCell>{row.barcode.includes('||') ? 'Satuan' : `Lusin`}</TableCell>
+                    <TableCell>{row.barcode.includes('|PIECE|') ? 'Satuan' : `Lusin`}</TableCell>
                     <TableCell>
                         <Button type="button" variant="destructive" onClick={() => removeRow(row.barcode)}><Trash /></Button>
                     </TableCell>
@@ -33,4 +34,5 @@ export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
             ))}
         </TableBody>
     </Table>
+    </div>
 }
