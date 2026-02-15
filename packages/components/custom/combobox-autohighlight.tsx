@@ -61,7 +61,11 @@ export function ComboboxAutoHighlight({ source, id, label, placeholder, disabled
     }
 
     const onKeyDown = (e: BaseUIEvent<React.KeyboardEvent<HTMLInputElement>>) => {
-        e.key === 'Enter' && options.length == 0 && toast.error(errorMessage, { richColors: true }) && setFilter("")
+        if (e.key === 'Enter')
+            if (options.length == 0) {
+                toast.error(errorMessage, { richColors: true });
+                setFilter("");
+            }
     }
 
     return (

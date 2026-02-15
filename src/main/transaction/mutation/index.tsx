@@ -177,7 +177,7 @@ export default function Mutation() {
     }
 
     const removeBarcodeRow = (deleteRow: DeleteRowProps) => {
-        const [prefix, group, _sequence] = splitBarcode(deleteRow.barcode);
+        const [prefix, _group, _sequence] = splitBarcode(deleteRow.barcode);
         setItems(prev => {
             const index = prev.findIndex(i => i.barcode === prefix && i.rack_id == deleteRow.rack_id);
             if (index !== -1) {
