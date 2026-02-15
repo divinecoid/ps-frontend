@@ -2,7 +2,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { BaseDialog } from "@/interfaces/base";
 import { toast } from "sonner";
 
-export default function ModalConfirm({ id, setId, action, onSubmit, title, description, variant }: BaseDialog) {
+export default function ModalConfirm<T>({ id, setId, action, onSubmit, title, description, variant }: BaseDialog<T>) {
     const confirm = async () => {
         if (id != undefined) {
             try {

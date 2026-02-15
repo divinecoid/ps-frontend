@@ -7,13 +7,13 @@ import { toast } from "sonner";
 import Services from "@/services";
 import { Label } from "@/components/ui/label";
 import { Barcodes } from "./barcodes";
-import { InboundValidateResponse } from "@/interfaces/inbound";
 import ModalConfirm from "@/components/custom/modal-confirm";
-import ModalConfirmItemPiece from "./confirm-item-piece";
 import { RackViewResponse } from "@/interfaces/rack";
 import ModalConfirmSubmit from "./confirm-submit";
-import { BaseResponse } from "@/interfaces/base";
 import ModalConfirmReset from "./confirm-reset";
+import { MutationValidateResponse } from "@/interfaces/mutation";
+import { ComboboxAutoHighlight } from "@/components/custom/combobox-autohighlight";
+import { BaseResponse } from "@/interfaces/base";
 
 export interface Item {
     cmt: string
@@ -21,8 +21,11 @@ export interface Item {
     model: string
     color: string
     size: string
-    rec_dozen_qty: number
-    rec_piece_qty: number
+    rack_id: string
+    rack: {
+        name: string
+    }
+    rec_qty: number
 }
 
 export interface Barcode {
@@ -33,15 +36,20 @@ export interface Barcode {
     }
 }
 
-export default function Receive() {
+export interface DeleteRowProps {
+    barcode: string
+    rack_id: string
+}
 
+export default function Mutation() {
+
+    const [rack, setRack] = useState<string>("");
     const [search, setSearch] = useState<string>("");
     const [items, setItems] = useState<Item[]>([]);
     const [barcodes, setBarcodes] = useState<Barcode[]>([]);
-    const [deleteRow, setDeleteRow] = useState<string>();
-    const [deleteBarcodeRow, setDeleteBarcodeRow] = useState<string>();
+    const [deleteRow, setDeleteRow] = useState<DeleteRowProps>();
+    const [deleteBarcodeRow, setDeleteBarcodeRow] = useState<DeleteRowProps>();
     const [loading, setLoading] = useState(false);
-    const [barcodeConfirm, setBarcodeConfirm] = useState<string>();
     const [submitConfirm, setSubmitConfirm] = useState<boolean>();
     const [resetConfirm, setResetConfirm] = useState<boolean>();
 
@@ -55,16 +63,12 @@ export default function Receive() {
                     } else {
                         const validation = await validateBarcode(search);
                         if (validation) {
-                            setBarcodeConfirm(search);
+                            validatePieceBarcode(search, rack);
                         }
                     }
                     break;
                 case 'DOZEN'://kalau group ada
-                    if (barcodes.some(item => item.barcode == search)) {
-                        toast.error("Barcode sudah ada!", { richColors: true })
-                    } else {
-                        await validateDozenBarcode(search);
-                    }
+                    toast.error("Produk lusin harus dibuka menjadi satuan!", { richColors: true })
                     break;
                 default:
                     toast.error("Barcode tidak valid!", { richColors: true })
@@ -74,24 +78,10 @@ export default function Receive() {
         }
     }
 
-    const validateDozenBarcode = async (full_barcode: string) => {
-        const item = await validateBarcode(full_barcode);
-        if (item) {
-            const barcode: Barcode = {
-                barcode: full_barcode,
-                rack: {
-                    name: ""
-                },
-                rack_id: ""
-            }
-            addRow(item, barcode);
-        }
-    }
-
     const validatePieceBarcode = async (full_barcode: string, rack_id: string) => {
         const rackName = await getRack(rack_id);
         const item = await validateBarcode(full_barcode);
-        if (item) {
+        if (item && rackName) {
             const barcode: Barcode = {
                 barcode: full_barcode,
                 rack: {
@@ -100,6 +90,10 @@ export default function Receive() {
                 rack_id: rack_id
             }
             addRow(item, barcode);
+        } else {
+            if (!rackName) {
+                toast.error("Rack tidak valid!", { richColors: true })
+            }
         }
     }
 
@@ -129,19 +123,23 @@ export default function Receive() {
         const [prefix, _group, _sequence] = splitBarcode(barcode);
         try {
             setLoading(true);
-            const res = await Services.TransactionInbound.validate({ barcode });
-            const json: InboundValidateResponse = await res.json();
+            const res = await Services.TransactionMutation.validate({ barcode });
+            const rackName = await getRack(rack);
+            const json: MutationValidateResponse = await res.json();
             if (res.ok) {
                 setLoading(false);
                 const data = json.data;
                 return {
+                    rack_id: rack,
+                    rack: {
+                        name: rackName ?? ""
+                    },
                     barcode: prefix,
                     cmt: data.cmt.name ?? "",
                     model: data.model.name ?? "",
                     color: data.color.name ?? "",
                     size: data.size.name ?? "",
-                    rec_dozen_qty: data.is_dozen ? 1 : 0,
-                    rec_piece_qty: data.is_dozen ? 0 : 1
+                    rec_qty: 1
                 };
             } else {
                 toast.error(json.message, { richColors: true })
@@ -157,14 +155,13 @@ export default function Receive() {
 
     const addRow = (item: Item, barcode: Barcode) => {
         setItems(prev => {
-            const index = prev.findIndex(i => i.barcode === item.barcode);
+            const index = prev.findIndex(i => i.barcode === item.barcode && i.rack_id === item.rack_id);
             if (index !== -1) {
                 return prev.map((i, idx) =>
                     idx === index
                         ? {
                             ...i,
-                            rec_dozen_qty: i.rec_dozen_qty + item.rec_dozen_qty,
-                            rec_piece_qty: i.rec_piece_qty + item.rec_piece_qty,
+                            rec_qty: i.rec_qty + item.rec_qty,
                         }
                         : i
                 );
@@ -174,32 +171,31 @@ export default function Receive() {
         setBarcodes(prev => [...prev, barcode]);
     }
 
-    const removeRow = (barcode: string) => {
-        setItems(prev => prev.filter(item => item.barcode !== barcode))//kalau item yang dihapus, semua kode batang yang berkaitan juga dihapus
-        setBarcodes(prev => prev.filter(item => !item.barcode.includes(barcode)));
+    const removeRow = (deleteRow: DeleteRowProps) => {
+        setItems(prev => prev.filter(item => !(item.barcode == deleteRow.barcode && item.rack_id == deleteRow.rack_id)))//kalau item yang dihapus, semua kode batang yang berkaitan juga dihapus
+        setBarcodes(prev => prev.filter(item => !(item.barcode.includes(deleteRow.barcode) && item.rack_id == deleteRow.rack_id)));
     }
 
-    const removeBarcodeRow = (barcode: string) => {
-        const [prefix, group, _sequence] = splitBarcode(barcode);
+    const removeBarcodeRow = (deleteRow: DeleteRowProps) => {
+        const [prefix, group, _sequence] = splitBarcode(deleteRow.barcode);
         setItems(prev => {
-            const index = prev.findIndex(i => i.barcode === prefix);
+            const index = prev.findIndex(i => i.barcode === prefix && i.rack_id == deleteRow.rack_id);
             if (index !== -1) {
                 return prev.map((i, idx) =>
                     idx === index
                         ? {
                             ...i,
-                            rec_dozen_qty: i.rec_dozen_qty - (group === 'PIECE' ? 0 : 1),
-                            rec_piece_qty: i.rec_piece_qty - (group === 'PIECE' ? 1 : 0),
+                            rec_qty: i.rec_qty - 1,
                         }
                         : i
                 ).filter(
                     item =>
-                        !(item.rec_dozen_qty === 0 && item.rec_piece_qty === 0)
+                        !(item.rec_qty === 0)
                 )
             }
             return prev;
         });
-        setBarcodes(prev => prev.filter(item => item.barcode !== barcode));
+        setBarcodes(prev => prev.filter(item => !(item.barcode == deleteRow.barcode && item.rack_id == deleteRow.rack_id)));
     }
 
     const splitBarcode = (barcode: string) => {
@@ -210,18 +206,18 @@ export default function Receive() {
         return [prefix, group, sequence];
     }
 
-    const submit = async (notes: string, warehouse_id?: string) => {
+    const submit = async () => {
         try {
-            const final = barcodes.map(item => ({ barcode: item.barcode, rack_id: item.rack_id }));
-            const barcodesDozen = final.filter(item => !item.barcode.includes('|PIECE|')).map(item => item.barcode);
-            const barcodesPiece = final.filter(item => item.barcode.includes('|PIECE|'));
+            const result = {
+                items: Object.entries(
+                    barcodes.reduce((a, { rack_id, barcode }) => {
+                        (a[rack_id] ??= []).push(barcode);
+                        return a;
+                    }, {} as Record<string, string[]>)
+                ).map(([rack_id, barcodes]) => ({ rack_id, barcodes }))
+            };//mengkelompokkan rack barcodes yang flat menjadi group
 
-            const res = await Services.TransactionInbound.store({
-                ...(barcodesDozen.length > 0 ? { barcodes_dozen: barcodesDozen } : {}),
-                ...(barcodesPiece.length > 0 ? { barcodes_piece: barcodesPiece } : {}),
-                ...(warehouse_id ? { warehouse_id: warehouse_id } : {}),
-                notes: notes
-            });
+            const res = await Services.TransactionMutation.store(result);
             const json: BaseResponse = await res.json();
             if (res.ok) {
                 resetState();
@@ -250,14 +246,15 @@ export default function Receive() {
     };
 
     return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-progress' : undefined}`}>
-        <ModalConfirm action={removeRow} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
-        <ModalConfirm action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
-        <ModalConfirmItemPiece barcode={barcodeConfirm} setBarcode={setBarcodeConfirm} onSubmit={validatePieceBarcode} />
+        <ModalConfirm<DeleteRowProps> action={removeRow} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
+        <ModalConfirm<DeleteRowProps> action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirmReset resetConfirm={resetConfirm} setResetConfirm={setResetConfirm} onSubmit={resetState} />
-        <ModalConfirmSubmit hasDozen={barcodes.some(item => !item.barcode.includes('|PIECE|'))} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
+        <ModalConfirmSubmit submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
         <div className="px-4 lg:px-6">
+            <Label>Rak</Label>
+            <ComboboxAutoHighlight source={Services.MasterRack.index} id="id" label="name" placeholder="Cari rak atau masukkan id barcode disini" value={rack} onValueChange={setRack} errorMessage="Rak tidak valid!" className="mt-2 mb-4" onFocus={e=>e.target.select()} />
             <Label>Barcode</Label>
-            <Input onKeyDown={findProduct} value={search} placeholder="Masukkan barcode barang lusin atau satuan di sini" onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
+            <Input onKeyDown={findProduct} value={search} disabled={!rack} placeholder={!rack ? 'Silakan tentukan rak terlebih dahulu' : "Masukkan barcode barang di sini"} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
             <Tabs defaultValue="items">
                 <TabsList>
                     <TabsTrigger value="items">Barang diterima</TabsTrigger>

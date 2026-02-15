@@ -44,10 +44,10 @@ export interface BaseApiCallProps<T> {
   destroy?: BaseApiCallDeleteProps
 }
 
-interface BaseModal {
+interface BaseModal<T = string> {
   onSubmit?: () => void
-  id?: string
-  setId?: React.Dispatch<React.SetStateAction<string | undefined>>
+  id?: T
+  setId?: React.Dispatch<React.SetStateAction<T | undefined>>
 }
 
 interface Modal {
@@ -65,10 +65,10 @@ export interface BaseForm {
   disabled?: boolean
 };
 
-export interface BaseDialog extends BaseModal {
+export interface BaseDialog<T = string> extends BaseModal<T> {
   title?: string
   description?: string
-  action?: ((id: string) => Promise<Response> | void)
+  action?: ((id: T) => Promise<Response> | void)
   variant?: "default" | "destructive"
 };
 

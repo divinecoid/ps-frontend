@@ -14,6 +14,7 @@ import * as MasterOnlineStore from './master-online-store';
 import * as MasterMarketplace from './master-marketplace';
 import * as TransactionRequest from './transaction-request';
 import * as TransactionInbound from './transaction-inbound';
+import * as TransactionMutation from './transaction-mutation';
 import * as TransactionOrder from './transaction-order';
 
 const Services = {
@@ -32,6 +33,7 @@ const Services = {
     MasterMarketplace,
     TransactionRequest,
     TransactionInbound,
+    TransactionMutation,
     TransactionOrder
 };
 

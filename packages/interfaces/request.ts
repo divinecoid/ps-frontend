@@ -34,8 +34,8 @@ export interface ReceiveLogDetail {
   size: {
     name: string
   }
-  dozen_qty: number
-  piece_qty: number
+  barcode: string
+  qty: number
 }
 
 export interface Request {

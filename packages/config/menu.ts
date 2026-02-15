@@ -1,4 +1,4 @@
-import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2, ArrowDownLeft, History } from "lucide-react";
+import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2, ArrowDownLeft, History, ArrowDownLeftFromSquare } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -188,6 +188,18 @@ export const Menu = {
       name: "Riwayat penerimaan",
       url: "/transaction/receive-logs",
       icon: History,
+      role: [
+        'preparist',
+        'checker',
+        'admin'
+      ]
+    },
+  ],
+  navWarehouseMutation: [
+    {
+      name: "Mutasi",
+      url: "/transaction/mutation",
+      icon: ArrowDownLeftFromSquare,
       role: [
         'preparist',
         'checker',

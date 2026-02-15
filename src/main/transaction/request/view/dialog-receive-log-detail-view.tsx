@@ -26,7 +26,7 @@ export default function ViewReceiveLogDetail({ data, open, setOpen }: ViewReceiv
     }, [data]);
 
     return <Dialog open={open} onOpenChange={(open) => { setOpen(open) }}>
-        <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none`}>
+        <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none sm:max-w-[calc(100%-2rem)]`}>
             <DialogHeader className="px-6 pt-6">
                 <DialogTitle>Tentukan Tempat Penyimpanan Produk Satuan</DialogTitle>
                 <DialogDescription>Barang dengan jumlah satuan akan diletakkan di rak bawah</DialogDescription>
@@ -39,8 +39,8 @@ export default function ViewReceiveLogDetail({ data, open, setOpen }: ViewReceiv
                             <TableHead>Model</TableHead>
                             <TableHead>Warna</TableHead>
                             <TableHead>Ukuran</TableHead>
-                            <TableHead>Jumlah (Lusin)</TableHead>
-                            <TableHead>Jumlah (Satuan)</TableHead>
+                            <TableHead>Barcode</TableHead>
+                            <TableHead>Jumlah</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -49,8 +49,8 @@ export default function ViewReceiveLogDetail({ data, open, setOpen }: ViewReceiv
                                 <TableCell>{row.model.name}</TableCell>
                                 <TableCell>{row.color.name}</TableCell>
                                 <TableCell>{row.size.name}</TableCell>
-                                <TableCell>{row.dozen_qty}</TableCell>
-                                <TableCell>{row.piece_qty}</TableCell>
+                                <TableCell>{row.barcode}</TableCell>
+                                <TableCell>{row.qty}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

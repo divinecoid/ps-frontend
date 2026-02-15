@@ -31,6 +31,7 @@ import ReceiveLogs from './main/transaction/receive-logs';
 import ViewFormRequest from './main/transaction/request/view/form-request';
 import Order from './main/transaction/order';
 import FormOrder from './main/transaction/order/view/form-order';
+import Mutation from './main/transaction/mutation';
 
 function App() {
   const { token } = useAuth();
@@ -79,6 +80,7 @@ function App() {
               <Route path="/transaction/request/:id/barcode" element={<DocumentBarcodePreview />} />
               <Route path="/transaction/receive/" element={<Receive />} />
               <Route path="/transaction/receive-logs/" element={<ReceiveLogs />} />
+              <Route path="/transaction/mutation/" element={<Mutation />} />
               <Route path="/transaction/order" element={<Order />} />
               <Route path="/transaction/order/:id" element={<FormOrder />} />
               <Route path="/inventory" element={<MasterProducts />} />

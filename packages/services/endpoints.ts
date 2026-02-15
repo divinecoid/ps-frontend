@@ -19,5 +19,6 @@ export const ENDPOINT = {
     ROLE: "role",
     REQUEST: "request",
     INBOUND: "inbound",
+    MUTATION: "mutation",
     ORDER: "order"
 }
