@@ -3,12 +3,12 @@ import { DELETE, GET, PATCH, POST } from "./api"
 import { ProductModel } from "@/interfaces/product-model";
 import { ENDPOINT } from "./endpoints";
 
-export const index: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(ENDPOINT.PRODUCT_MODEL, { page, per_page, search });
+export const index: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(ENDPOINT.PRODUCT_MODEL, { page, per_page, search, sort });
 }
 
-export const master: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(`${ENDPOINT.PRODUCT_MODEL}/master`, { page, per_page, search });
+export const master: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(`${ENDPOINT.PRODUCT_MODEL}/master`, { page, per_page, search, sort });
 }
 
 export const store: BaseApiCallCreateProps<ProductModel> = async (values) => {

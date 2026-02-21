@@ -15,14 +15,14 @@ export interface IndexResponse extends BaseResponse {
 
 export interface MasterData {
   id: string
-  is_deleted: boolean
+  deleted_at: boolean
 }
 
 export interface BaseResponse {
   success: boolean
   message: string
 }
-export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: string) => Promise<Response>;
+export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: string, sort?: string) => Promise<Response>;
 
 export type BaseApiCallCreateProps<T> = (values: T) => Promise<Response>;
 

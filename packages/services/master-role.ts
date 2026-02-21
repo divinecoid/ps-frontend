@@ -3,12 +3,12 @@ import { DELETE, GET, PATCH, POST } from "./api"
 import { Role } from "@/interfaces/role";
 import { ENDPOINT } from "./endpoints";
 
-export const index: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(ENDPOINT.ROLE, { page, per_page, search });
+export const index: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(ENDPOINT.ROLE, { page, per_page, search, sort });
 }
 
-export const master: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(`${ENDPOINT.ROLE}/master`, { page, per_page, search });
+export const master: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(`${ENDPOINT.ROLE}/master`, { page, per_page, search, sort });
 }
 
 export const store: BaseApiCallCreateProps<Role> = async (values) => {

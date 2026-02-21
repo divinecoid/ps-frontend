@@ -69,12 +69,12 @@ export const columns: ColumnDef<OnlineStore>[] = [
     enableSorting: true,
   },
   {
-    accessorKey: "is_deleted",
+    accessorKey: "deleted_at",
     header: "Status toko online",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
-      switch (data.is_deleted) {
+      switch (data.deleted_at) {
         case true:
           return <Badge variant="destructive">Nonaktif</Badge>
         case false:

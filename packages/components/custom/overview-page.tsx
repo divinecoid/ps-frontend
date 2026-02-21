@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DataTable from "@/components/custom/datatable";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, SortingState, Table } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
 import { BaseApiCallProps } from "@/interfaces/base";
 import { toast } from "sonner";
@@ -18,13 +18,23 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [count, setCount] = useState(0);
+    const [sorting, setSorting] = useState<SortingState>([])
     const [filter, setFilter] = useState<string>("");
     const [data, setData] = useState<TData[]>();
     const [id, setId] = useState<string>();
     const [loading, setLoading] = useState<boolean>(true);
+    const [tableInstance, setTableInstance] = useState<Table<TData>>();
+
     const getData = async () => {
         try {
-            const result = await source.master?.(page, pageSize, filter);
+            const sort = sorting?.[0]
+                ? (() => {
+                    const column = tableInstance?.getColumn(sorting[0].id)
+                    const accessorKey = String(column?.columnDef && "accessorKey" in column.columnDef ? column.columnDef.accessorKey : undefined)
+                    return accessorKey ? `${accessorKey},${sorting[0].desc ? 'desc' : 'asc'}` : ''
+                })()
+                : ''
+            const result = await source.master?.(page, pageSize, filter, sort);
             const json = (await result?.json());
             if (result?.ok) {
                 setData(json.data);
@@ -44,7 +54,7 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     }
     useEffect(() => {
         getData();
-    }, [page, pageSize, filter]);
+    }, [page, pageSize, filter, sorting]);
     useEffect(() => {
         onLoadedRef?.(getData);
     }, []);
@@ -61,10 +71,13 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 onPageSizeChange={setPageSize}
                 selectable={selectable}
                 loading={loading}
+                onTableReady={setTableInstance}
                 actions={actions ? actions({ services: source, onSubmit: getData }) : []}
                 rowActions={rowActions ? ({ row }) => (
                     rowActions({ row, id, setId })
                 ) : undefined}
+                sorting={sorting}
+                setSorting={setSorting}
                 filterComponents={
                     <Input
                         placeholder="Telusuri..."

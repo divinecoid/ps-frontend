@@ -3,12 +3,12 @@ import { DELETE, GET, POST } from "./api"
 import { Mutation, MutationValidate } from "@/interfaces/mutation";
 import { ENDPOINT } from "./endpoints";
 
-export const index: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(ENDPOINT.MUTATION, { page, per_page, search });
+export const index: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(ENDPOINT.MUTATION, { page, per_page, search, sort });
 }
 
-export const master: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(ENDPOINT.MUTATION, { page, per_page, search });
+export const master: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(ENDPOINT.MUTATION, { page, per_page, search, sort });
 }
 
 export const store: BaseApiCallCreateProps<Mutation> = async (values) => {

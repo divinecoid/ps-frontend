@@ -16,7 +16,6 @@ export const columns: ColumnDef<ProductModel>[] = [
   {
     accessorKey: "sizes",
     header: "Ukuran",
-    enableSorting: true,
     cell: (({ row }) => {
       return row.original.sizes.map(s => s.name).join(", ")
     })
@@ -24,18 +23,17 @@ export const columns: ColumnDef<ProductModel>[] = [
   {
     accessorKey: "colors",
     header: "Warna",
-    enableSorting: true,
     cell: (({ row }) => {
       return row.original.colors.map(c => c.name).join(", ")
     })
   },
   {
-    accessorKey: "is_deleted",
+    accessorKey: "deleted_at",
     header: "Status model",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
-      switch (data.is_deleted) {
+      switch (data.deleted_at) {
         case true:
           return <Badge variant="destructive">Nonaktif</Badge>
         case false:

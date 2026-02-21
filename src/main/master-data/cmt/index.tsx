@@ -23,7 +23,7 @@ export default function MasterCMTs() {
         ]}
         rowActions={({ row }) => (
             <DropdownRowActions>
-                {row.is_deleted ?
+                {row.deleted_at ?
                     <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Kembalikan</DropdownMenuItem>
                     : <>
                         <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Sunting</DropdownMenuItem>

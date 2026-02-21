@@ -43,7 +43,7 @@ export interface Request {
   cmt_id: string
   cmt: CMT
   status: RequestStatus
-  created_date: Date
+  created_at: Date
   request_detail: RequestDetail[]
   receive_log: ReceiveLog[]
 }
