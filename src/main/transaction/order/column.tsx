@@ -11,7 +11,7 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: "read_at",
-    header: "Waktu penyiapan",
+    header: "Waktu baca",
     enableSorting: true,
     cell: (({ row }) => {
       return row.original.read_at ? formatDate(row.original.read_at) : "-";

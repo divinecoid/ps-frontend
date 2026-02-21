@@ -26,12 +26,12 @@ export function NavInventories({
   const path = useLocation().pathname;
   const checkActive = useCallback((url: string) => path === url ? true : false, [path])
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup>
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild isActive={checkActive(item.url)}>
+            <SidebarMenuButton asChild isActive={checkActive(item.url)} tooltip={item.name}>
               <Link to={item.url}>
                 <item.icon />
                 <span>{item.name}</span>
