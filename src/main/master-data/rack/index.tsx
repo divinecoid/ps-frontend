@@ -8,9 +8,23 @@ import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
 
 export default function MasterRacks() {
-    const [editRow, setEditRow] = useState<string|undefined>();
-    const [restoreRow, setRestoreRow] = useState<string|undefined>();
-    const [deleteRow, setDeleteRow] = useState<string|undefined>();
+    const [editRow, setEditRow] = useState<string | undefined>();
+    const [restoreRow, setRestoreRow] = useState<string | undefined>();
+    const [deleteRow, setDeleteRow] = useState<string | undefined>();
+    const paperWidthMm = 240;
+    const paperHeightMm = 300;
+
+    const handlePrint = async (code: string) => {
+        await window.electronAPI.printPreview({
+            barcodes: [code],
+            dozenBarcodes: [],
+            paper: {
+                width: paperWidthMm,
+                height: paperHeightMm,
+            },
+        });
+    }
+
     return <OverviewPage
         columns={columns}
         source={Services.MasterRack}
@@ -27,6 +41,7 @@ export default function MasterRacks() {
                     <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Kembalikan</DropdownMenuItem>
                     : <>
                         <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Sunting</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handlePrint(row.id)}>Cetak QR</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
                     </>
                 }
