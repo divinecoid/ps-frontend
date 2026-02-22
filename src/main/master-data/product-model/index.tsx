@@ -6,6 +6,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import DatatableSelectAction from "@/components/custom/datatable-select-action";
 
 export default function MasterProductModels() {
     const [editRow, setEditRow] = useState<string|undefined>();
@@ -16,6 +17,7 @@ export default function MasterProductModels() {
         source={Services.MasterProductModel}
         selectable
         actions={(props) => [
+            <DatatableSelectAction {...props} action={Services.MasterProductModel.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} model?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} model terpilih dari daftar pilihan.`} />,
             <ModalProductModel {...props} />,
             <ModalProductModel {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterProductModel.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan model ini?" description="Aksi ini akan memunculkan model ini kembali ke dalam daftar pilihan." />,

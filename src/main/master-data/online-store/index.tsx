@@ -8,6 +8,7 @@ import ModalConfirm from "@/components/custom/modal-confirm";
 import { MarketplaceViewResponse } from "@/interfaces/marketplace";
 import { toast } from "sonner";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import DatatableSelectAction from "@/components/custom/datatable-select-action";
 
 export default function MasterOnlineStores() {
     const [editRow, setEditRow] = useState<string|undefined>();
@@ -57,6 +58,7 @@ export default function MasterOnlineStores() {
         selectable
         onLoadedRef={(fn) => (refreshTableRef.current = fn)}
         actions={(props) => [
+            <DatatableSelectAction {...props} action={Services.MasterOnlineStore.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} toko online?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} toko online terpilih dari daftar pilihan.`} />,
             <ModalOnlineStore {...props} />,
             <ModalOnlineStore {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterOnlineStore.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan toko online ini?" description="Aksi ini akan memunculkan toko online ini kembali ke dalam daftar pilihan." />,

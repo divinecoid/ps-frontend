@@ -1,4 +1,4 @@
-import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallRestoreProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
+import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallMultiDeleteProps, BaseApiCallRestoreProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
 import { DELETE, GET, PATCH, POST } from "./api"
 import { ProductModel } from "@/interfaces/product-model";
 import { ENDPOINT } from "./endpoints";
@@ -29,6 +29,10 @@ export const restore: BaseApiCallRestoreProps = async (id) => {
 
 export const destroy: BaseApiCallDeleteProps = async (id) => {
     return await DELETE(`${ENDPOINT.PRODUCT_MODEL}/${id}`);
+}
+
+export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
+    return await DELETE(`${ENDPOINT.PRODUCT_MODEL}`, ids)
 }
 
 export const model_color = async (id: string, page?: number, per_page?: number, search?: string) => {

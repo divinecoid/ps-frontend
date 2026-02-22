@@ -6,6 +6,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import DatatableSelectAction from "@/components/custom/datatable-select-action";
 
 export default function MasterRoles() {
     const [editRow, setEditRow] = useState<string|undefined>();
@@ -16,6 +17,7 @@ export default function MasterRoles() {
         source={Services.MasterRole}
         selectable
         actions={(props) => [
+            <DatatableSelectAction {...props} action={Services.MasterRole.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} peran?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} peran terpilih dari daftar pilihan.`} />,
             <ModalRole {...props} />,
             <ModalRole {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterRole.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan peran ini?" description="Aksi ini akan memunculkan peran ini kembali ke dalam daftar pilihan." />,

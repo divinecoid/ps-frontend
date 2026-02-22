@@ -6,6 +6,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import DatatableSelectAction from "@/components/custom/datatable-select-action";
 
 export default function MasterRacks() {
     const [editRow, setEditRow] = useState<string | undefined>();
@@ -30,6 +31,7 @@ export default function MasterRacks() {
         source={Services.MasterRack}
         selectable
         actions={(props) => [
+            <DatatableSelectAction {...props} action={Services.MasterRack.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} rak?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} rak terpilih dari daftar pilihan.`} />,
             <ModalRack {...props} />,
             <ModalRack {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterRack.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan rak ini?" description="Aksi ini akan memunculkan rak ini kembali ke dalam daftar pilihan." />,

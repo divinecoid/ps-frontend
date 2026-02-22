@@ -1,4 +1,4 @@
-import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallViewProps } from "@/interfaces/base";
+import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallMultiDeleteProps, BaseApiCallViewProps } from "@/interfaces/base";
 import { DELETE, GET, POST } from "./api"
 import { Mutation, MutationValidate } from "@/interfaces/mutation";
 import { ENDPOINT } from "./endpoints";
@@ -25,4 +25,8 @@ export const show: BaseApiCallViewProps = async (id) => {
 
 export const destroy: BaseApiCallDeleteProps = async (id) => {
     return await DELETE(`${ENDPOINT.MUTATION}/${id}`);
+}
+
+export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
+    return await DELETE(`${ENDPOINT.MUTATION}`, ids)
 }

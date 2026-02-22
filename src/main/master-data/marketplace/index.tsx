@@ -6,16 +6,18 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import DatatableSelectAction from "@/components/custom/datatable-select-action";
 
 export default function MasterMarketplaces() {
-    const [editRow, setEditRow] = useState<string|undefined>();
-    const [restoreRow, setRestoreRow] = useState<string|undefined>();
-    const [deleteRow, setDeleteRow] = useState<string|undefined>();
+    const [editRow, setEditRow] = useState<string | undefined>();
+    const [restoreRow, setRestoreRow] = useState<string | undefined>();
+    const [deleteRow, setDeleteRow] = useState<string | undefined>();
     return <OverviewPage
         columns={columns}
         source={Services.MasterMarketplace}
         selectable
         actions={(props) => [
+            <DatatableSelectAction {...props} action={Services.MasterMarketplace.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} marketplace?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} marketplace terpilih dari daftar pilihan.`} />,
             <ModalMarketplace {...props} />,
             <ModalMarketplace {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterMarketplace.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan marketplace ini?" description="Aksi ini akan memunculkan marketplace ini kembali ke dalam daftar pilihan." />,

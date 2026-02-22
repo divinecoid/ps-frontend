@@ -1,4 +1,4 @@
-import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
+import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallMultiDeleteProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
 import { DELETE, GET, PATCH, POST } from "./api"
 import { Request } from "@/interfaces/request";
 import { ENDPOINT } from "./endpoints";
@@ -25,6 +25,10 @@ export const show: BaseApiCallViewProps = async (id) => {
 
 export const destroy: BaseApiCallDeleteProps = async (id) => {
     return await DELETE(`${ENDPOINT.REQUEST}/${id}`);
+}
+
+export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
+    return await DELETE(`${ENDPOINT.REQUEST}`, ids)
 }
 
 export const barcode: BaseApiCallViewProps = async (id) => {

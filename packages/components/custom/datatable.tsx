@@ -51,6 +51,7 @@ interface DataTableProps<TData, TValue> {
   onPageSizeChange?: (size: number) => void;
   filterComponents?: React.ReactNode;
   selectable?: boolean;
+  onSelectionChange?: (rows: TData[]) => void
   actions?: React.ReactNode[];
   rowActions?: (cell: { row: TData }) => React.ReactNode;
   loading?: boolean;
@@ -71,6 +72,7 @@ export default function DataTable<TData, TValue>({
   onPageSizeChange,
   filterComponents,
   selectable,
+  onSelectionChange,
   actions,
   rowActions,
   sorting = [],
@@ -104,6 +106,17 @@ export default function DataTable<TData, TValue>({
       rowSelection,
     },
   })
+
+  const selectedRows = React.useMemo(() => {
+    return table
+      .getSelectedRowModel()
+      .rows
+      .map(row => row.original)
+  }, [table.getState().rowSelection])
+
+  React.useEffect(() => {
+    onSelectionChange?.(selectedRows)
+  }, [selectedRows])
 
   React.useEffect(() => {
     onTableReady?.(table)

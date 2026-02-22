@@ -34,6 +34,8 @@ export type BaseApiCallRestoreProps = (id: string) => Promise<Response>;
 
 export type BaseApiCallDeleteProps = (id: string) => Promise<Response>;
 
+export type BaseApiCallMultiDeleteProps = (id: string[]) => Promise<Response>;
+
 export interface BaseApiCallProps<T> {
   index?: BaseApiCallIndexProps
   master?: BaseApiCallIndexProps
@@ -70,6 +72,16 @@ export interface BaseDialog<T = string> extends BaseModal<T> {
   description?: string
   action?: ((id: T) => Promise<Response> | void)
   variant?: "default" | "destructive"
+};
+
+export interface SelectActionDialog<T> {
+  title?: string
+  description?: string
+  variant?: "default" | "destructive"
+  selectedRows?: T[];
+  action: ((id: string[]) => Promise<Response> | void)
+  onSubmit?: () => void
+  trigger?: string
 };
 
 export interface Dialog extends Modal {

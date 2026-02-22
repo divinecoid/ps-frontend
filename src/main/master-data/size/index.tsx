@@ -6,6 +6,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import DatatableSelectAction from "@/components/custom/datatable-select-action";
 
 export default function MasterSizes() {
     const [editRow, setEditRow] = useState<string|undefined>();
@@ -16,6 +17,7 @@ export default function MasterSizes() {
         source={Services.MasterSize}
         selectable
         actions={(props) => [
+            <DatatableSelectAction {...props} action={Services.MasterSize.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} ukuran?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} ukuran terpilih dari daftar pilihan.`} />,
             <ModalSize {...props} />,
             <ModalSize {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterSize.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan ukuran ini?" description="Aksi ini akan memunculkan ukuran ini kembali ke dalam daftar pilihan." />,

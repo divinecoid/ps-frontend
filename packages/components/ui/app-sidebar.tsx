@@ -37,7 +37,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-medium">PS Frontend</span>
+                  <span className="font-medium truncate line-clamp-1">PS Frontend</span>
                   <span className="">v1.0.0</span>
                 </div>
               </Link>

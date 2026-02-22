@@ -6,6 +6,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import DatatableSelectAction from "@/components/custom/datatable-select-action";
 
 export default function MasterCMTs() {
     const [editRow, setEditRow] = useState<string | undefined>();
@@ -16,6 +17,7 @@ export default function MasterCMTs() {
         source={Services.MasterCMT}
         selectable
         actions={(props) => [
+            <DatatableSelectAction {...props} action={Services.MasterCMT.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} CMT?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} CMT terpilih dari daftar pilihan.`} />,
             <ModalCMT {...props} />,
             <ModalCMT {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterCMT.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan CMT ini?" description="Aksi ini akan memunculkan CMT ini kembali ke daftar pilihan." />,

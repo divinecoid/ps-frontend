@@ -6,6 +6,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
+import DatatableSelectAction from "@/components/custom/datatable-select-action";
 
 export default function MasterUsers() {
     const [editRow, setEditRow] = useState<string|undefined>();
@@ -16,6 +17,7 @@ export default function MasterUsers() {
         source={Services.MasterUser}
         selectable
         actions={(props) => [
+            <DatatableSelectAction {...props} action={Services.MasterUser.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} pengguna?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} pengguna terpilih dari daftar pilihan.`} />,
             <ModalUser {...props} />,
             <ModalUser {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterUser.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan pengguna ini?" description="Aksi ini akan memunculkan pengguna ini kembali ke daftar pilihan." />,

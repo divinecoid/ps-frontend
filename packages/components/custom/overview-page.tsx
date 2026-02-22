@@ -9,7 +9,7 @@ interface OverviewProps<TData, TValue> {
     source: BaseApiCallProps<TValue>;
     columns: ColumnDef<TData, TValue>[];
     selectable?: boolean;
-    actions?: (utils: { services: BaseApiCallProps<TValue>, onSubmit: () => void }) => React.ReactNode[];
+    actions?: (utils: { services: BaseApiCallProps<TValue>, onSubmit: () => void, selectedRows: TData[] }) => React.ReactNode[];
     rowActions?: (cell: { row: TData, id: string | undefined, setId: React.Dispatch<React.SetStateAction<string | undefined>> }) => React.ReactNode;
     onLoadedRef?: (refreshFn: () => void) => void;
 }
@@ -24,9 +24,11 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
     const [id, setId] = useState<string>();
     const [loading, setLoading] = useState<boolean>(true);
     const [tableInstance, setTableInstance] = useState<Table<TData>>();
+    const [selectedRows, setSelectedRows] = useState<TData[]>([])
 
     const getData = async () => {
         try {
+            tableInstance?.resetRowSelection();
             const sort = sorting?.[0]
                 ? (() => {
                     const column = tableInstance?.getColumn(sorting[0].id)
@@ -70,9 +72,10 @@ export default function OverviewPage<TData, TValue>({ source, columns, selectabl
                 onPageChange={setPage}
                 onPageSizeChange={setPageSize}
                 selectable={selectable}
+                onSelectionChange={setSelectedRows}
                 loading={loading}
                 onTableReady={setTableInstance}
-                actions={actions ? actions({ services: source, onSubmit: getData }) : []}
+                actions={actions ? actions({ services: source, onSubmit: getData, selectedRows }) : []}
                 rowActions={rowActions ? ({ row }) => (
                     rowActions({ row, id, setId })
                 ) : undefined}

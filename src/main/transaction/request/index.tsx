@@ -8,6 +8,7 @@ import { Eye, Plus, Printer, QrCode, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 import ModalConfirm from "@/components/custom/modal-confirm";
+import DatatableSelectAction from "@/components/custom/datatable-select-action";
 
 interface Barcodes {
     code: string,
@@ -69,6 +70,7 @@ export default function Request() {
         columns={columns}
         source={Services.TransactionRequest}
         actions={(props) => [
+            <DatatableSelectAction {...props} action={Services.TransactionRequest.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} pengajuan?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} pengajuan terpilih dari daftar pilihan.`} />,
             <Button asChild variant="outline"><Link to={`./new`}><Plus />Pengajuan Baru</Link></Button>,
             <ModalConfirm {...props} action={Services.TransactionRequest.destroy} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
         ]}
