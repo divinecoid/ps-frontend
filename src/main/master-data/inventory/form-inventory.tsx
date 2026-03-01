@@ -67,7 +67,7 @@ export default function FormInventory(props: BaseForm) {
                     series: z.string(),
                     quantity: z.coerce.number()
                 })),
-                custom: <DetailQuantity rowKey="detail" disabled={true} />
+                custom: <DetailQuantity rowKey="detail" />
             }
         ]}
     />

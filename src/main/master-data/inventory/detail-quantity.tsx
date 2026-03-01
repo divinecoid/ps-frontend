@@ -5,10 +5,9 @@ import { useFormContext } from "react-hook-form";
 
 interface DetailQuantityProps {
     rowKey: string
-    disabled: boolean
 }
 
-export default function DetailQuantity({ rowKey, disabled }: DetailQuantityProps) {
+export default function DetailQuantity({ rowKey }: DetailQuantityProps) {
     const form = useFormContext();
 
     return <FormField
