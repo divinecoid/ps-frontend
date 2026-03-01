@@ -46,7 +46,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavInventories label="Gudang Kecil" items={Menu.navInventory} />
+        <NavInventories label="Gudang" items={Menu.navInventory} />
         <NavTransactions label="Transaksi CMT" items={Menu.navCMTTransaction} />
         <NavTransactions label="Mutasi Gudang" items={Menu.navWarehouseMutation} />
         <NavTransactions label="Transaksi Toko Online" items={Menu.navStoreTransaction} />

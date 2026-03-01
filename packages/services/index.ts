@@ -10,6 +10,7 @@ import * as MasterProductModel from './master-product-model';
 import * as MasterSize from './master-size';
 import * as MasterColor from './master-color';
 import * as MasterFactory from './master-factory';
+import * as MasterInventory from './master-inventory';
 import * as MasterOnlineStore from './master-online-store';
 import * as MasterMarketplace from './master-marketplace';
 import * as TransactionRequest from './transaction-request';
@@ -29,6 +30,7 @@ const Services = {
     MasterSize,
     MasterColor,
     MasterFactory,
+    MasterInventory,
     MasterOnlineStore,
     MasterMarketplace,
     TransactionRequest,
