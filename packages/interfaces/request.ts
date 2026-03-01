@@ -56,6 +56,12 @@ export interface RequestDetail {
   piece_qty: number
   bs_qty: number
   code: string
+  variant_detail?: VariantDetail[]
+}
+
+interface VariantDetail {
+    dozen_qty: number
+  piece_qty: number
 }
 
 export interface RequestResponse extends IndexResponse {

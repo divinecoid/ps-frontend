@@ -57,7 +57,7 @@ export default function Mutation() {
         const [prefix, group, sequence] = splitBarcode(search);
         if (event.key === "Enter" && prefix != '' && group != '' && sequence != '') {//barcode valid harus punya prefix, group dan sequence
             switch (group) {
-                case 'PIECE'://kalau piece
+                case 'P'://kalau piece
                     if (barcodes.some(item => item.barcode == search)) {
                         toast.error("Barcode sudah ada!", { richColors: true })
                     } else {
@@ -67,7 +67,7 @@ export default function Mutation() {
                         }
                     }
                     break;
-                case 'DOZEN'://kalau group ada
+                case 'D'://kalau group ada
                     toast.error("Produk lusin harus dibuka menjadi satuan!", { richColors: true })
                     break;
                 default:
