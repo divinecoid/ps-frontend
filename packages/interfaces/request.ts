@@ -40,6 +40,7 @@ export interface ReceiveLogDetail {
 
 export interface Request {
   id: string
+  serial_number: string
   cmt_id: string
   cmt: CMT
   status: RequestStatus

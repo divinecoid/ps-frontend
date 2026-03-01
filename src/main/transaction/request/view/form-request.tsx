@@ -61,6 +61,9 @@ export default function ViewFormRequest(props: BaseForm) {
         cmt_id: z.string().nonempty({
             message: "CMT dibutuhkan",
         }),
+        serial_number: z.string().nonempty({
+            message: "Nomor seri dibutuhkan",
+        }),
         color_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
@@ -107,6 +110,14 @@ export default function ViewFormRequest(props: BaseForm) {
                     label: "name",
                     api: Services.MasterCMT.index
                 }
+            },
+            {
+                key: "serial_number",
+                type: "text",
+                schema: schema.serial_number,
+                label: "Nomor Seri (Serial Number)",
+                description: "Nomor seri atau referensi untuk request CMT ini.",
+                placeholder: "Contoh: REQ-CMT-001/2026",
             },
             {
                 key: "request_detail",

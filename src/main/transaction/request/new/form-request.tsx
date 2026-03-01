@@ -54,6 +54,9 @@ export default function FormRequest(props: BaseForm) {
         cmt_id: z.string().nonempty({
             message: "CMT dibutuhkan",
         }),
+        serial_number: z.string().nonempty({
+            message: "Nomor seri dibutuhkan",
+        }),
         color_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
@@ -99,6 +102,14 @@ export default function FormRequest(props: BaseForm) {
                     label: "name",
                     api: Services.MasterCMT.index
                 }
+            },
+            {
+                key: "serial_number",
+                type: "text",
+                schema: schema.serial_number,
+                label: "Nomor Seri",
+                description: "Nomor seri atau referensi untuk request CMT ini.",
+                placeholder: "Contoh: 0001",
             },
             {
                 key: "request_detail",

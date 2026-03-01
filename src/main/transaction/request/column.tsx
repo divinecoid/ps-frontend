@@ -5,6 +5,11 @@ import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Request>[] = [
   {
+    accessorKey: "serial_number",
+    header: "Nomor Seri",
+    enableSorting: true,
+  },
+  {
     accessorKey: "cmt.code",
     header: "Kode CMT",
     enableSorting: true,
