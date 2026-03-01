@@ -43,7 +43,7 @@ export default function MasterRacks() {
                     <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Kembalikan</DropdownMenuItem>
                     : <>
                         <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Sunting</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handlePrint(row.id)}>Cetak QR</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handlePrint(row.code)}>Cetak QR</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
                     </>
                 }
