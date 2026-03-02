@@ -26,7 +26,7 @@ export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
                 <TableRow key={index}>
                     <TableCell>{row.barcode}</TableCell>
                     <TableCell>{row.rack?.name ?? '-'}</TableCell>
-                    <TableCell>{row.barcode.includes('|PIECE|') ? 'Satuan' : `Lusin`}</TableCell>
+                    <TableCell>{row.barcode.includes('|P|') ? 'Satuan' : `Lusin`}</TableCell>
                     <TableCell>
                         <Button type="button" variant="destructive" onClick={() => removeRow(row.barcode)}><Trash /></Button>
                     </TableCell>

@@ -211,7 +211,7 @@ ipcMain.on("start-print", () => {
   if (!printWin) return;
 
   printWin.webContents.print({
-    silent: false,
+    silent: false, //TODO: ganti true
     preview: true,
     printBackground: true,
     margins: {

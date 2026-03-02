@@ -1,6 +1,7 @@
 import { BaseResponse, IndexResponse, MasterData } from "./base"
 
 export interface Order extends MasterData {
+    order_sn: string;
     awb_code: string;
     read_at: Date;
     prepared_at: Date;

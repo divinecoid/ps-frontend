@@ -49,7 +49,7 @@ export default function Receive() {
         const [prefix, group, sequence] = splitBarcode(search);
         if (event.key === "Enter" && prefix != '' && group != '' && sequence != '') {//barcode valid harus punya prefix, group dan sequence
             switch (group) {
-                case 'PIECE'://kalau piece
+                case 'P'://kalau piece
                     if (barcodes.some(item => item.barcode == search)) {
                         toast.error("Barcode sudah ada!", { richColors: true })
                     } else {
@@ -59,7 +59,7 @@ export default function Receive() {
                         }
                     }
                     break;
-                case 'DOZEN'://kalau group ada
+                case 'D'://kalau group ada
                     if (barcodes.some(item => item.barcode == search)) {
                         toast.error("Barcode sudah ada!", { richColors: true })
                     } else {
@@ -188,8 +188,8 @@ export default function Receive() {
                     idx === index
                         ? {
                             ...i,
-                            rec_dozen_qty: i.rec_dozen_qty - (group === 'PIECE' ? 0 : 1),
-                            rec_piece_qty: i.rec_piece_qty - (group === 'PIECE' ? 1 : 0),
+                            rec_dozen_qty: i.rec_dozen_qty - (group === 'P' ? 0 : 1),
+                            rec_piece_qty: i.rec_piece_qty - (group === 'P' ? 1 : 0),
                         }
                         : i
                 ).filter(
@@ -213,8 +213,8 @@ export default function Receive() {
     const submit = async (notes: string, warehouse_id?: string) => {
         try {
             const final = barcodes.map(item => ({ barcode: item.barcode, rack_id: item.rack_id }));
-            const barcodesDozen = final.filter(item => !item.barcode.includes('|PIECE|')).map(item => item.barcode);
-            const barcodesPiece = final.filter(item => item.barcode.includes('|PIECE|'));
+            const barcodesDozen = final.filter(item => !item.barcode.includes('|P|')).map(item => item.barcode);
+            const barcodesPiece = final.filter(item => item.barcode.includes('|P|'));
 
             const res = await Services.TransactionInbound.store({
                 ...(barcodesDozen.length > 0 ? { barcodes_dozen: barcodesDozen } : {}),
@@ -254,7 +254,7 @@ export default function Receive() {
         <ModalConfirm action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirmItemPiece barcode={barcodeConfirm} setBarcode={setBarcodeConfirm} onSubmit={validatePieceBarcode} />
         <ModalConfirmReset resetConfirm={resetConfirm} setResetConfirm={setResetConfirm} onSubmit={resetState} />
-        <ModalConfirmSubmit hasDozen={barcodes.some(item => !item.barcode.includes('|PIECE|'))} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
+        <ModalConfirmSubmit hasDozen={barcodes.some(item => !item.barcode.includes('|P|'))} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
             <Input onKeyDown={findProduct} value={search} placeholder="Masukkan barcode barang lusin atau satuan di sini" onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />

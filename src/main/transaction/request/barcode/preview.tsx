@@ -55,10 +55,10 @@ export default function DocumentBarcodePreview() {
                 }).map((barcode: Barcodes) => {
                     const groupCount = Math.floor(barcode.count / 12);
                     for (let i = 0; i < groupCount; i++) {
-                        dozenTemp.push(`${barcode.code}|DOZEN|${i + 1}`);
+                        dozenTemp.push(`${barcode.code}|D|${i + 1}`);
                     }
                     for (let i = 0; i < barcode.count; i++) {
-                        temp.push(`${barcode.code}|PIECE|${i + 1}`);
+                        temp.push(`${barcode.code}|P|${i + 1}`);
                     }
                 });
                 setBarcodes(temp);
@@ -94,22 +94,22 @@ export default function DocumentBarcodePreview() {
     return <div className={`flex flex-col flex-1 h-0 ${loading ? 'cursor-progress' : undefined} bg-black/20 dark:bg-white/20`}>
         {!loading && (
             <div className={`flex justify-center p-4 overflow-auto`}>
-                <div className={`grid grid-cols-3 gap-4 bg-white p-4 drop-shadow-xl drop-shadow-black/50 mb-16 shrink-0`}>
+                <div className={`grid grid-cols-5 gap-2 bg-white p-4 drop-shadow-xl drop-shadow-black/50 mb-16 shrink-0`}>
                     {dozenBarcodes?.map((code, i) => (
                         <div
                             key={i}
-                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1 gap-2"
+                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
                         >
-                            <QRCode value={code} size={200} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
+                            <QRCode value={code} size={100} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
                             {code}
                         </div>
                     ))}
                     {barcodes?.map((code, i) => (
                         <div
                             key={i}
-                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1 gap-2"
+                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
                         >
-                            <QRCode value={code} size={200} bgColor="transparent" fgColor="black" />
+                            <QRCode value={code} size={100} bgColor="transparent" fgColor="black" />
                             {code}
                         </div>
                     ))}

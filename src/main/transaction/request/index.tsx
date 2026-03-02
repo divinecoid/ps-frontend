@@ -40,10 +40,10 @@ export default function Request() {
             }).map((barcode: Barcodes) => {
                 const groupCount = Math.floor(barcode.count / 12);
                 for (let i = 0; i < groupCount; i++) {
-                    dozenTemp.push(`${barcode.code}|DOZEN|${i + 1}`);
+                    dozenTemp.push(`${barcode.code}|D|${i + 1}`);
                 }
                 for (let i = 0; i < barcode.count; i++) {
-                    temp.push(`${barcode.code}|PIECE|${i + 1}`);
+                    temp.push(`${barcode.code}|P|${i + 1}`);
                 }
             });
             if (!temp?.length) {

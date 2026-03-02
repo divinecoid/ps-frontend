@@ -35,22 +35,22 @@ export default function Print() {
     }, []);
 
     return <div className="flex">
-        <div className="grid grid-cols-3 gap-4 p-4 shrink-0">
+        <div className="grid grid-cols-5 gap-2 p-4 shrink-0">
             {dozenBarcodes?.map((code, i) => (
                 <div
                     key={i}
-                    className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1 gap-2"
+                    className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
                 >
-                    <QRCode value={code} size={200} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
+                    <QRCode value={code} size={100} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
                     {code}
                 </div>
             ))}
             {barcodes?.map((code, i) => (
                 <div
                     key={i}
-                    className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-8 text-xs text-center text-black line-clamp-1 gap-2"
+                    className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
                 >
-                    <QRCode value={code} size={200} bgColor="transparent" fgColor="black" />
+                    <QRCode value={code} size={100} bgColor="transparent" fgColor="black" />
                     {code}
                 </div>
             ))}

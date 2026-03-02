@@ -153,7 +153,17 @@ export const Menu = {
   // ],
   navInventory: [
     {
-      name: "Produk",
+      name: "Gudang Kecil",
+      url: "/product",
+      icon: Grid2X2,
+      role: [
+        'preparist',
+        'checker',
+        'admin',
+      ]
+    },
+    {
+      name: "Gudang Besar",
       url: "/inventory",
       icon: Grid2X2,
       role: [
