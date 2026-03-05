@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Request } from "@/interfaces/request";
-import { formatDate } from "@/lib/format-date";
+import { formatDateTime } from "@/lib/format-date";
 import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Request>[] = [
@@ -14,7 +14,7 @@ export const columns: ColumnDef<Request>[] = [
     header: "Tanggal pengajuan",
     enableSorting: true,
     cell: (({ row }) => {
-      return formatDate(row.original.created_at)
+      return formatDateTime(row.original.created_at)
     })
   },
   {

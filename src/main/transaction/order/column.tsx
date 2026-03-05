@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Order } from "@/interfaces/order";
-import { formatDate } from "@/lib/format-date";
+import { formatDateTime } from "@/lib/format-date";
 import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Order>[] = [
@@ -19,7 +19,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Waktu baca",
     enableSorting: true,
     cell: (({ row }) => {
-      return row.original.read_at ? formatDate(row.original.read_at) : "-";
+      return row.original.read_at ? formatDateTime(row.original.read_at) : "-";
     })
   },
   {
@@ -27,7 +27,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Waktu penyiapan",
     enableSorting: true,
     cell: (({ row }) => {
-      return row.original.prepared_at ? formatDate(row.original.prepared_at) : "-";
+      return row.original.prepared_at ? formatDateTime(row.original.prepared_at) : "-";
     })
   },
   {
@@ -35,7 +35,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Tanggal siap dikirim",
     enableSorting: true,
     cell: (({ row }) => {
-      return row.original.readytoship_at ? formatDate(row.original.readytoship_at) : "-";
+      return row.original.readytoship_at ? formatDateTime(row.original.readytoship_at) : "-";
     })
   },
   {
