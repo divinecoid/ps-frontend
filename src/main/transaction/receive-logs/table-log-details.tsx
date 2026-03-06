@@ -45,8 +45,8 @@ const TableLogDetails = ({ summary, detail }: TableLogDetailProps) => {
                 <TableHeader>
                     <TableRow>
                         <TableHead>Barcode</TableHead>
-                        <TableHead className="w-[250px]">Model</TableHead>
                         <TableHead className="w-[250px]">Serial Number</TableHead>
+                        <TableHead className="w-[250px]">Model</TableHead>
                         <TableHead className="w-[250px]">Warna</TableHead>
                         <TableHead className="w-[250px]">Ukuran</TableHead>
                         <TableHead className="w-[50px]">Jumlah (Satuan)</TableHead>
@@ -55,8 +55,8 @@ const TableLogDetails = ({ summary, detail }: TableLogDetailProps) => {
                 <TableBody>
                     {detail?.map((row, index) => (
                         <TableRow key={index}>
-                            <TableCell>{row.serial_number}</TableCell>
                             <TableCell>{row.barcode}</TableCell>
+                            <TableCell>{row.serial_number}</TableCell>
                             <TableCell>{row.model}</TableCell>
                             <TableCell>{row.color}</TableCell>
                             <TableCell>{row.size}</TableCell>
