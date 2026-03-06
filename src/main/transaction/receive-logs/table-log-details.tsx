@@ -7,8 +7,8 @@ interface TableLogDetailProps {
     detail?: Detail[]
 }
 const TableLogDetails = ({ summary, detail }: TableLogDetailProps) => {
-    return <div className="flex flex-col gap-2 my-4">
-        <div>
+    return <div className="flex flex-col gap-4 my-4">
+        <div className="flex flex-col gap-2">
             <Label>Ringkasan</Label>
             <Table>
                 <TableCaption>
@@ -36,8 +36,7 @@ const TableLogDetails = ({ summary, detail }: TableLogDetailProps) => {
                 </TableBody>
             </Table>
         </div>
-        <div>
-
+        <div className="flex flex-col gap-2">
             <Label>Detail</Label>
             <Table>
                 <TableCaption>
