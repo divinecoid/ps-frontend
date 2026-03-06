@@ -108,6 +108,15 @@ const template = [
             'https://www.electronjs.org'
           );
         }
+      },
+      { type: 'separator' },
+      {
+        label: 'Konfigurasi',
+        click: () => {
+          if (win) {
+            win.webContents.send('navigate-to', '/master-data/configuration');
+          }
+        }
       }
     ]
   }

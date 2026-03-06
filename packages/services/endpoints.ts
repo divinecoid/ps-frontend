@@ -20,5 +20,6 @@ export const ENDPOINT = {
     REQUEST: "request",
     INBOUND: "inbound",
     MUTATION: "mutation",
-    ORDER: "order"
+    ORDER: "order",
+    CONFIGURATION: "configuration"
 }

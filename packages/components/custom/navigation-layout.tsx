@@ -13,13 +13,20 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Link, Outlet, useLocation } from "react-router-dom"
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { ModeToggle } from "@/components/ui/mode-toggle"
-import React from "react"
+import React, { useEffect } from "react"
 
 export default function NavigationLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const path = location.pathname.split("/").filter(Boolean);
+
+  useEffect(() => {
+    window.electronAPI?.onNavigate((path: string) => {
+      navigate(path);
+    });
+  }, [navigate]);
 
   return (
     <SidebarProvider>

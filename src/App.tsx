@@ -34,6 +34,7 @@ import FormOrder from './main/transaction/order/view/form-order';
 import Mutation from './main/transaction/mutation';
 import MasterInventories from './main/master-data/inventory';
 import FormInventory from './main/master-data/inventory/form-inventory';
+import MasterConfigurations from './main/master-data/configuration';
 
 function App() {
   const { token } = useAuth();
@@ -71,6 +72,7 @@ function App() {
               <Route path="/master-data/factory" element={<MasterFactories />} />
               <Route path="/master-data/online-store" element={<MasterOnlineStores />} />
               <Route path="/master-data/marketplace" element={<MasterMarketplaces />} />
+              <Route path="/master-data/configuration" element={<MasterConfigurations />} />
             </>
           )}
 

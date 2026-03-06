@@ -2,13 +2,30 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["./packages/components/*"],
-      "@/config/*": ["./packages/config/*"],
-      "@/hooks/*": ["./packages/hooks/*"],
-      "@/interfaces/*": ["./packages/interfaces/*"],
-      "@/lib/*": ["./packages/lib/*"],
-      "@/provider/*": ["./packages/provider/*"],
-      "@/services": ["./packages/services"],
+      "@/components/*": [
+        "./packages/components/*"
+      ],
+      "@/config/*": [
+        "./packages/config/*"
+      ],
+      "@/hooks/*": [
+        "./packages/hooks/*"
+      ],
+      "@/interfaces/*": [
+        "./packages/interfaces/*"
+      ],
+      "@/lib/*": [
+        "./packages/lib/*"
+      ],
+      "@/provider/*": [
+        "./packages/provider/*"
+      ],
+      "@/services": [
+        "./packages/services"
+      ],
+      "@/services/*": [
+        "./packages/services/*"
+      ],
     },
     "target": "esnext",
     "module": "esnext",
