@@ -1,16 +1,13 @@
 import { BaseForm } from "@/interfaces/base";
 import Services from "@/services";
 import { useNavigate, useParams } from "react-router-dom";
-import { z } from "zod/v3";
-// import DetailList from "./form-request-detail-variant-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import ReceivedLogList from "./form-received-log-list";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { Warehouse } from "@/interfaces/warehouse";
 import { User } from "@/interfaces/user";
 import { CMT } from "@/interfaces/cmt";
-import { formatDate, formatDateTime, formatTime } from "@/lib/format-date";
+import { formatDate, formatTime } from "@/lib/format-date";
 import TableLogDetails from "./table-log-details";
 
 interface ViewReceiveLogDetail {
@@ -38,7 +35,7 @@ export interface Detail {
     rack: string | null
 }
 
-interface Summary {
+export interface Summary {
     model: string
     color: string
     size: string
@@ -114,10 +111,10 @@ export default function ViewFormReceiveLog(props: BaseForm) {
                 <TabsTrigger value="rejected">Ditolak</TabsTrigger>
             </TabsList>
             <TabsContent value="received">
-                <TableLogDetails rows={data?.details} />
+                <TableLogDetails summary={data?.summary.filter(item => !item.is_reject)} detail={data?.details} />
             </TabsContent>
             <TabsContent value="rejected">
-                <TableLogDetails rows={data?.rejected_details} />
+                <TableLogDetails summary={data?.summary.filter(item => item.is_reject)} detail={data?.rejected_details} />
             </TabsContent>
         </Tabs>
     </div>
