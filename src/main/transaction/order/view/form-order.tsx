@@ -1,205 +1,149 @@
-import ItemForm from "@/components/custom/item-form";
 import { BaseForm } from "@/interfaces/base";
-import { Order } from "@/interfaces/order";
 import Services from "@/services";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import z from "zod/v3";
+import { User } from "@/interfaces/user";
+import { formatDateTime } from "@/lib/format-date";
+import { OnlineStore } from "@/interfaces/online-store";
+import { Marketplace } from "@/interfaces/marketplace";
+
+
+interface ViewOrderDetail {
+    //store detail
+    online_store_id: string
+    online_store: OnlineStore
+    marketplace_id: string
+    marketplace: Marketplace
+    //order detail
+    order_sn: string
+    awb_code: string
+    read_at: Date
+    prepared_at: Date
+    prepare_duration: number
+    readytoship_at: Date
+    readytoship_marketplace: string
+    status: "pending" | "read" | "prepared" | "ready_to_ship" | "shipped" | "delivered" | "cancelled" | "returned"
+    //product details
+    item_count: number
+    unique_item_count: number
+    total_weight: number
+    total_price: number
+    total_shipping: number
+    //preparist
+    preparist_user_id: string
+    preparist_user: User
+    //customer
+    customer_name: string
+    customer_phone: string
+    customer_address: string
+
+}
 
 export default function FormOrder(props: BaseForm) {
     const { id } = useParams();
-    return <ItemForm<Order>
-        id={id}
-        {...props}
-        disabled
-        services={Services.TransactionOrder}
-        formShape={[
-            {
-                key: "awb_code",
-                type: "text",
-                schema: z.string().nonempty("AWB wajib diisi"),
-                label: "Nomor Resi (AWB)",
-                description: "Kode resi pengiriman",
-                placeholder: "Masukkan nomor AWB",
-            },
+    const [loading, setLoading] = React.useState<boolean>(id ? true : false);
+    const navigate = useNavigate();
 
-            {
-                key: "status",
-                type: "select",
-                schema: z.enum([
-                    "pending",
-                    "read",
-                    "prepared",
-                    "ready_to_ship",
-                    "shipped",
-                    "delivered",
-                    "cancelled",
-                    "returned",
-                ]),
-                label: "Status Pesanan",
-                description: "Status pemrosesan order",
-                options: {
-                    pending: "Pending",
-                    read: "Dibaca",
-                    prepared: "Disiapkan",
-                    ready_to_ship: "Siap Dikirim",
-                    shipped: "Dikirim",
-                    delivered: "Terkirim",
-                    cancelled: "Dibatalkan",
-                    returned: "Dikembalikan",
-                },
-            },
+    const [data, setData] = useState<ViewOrderDetail>();
 
-            {
-                key: "read_at",
-                type: "date",
-                schema: z.date().optional(),
-                mode: "single",
-                label: "Tanggal Dibaca",
-                description: "Waktu order dibaca",
-                placeholder: "Pilih tanggal",
-            },
+    React.useEffect(() => {
+        const viewData = async () => {
+            try {
+                if (id) {
+                    const res = await Services.TransactionOrder?.show?.(id);
+                    const json = await res?.json();
+                    if (res?.ok) {
+                        setData(json.data);
+                    } else {
+                        toast.error(json.message, { richColors: true });
+                        navigate(-1);
+                    }
+                }
+            } catch (error) {
+                if (error instanceof Error) {
+                    toast.error(error.message, { richColors: true });
+                    navigate(-1);
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
+        viewData();
+    }, [id]);
 
-            {
-                key: "prepared_at",
-                type: "date",
-                schema: z.date().optional(),
-                mode: "single",
-                label: "Tanggal Disiapkan",
-                description: "Waktu order selesai disiapkan",
-                placeholder: "Pilih tanggal",
-            },
-
-            {
-                key: "readytoship_at",
-                type: "date",
-                schema: z.date().optional(),
-                mode: "single",
-                label: "Tanggal Siap Kirim",
-                description: "Waktu order siap dikirim",
-                placeholder: "Pilih tanggal",
-            },
-
-            {
-                key: "prepare_duration",
-                type: "number",
-                schema: z.coerce.number().min(0),
-                label: "Durasi Persiapan (menit)",
-                description: "Lama persiapan pesanan",
-                placeholder: "0",
-            },
-
-            {
-                key: "item_count",
-                type: "number",
-                schema: z.coerce.number().min(0),
-                label: "Jumlah Item",
-                description: "Total item dalam pesanan",
-                placeholder: "0",
-            },
-
-            {
-                key: "unique_item_count",
-                type: "number",
-                schema: z.coerce.number().min(0),
-                label: "Jumlah Item Unik",
-                description: "Jumlah SKU unik",
-                placeholder: "0",
-            },
-
-            {
-                key: "total_weight",
-                type: "number",
-                schema: z.coerce.number().min(0),
-                label: "Total Berat (gram)",
-                placeholder: "0",
-            },
-
-            {
-                key: "total_price",
-                type: "number",
-                schema: z.coerce.number().min(0),
-                label: "Total Harga",
-                placeholder: "0",
-            },
-
-            {
-                key: "total_shipping",
-                type: "number",
-                schema: z.coerce.number().min(0),
-                label: "Biaya Pengiriman",
-                placeholder: "0",
-            },
-
-            {
-                key: "total_amount",
-                type: "number",
-                schema: z.coerce.number().min(0),
-                label: "Total Pembayaran",
-                placeholder: "0",
-            },
-
-            {
-                key: "customer_name",
-                type: "text",
-                schema: z.string().nonempty("Nama pelanggan wajib diisi"),
-                label: "Nama Pelanggan",
-                placeholder: "Nama pelanggan",
-            },
-
-            {
-                key: "customer_phone",
-                type: "tel",
-                schema: z.string().nonempty("Nomor telepon wajib diisi"),
-                label: "Nomor Telepon",
-                placeholder: "08xxxxxxxxxx",
-            },
-
-            {
-                key: "customer_address",
-                type: "textarea",
-                schema: z.string().nonempty("Alamat wajib diisi"),
-                label: "Alamat Pelanggan",
-                placeholder: "Alamat lengkap",
-            },
-
-            {
-                key: "marketplace_id",
-                type: "combobox",
-                schema: z.string().nonempty(),
-                label: "Marketplace",
-                placeholder: "Pilih marketplace",
-                source: {
-                    id: "id",
-                    label: "name",
-                    api: Services.MasterMarketplace.index,
-                },
-            },
-
-            {
-                key: "online_store_id",
-                type: "combobox",
-                schema: z.string().nonempty(),
-                label: "Toko Online",
-                placeholder: "Pilih toko",
-                source: {
-                    id: "id",
-                    label: "store_name",
-                    api: Services.MasterOnlineStore.index,
-                },
-            },
-
-            {
-                key: "preparist_user_id",
-                type: "combobox",
-                schema: z.string().optional(),
-                label: "Petugas Persiapan",
-                placeholder: "Pilih user",
-                source: {
-                    id: "id",
-                    label: "name",
-                    api: Services.MasterUser.index,
-                },
-            },
-        ]}
-    />
+    return <div className={`${loading ? 'cursor-progress' : undefined} grid grid-cols-1 lg:grid-cols-2`}>
+        <div className="px-8 mt-4 mb-2 text-sm">
+            <div className="py-2 font-bold">Informasi Pemesanan</div>
+            <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1">
+                <p className="w-[200px] text-muted-foreground">Nomor Seri Pesanan</p>
+                <p className="font-medium">{data?.order_sn}</p>
+                <p className="w-[200px] text-muted-foreground">Nomor AWB</p>
+                <p className="font-medium">{data?.awb_code}</p>
+                <p className="w-[200px] text-muted-foreground">Waktu Baca</p>
+                <p className="font-medium">{data?.read_at ? formatDateTime(data.read_at) : '-'}</p>
+                <p className="w-[200px] text-muted-foreground">Waktu Persiapan</p>
+                <p className="font-medium">{data?.prepared_at ? formatDateTime(data?.prepared_at) : '-'}</p>
+                <p className="w-[200px] text-muted-foreground">Durasi Persiapan</p>
+                <p className="font-medium">{data?.prepare_duration}</p>
+            </div>
+        </div>
+        <div className="px-8 mt-4 mb-2 text-sm">
+            <div className="py-2 font-bold">Informasi Pemesanan</div>
+            <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1">
+                <p className="w-[200px] text-muted-foreground">Nomor Seri Pesanan</p>
+                <p className="font-medium">{data?.order_sn}</p>
+                <p className="w-[200px] text-muted-foreground">Nomor AWB</p>
+                <p className="font-medium">{data?.awb_code}</p>
+                <p className="w-[200px] text-muted-foreground">Status</p>
+                <p className="font-medium">{data?.status}</p>
+                <p className="w-[200px] text-muted-foreground">Waktu Baca</p>
+                <p className="font-medium">{data?.read_at ? formatDateTime(data.read_at) : '-'}</p>
+                <p className="w-[200px] text-muted-foreground">Waktu Persiapan</p>
+                <p className="font-medium">{data?.prepared_at ? formatDateTime(data?.prepared_at) : '-'}</p>
+                <p className="w-[200px] text-muted-foreground">Durasi Persiapan</p>
+                <p className="font-medium">{data?.prepare_duration ?? '-'}</p>
+                <p className="w-[200px] text-muted-foreground">Ready To Ship</p>
+                <p className="font-medium">{data?.readytoship_at ? formatDateTime(data.readytoship_at) : '-'}</p>
+                <p className="w-[200px] text-muted-foreground">Ready To Ship Marketplace</p>
+                <p className="font-medium">{data?.readytoship_marketplace ?? '-'}</p>
+            </div>
+        </div>
+        <div className="px-8 mt-4 mb-2 text-sm">
+            <div className="py-2 font-bold">Informasi Produk</div>
+            <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1">
+                <p className="w-[200px] text-muted-foreground">Jumlah Item</p>
+                <p className="font-medium">{data?.item_count}</p>
+                <p className="w-[200px] text-muted-foreground">Jumlah Produk Unik</p>
+                <p className="font-medium">{data?.unique_item_count}</p>
+                <p className="w-[200px] text-muted-foreground">Total Berat</p>
+                <p className="font-medium">{data?.total_weight}</p>
+                <p className="w-[200px] text-muted-foreground">Total Harga</p>
+                <p className="font-medium">{data?.total_price}</p>
+                <p className="w-[200px] text-muted-foreground">Total Ongkir</p>
+                <p className="font-medium">{data?.total_shipping}</p>
+            </div>
+        </div>
+        <div className="px-8 mt-4 mb-2 text-sm">
+            <div className="py-2 font-bold">Preparist</div>
+            <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1">
+                <p className="w-[200px] text-muted-foreground">Nama</p>
+                <p className="font-medium">{data?.preparist_user?.name}</p>
+                <p className="w-[200px] text-muted-foreground">User ID</p>
+                <p className="font-medium">{data?.preparist_user_id}</p>
+            </div>
+        </div>
+        <div className="px-8 mt-4 mb-2 text-sm">
+            <div className="py-2 font-bold">Informasi Customer</div>
+            <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1">
+                <p className="w-[200px] text-muted-foreground">Nama</p>
+                <p className="font-medium">{data?.customer_name}</p>
+                <p className="w-[200px] text-muted-foreground">Telepon</p>
+                <p className="font-medium">{data?.customer_phone}</p>
+                <p className="w-[200px] text-muted-foreground">Alamat</p>
+                <p className="font-medium">{data?.customer_address}</p>
+            </div>
+        </div>
+    </div>
 }
