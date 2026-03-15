@@ -17,6 +17,7 @@ import * as TransactionRequest from './transaction-request';
 import * as TransactionInbound from './transaction-inbound';
 import * as TransactionMutation from './transaction-mutation';
 import * as TransactionOrder from './transaction-order';
+import * as TransactionShopeeOrder from './transaction-shopee-order';
 
 const Services = {
     Auth,
@@ -36,7 +37,8 @@ const Services = {
     TransactionRequest,
     TransactionInbound,
     TransactionMutation,
-    TransactionOrder
+    TransactionOrder,
+    TransactionShopeeOrder
 };
 
 export default Services;

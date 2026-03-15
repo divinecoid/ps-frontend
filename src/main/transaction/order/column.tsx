@@ -62,7 +62,8 @@ export const columns: ColumnDef<Order>[] = [
         case "read":
         case "shipped":
         case "ready_to_ship":
-          return <Badge variant="secondary">{data.status}</Badge>
+        case "retry_ship":
+          return <Badge variant="secondary">{data.status.replaceAll('_', ' ')}</Badge>
         case "cancelled":
         case "returned":
           return <Badge variant="destructive">{data.status}</Badge>
