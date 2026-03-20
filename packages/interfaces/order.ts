@@ -14,7 +14,7 @@ export interface Order extends MasterData {
     online_store_id: string;
     item_count: number;
     unique_item_count: number;
-    status: 'pending' | 'read' | 'prepared' | 'ready_to_ship' | 'retry_ship' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
+    status: 'pending' | 'read' | 'prepared' | 'ready_to_ship' | 'ready_to_pickup' | 'retry_ship' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
     total_weight: number;
     total_price: number;
     total_shipping: number;
@@ -24,6 +24,7 @@ export interface Order extends MasterData {
     customer_phone: string;
     customer_address: string;
     marketplace_id: string;
+    marketplace: Marketplace;
 }
 
 
@@ -96,9 +97,9 @@ export interface ShopeeOrderShippingParameter extends BaseResponse {
             info_needed: {
                 pickup: string[];
             }
-        }
-        pickup: {
-            address_list: AddressList[]
+            pickup: {
+                address_list: AddressList[]
+            }
         }
     }
 }
@@ -107,4 +108,8 @@ export interface ShopeeShipOrder {
     order_sn: string;
     address_id: string;
     pickup_time_id: string;
+}
+
+export interface ShopeeDocument {
+
 }

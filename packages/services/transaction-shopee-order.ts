@@ -1,6 +1,6 @@
 import { BaseApiCallCreateProps, BaseApiCallViewProps } from "@/interfaces/base";
 import { DELETE, GET, PATCH, POST } from "./api"
-import { ShopeeShipOrder } from "@/interfaces/order";
+import { ShopeeDocument, ShopeeShipOrder } from "@/interfaces/order";
 import { ENDPOINT } from "./endpoints";
 
 export const getShopeeShippingParameter: BaseApiCallViewProps = async (id) => {
@@ -9,4 +9,8 @@ export const getShopeeShippingParameter: BaseApiCallViewProps = async (id) => {
 
 export const shipOrderShopee: BaseApiCallCreateProps<ShopeeShipOrder> = async (data) => {
     return await POST(`${ENDPOINT.SHOPEE}/ship-order`, data);
+}
+
+export const downloadShippingDocument: BaseApiCallCreateProps<ShopeeDocument> = async (data) => {
+    return await POST(`${ENDPOINT.SHOPEE}/download-shipping-document`, data);
 }

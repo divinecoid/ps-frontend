@@ -54,9 +54,10 @@ export const columns: ColumnDef<Order>[] = [
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
-      switch (data.status) {
+      switch (data.status.toLowerCase()) {
         case "delivered":
-          return <Badge variant="success">{data.status}</Badge>
+        case "ready_to_pickup":
+          return <Badge variant="success">{data.status.replaceAll('_', ' ')}</Badge>
         case "pending":
         case "prepared":
         case "read":
@@ -67,6 +68,8 @@ export const columns: ColumnDef<Order>[] = [
         case "cancelled":
         case "returned":
           return <Badge variant="destructive">{data.status}</Badge>
+          default: 
+          return <Badge variant="default">{data.status.replaceAll('_', ' ')}</Badge>
       }
     })
   },
