@@ -214,15 +214,13 @@ ipcMain.on("start-print", () => {
   if (!printWin) return;
 
   printWin.webContents.print({
-    silent: true, //TODO: ganti true
-    preview: true,
     printBackground: true,
     margins: {
       marginType: "custom",
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
+      top: 0.5,
+      bottom: 0.5,
+      left: 0.5,
+      right: 0.5,
     },
   });
 });

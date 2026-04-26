@@ -49,30 +49,30 @@ export default function ModalOnlineStore(props: BaseModalForm) {
                 key: "api_key",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Kode kunci API setidaknya memiliki 2 karakter."
+                    message: "API key setidaknya memiliki 2 karakter."
                 }),
-                label: "Kode kunci API",
-                description: "Masukkan kode kunci API toko online.",
+                label: "API Key",
+                description: "Masukkan API key toko online.",
                 placeholder: "AIzaSyDaGmWKa4JsXZ-HjGw7ISLn_3namBGewQe",
             },
             {
                 key: "client_id",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "ID klien setidaknya memiliki 2 karakter."
+                    message: "Client ID setidaknya memiliki 2 karakter."
                 }),
-                label: "ID klien",
-                description: "Masukkan ID klien toko online.",
+                label: "Client ID",
+                description: "Masukkan client ID toko online.",
                 placeholder: "d153e353-2a32-4763-b930-b27fbc980da5",
             },
             {
                 key: "client_secret",
                 type: "text",
                 schema: z.string().min(2, {
-                    message: "Kode rahasia klien setidaknya memiliki 2 karakter."
+                    message: "Client secret setidaknya memiliki 2 karakter."
                 }),
-                label: "Kode rahasia klien",
-                description: "Masukkan kode rahasia klien toko online.",
+                label: "Client secret",
+                description: "Masukkan client secret toko online.",
                 placeholder: "7I6uN1rjneirxiMW",
             },
             {
@@ -99,12 +99,12 @@ export default function ModalOnlineStore(props: BaseModalForm) {
                 key: "redirect_uri",
                 type: "text",
                 schema: z.string().url({
-                    message: "URL pengalihan tidak valid"
+                    message: "Redirect URL tidak valid"
                 }).min(2, {
-                    message: "URL pengalihan setidaknya memiliki 2 karakter."
+                    message: "Redirect URL setidaknya memiliki 2 karakter."
                 }),
-                label: "URL pengalihan",
-                description: "Masukkan URL pengalihan toko online.",
+                label: "Redirect URL",
+                description: "Masukkan redirect URL toko online.",
                 placeholder: "https://www.example.com/callback?",
             },
         ]} />
