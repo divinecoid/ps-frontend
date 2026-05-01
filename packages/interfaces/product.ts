@@ -10,6 +10,7 @@ export interface Product extends MasterData {
     name: string
   }
   barcode: string
+  series: string
 }
 
 export interface ProductResponse extends IndexResponse {

@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/components/*": ["./packages/components/*"],
       "@/config/*": ["./packages/config/*"],

@@ -6,10 +6,10 @@ import { TooltipHover } from "@/components/custom/tooltip-hover";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 
-export default function MasterInventories() {
+export default function MasterLargeInventories() {
     return <OverviewPage
         columns={columns}
-        source={Services.MasterInventory}
+        source={Services.MasterLargeInventory}
         rowActions={({ row }) => (
             <TooltipHover tooltip="Lihat"><Button asChild variant="outline"><Link to={`./${row.id}`}><Eye /></Link></Button></TooltipHover>
         )} />

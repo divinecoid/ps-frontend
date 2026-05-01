@@ -111,5 +111,5 @@ export interface ShopeeShipOrder {
 }
 
 export interface ShopeeDocument {
-
+    order_sn: string
 }

@@ -44,7 +44,7 @@ export interface Summary {
     is_reject: boolean
 }
 
-export default function ViewFormReceiveLog(props: BaseForm) {
+export default function ViewFormReceiveLog(_props: BaseForm) {
     const { id } = useParams();
     const [loading, setLoading] = React.useState<boolean>(id ? true : false);
     const navigate = useNavigate();

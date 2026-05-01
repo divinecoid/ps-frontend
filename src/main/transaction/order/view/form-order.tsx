@@ -10,7 +10,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AddressList, OrderViewResponse, ShopeeOrderShippingParameter, ShopeeShipOrder, TimeSlot, ViewOrderDetail } from "@/interfaces/order";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
 const schema = z.object({
@@ -38,7 +38,7 @@ const StatusBadge = ({ status }: { status?: string }) => {
     }
 }
 
-export default function FormOrder(props: BaseForm) {
+export default function FormOrder(_props: BaseForm) {
     const { id } = useParams();
     const [loading, setLoading] = React.useState<boolean>(id ? true : false);
     const navigate = useNavigate();
