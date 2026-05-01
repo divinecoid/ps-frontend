@@ -5,7 +5,7 @@ import OverviewPage from "@/components/custom/overview-page";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useEffect, useRef, useState } from "react";
 import ModalConfirm from "@/components/custom/modal-confirm";
-import { MarketplaceViewResponse } from "@/interfaces/marketplace";
+import { MarketplaceRefreshTokenResponse, MarketplaceViewResponse } from "@/interfaces/marketplace";
 import { toast } from "sonner";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
 import DatatableSelectAction from "@/components/custom/datatable-select-action";
@@ -48,8 +48,22 @@ export default function MasterOnlineStores() {
         const url = `${import.meta.env.VITE_APP_BASE_URL}/${await getMarketplaceAlias(marketplace_id)}/login/${id}`;
         await window.electronAPI.startOauth(url, successUrl);
     }
-    const refreshOnlineStore = async (_id: string) => {
-        //TODO:
+    const refreshOnlineStore = async (id: string) => {
+        try {
+            if (id != undefined) {
+                const res = await Services.MasterOnlineStore.refreshToken(id);
+                const json: MarketplaceRefreshTokenResponse = await res.json();
+                if (res.ok) {
+                    toast.success(json.message, {richColors: true});
+                } else {
+                    toast.error(json.message, { richColors: true })
+                }
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message, { richColors: true })
+            }
+        }
     }
 
     return <OverviewPage

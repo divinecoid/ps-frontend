@@ -9,10 +9,18 @@ export interface Marketplace extends MasterData {
   is_need_checker: string
 }
 
+export interface MarketplaceRefreshToken {
+  message: string
+}
+
 export interface MarketplaceResponse extends IndexResponse {
   data: Marketplace[]
 }
 
 export interface MarketplaceViewResponse extends BaseResponse {
   data: Marketplace
+}
+
+export interface MarketplaceRefreshTokenResponse extends BaseResponse {
+  data: MarketplaceRefreshToken
 }
