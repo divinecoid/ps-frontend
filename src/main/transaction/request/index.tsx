@@ -9,11 +9,8 @@ import { toast } from "sonner";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DatatableSelectAction from "@/components/custom/datatable-select-action";
+import { Barcodes } from "@/interfaces/print";
 
-interface Barcodes {
-    code: string,
-    count: number
-}
 
 interface RequestDetail {
     barcode: string;
@@ -30,20 +27,21 @@ export default function Request() {
         try {
             const res = await Services.TransactionRequest.barcode(id);
             const json = await res.json();
-            const temp: string[] = [];
-            const dozenTemp: string[] = [];
+            const temp: Barcodes[] = [];
+            const dozenTemp: Barcodes[] = [];
             json.data.request_detail.map((item: RequestDetail) => {
                 return {
+                    ...item,
                     code: item.barcode,
                     count: item.req_dozen_qty * 12 + item.req_piece_qty
                 }
             }).map((barcode: Barcodes) => {
                 const groupCount = Math.floor(barcode.count / 12);
                 for (let i = 0; i < groupCount; i++) {
-                    dozenTemp.push(`${barcode.code}|D|${i + 1}`);
+                    dozenTemp.push({ ...barcode, code: `${barcode.code}|D|${i + 1}` });
                 }
                 for (let i = 0; i < barcode.count; i++) {
-                    temp.push(`${barcode.code}|P|${i + 1}`);
+                    temp.push({ ...barcode, code: `${barcode.code}|P|${i + 1}` });
                 }
             });
             if (!temp?.length) {

@@ -1,10 +1,10 @@
-import { PrintOptions } from "@/interfaces/print";
+import { Barcodes, PrintOptions } from "@/interfaces/print";
 import { useEffect, useState } from "react";
 import QRCode from "react-qrcode-logo";
 
 export default function Print() {
-    const [barcodes, setBarcodes] = useState<string[]>();
-    const [dozenBarcodes, setDozenBarcodes] = useState<string[]>();
+    const [barcodes, setBarcodes] = useState<Barcodes[]>();
+    const [dozenBarcodes, setDozenBarcodes] = useState<Barcodes[]>();
 
     const [paper, setPaper] = useState<{ width: number, height: number }>();
 
@@ -35,23 +35,23 @@ export default function Print() {
     }, []);
 
     return <div className="flex">
-        <div className="grid grid-cols-5 gap-2 p-4 shrink-0">
+        <div className="grid grid-cols-5 gap-1 p-0 shrink-0">
             {dozenBarcodes?.map((code, i) => (
                 <div
                     key={i}
-                    className="break-inside-avoid print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
+                    className="break-inside-avoid print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl pb-6 pt-60 px-4 text-xs text-center text-black"
                 >
-                    <QRCode value={code} size={100} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
-                    <div className="text-wrap break-all w-22">{code}</div>
+                    <QRCode value={code.code} size={120} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
+                    <div className="text-nowrap w-22">{code.serial_number} - {code.colors} - {code.sizes}</div>
                 </div>
             ))}
             {barcodes?.map((code, i) => (
                 <div
                     key={i}
-                    className="break-inside-avoid print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
+                    className="break-inside-avoid print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl pb-6 pt-60 px-4 text-xs text-center text-black"
                 >
-                    <QRCode value={code} size={100} bgColor="transparent" fgColor="black" />
-                    <div className="text-wrap break-all w-22">{code}</div>
+                    <QRCode value={code.code} size={120} bgColor="transparent" fgColor="black" />
+                    <div className="text-nowrap w-22">{code.serial_number} - {code.colors} - {code.sizes}</div>
                 </div>
             ))}
         </div>

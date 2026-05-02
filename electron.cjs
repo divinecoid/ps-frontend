@@ -180,7 +180,7 @@ ipcMain.handle("open-oauth", async (event, url, successUrl) => {
 function createPrintWindow() {
   if (printWin) return printWin;
   printWin = new BrowserWindow({
-    show: true,
+    show: false,//TODO: PRINT PREVIEW HIDDEN
     width: 800,
     height: 600,
     webPreferences: {
@@ -214,14 +214,17 @@ ipcMain.on("start-print", () => {
   if (!printWin) return;
 
   printWin.webContents.print({
+    silent: false,
     printBackground: true,
     margins: {
       marginType: "custom",
-      top: 0.5,
-      bottom: 0.5,
-      left: 0.5,
-      right: 0.5,
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
     },
+  }, () => {
+    printWin.close();
   });
 });
 ipcMain.handle('save-file', async (_event, buffer, filename) => {
