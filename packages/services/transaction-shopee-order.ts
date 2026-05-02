@@ -1,5 +1,5 @@
 import { BaseApiCallCreateProps, BaseApiCallViewProps } from "@/interfaces/base";
-import { DELETE, GET, PATCH, POST } from "./api"
+import { GET, POST } from "./api"
 import { ShopeeDocument, ShopeeShipOrder } from "@/interfaces/order";
 import { ENDPOINT } from "./endpoints";
 

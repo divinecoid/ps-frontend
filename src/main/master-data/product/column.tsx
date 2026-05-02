@@ -14,6 +14,11 @@ export const columns: ColumnDef<Product>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "series",
+    header: "Series",
+    enableSorting: true,
+  },
+  {
     accessorKey: "barcode",
     header: "Barcode",
     enableSorting: true,

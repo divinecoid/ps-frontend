@@ -1,19 +1,19 @@
-import { BaseForm, BaseModalForm } from "@/interfaces/base";
-import { Inventory } from "@/interfaces/inventory";
+import { BaseForm } from "@/interfaces/base";
+import { LargeInventory } from "@/interfaces/inventory-large";
 import Services from "@/services";
 import { z } from "zod/v3";
 import DetailQuantity from "./detail-quantity";
 import ItemForm from "@/components/custom/item-form";
 import { useParams } from "react-router-dom";
 
-export default function FormInventory(props: BaseForm) {
+export default function FormLargeInventory(props: BaseForm) {
     const { id } = useParams();
 
-    return <ItemForm<Inventory>
+    return <ItemForm<LargeInventory>
         id={id}
         disabled
         {...props}
-        services={Services.MasterInventory}
+        services={Services.MasterLargeInventory}
         formShape={[
             {
                 key: "model_id",

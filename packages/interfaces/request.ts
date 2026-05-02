@@ -42,6 +42,7 @@ export interface Request {
   id: string
   cmt_id: string
   cmt: CMT
+  serial_number: string
   status: RequestStatus
   created_at: Date
   request_detail: RequestDetail[]

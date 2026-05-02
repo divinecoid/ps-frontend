@@ -10,7 +10,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AddressList, OrderViewResponse, ShopeeOrderShippingParameter, ShopeeShipOrder, TimeSlot, ViewOrderDetail } from "@/interfaces/order";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
 const schema = z.object({
@@ -22,14 +22,14 @@ const StatusBadge = ({ status }: { status?: string }) => {
     switch (status?.toLowerCase()) {
         case "delivered":
         case "ready_to_pickup":
-            return <Badge variant="success">{status.replaceAll('_', ' ')}</Badge>
+            return <Badge variant="success">{status?.replaceAll('_', ' ')}</Badge>
         case "pending":
         case "prepared":
         case "read":
         case "shipped":
         case "ready_to_ship":
         case "retry_ship":
-            return <Badge variant="secondary">{status.replaceAll('_', ' ')}</Badge>
+            return <Badge variant="secondary">{status?.replaceAll('_', ' ')}</Badge>
         case "cancelled":
         case "returned":
             return <Badge variant="destructive">{status}</Badge>
@@ -38,7 +38,7 @@ const StatusBadge = ({ status }: { status?: string }) => {
     }
 }
 
-export default function FormOrder(props: BaseForm) {
+export default function FormOrder(_props: BaseForm) {
     const { id } = useParams();
     const [loading, setLoading] = React.useState<boolean>(id ? true : false);
     const navigate = useNavigate();
@@ -62,12 +62,20 @@ export default function FormOrder(props: BaseForm) {
         const getShopeeShippingParameter = async (orderSn: string) => {
             const res = await Services.TransactionShopeeOrder?.getShopeeShippingParameter?.(orderSn);
             const json: ShopeeOrderShippingParameter = await res.json();
-            if (res?.ok) {
+            if (res?.ok && json.success == true && json.data.error == '' && json.data.warning == '') {
                 setShippingParameter(json.data.response.pickup.address_list);
                 // toast.error(String(json.data.response.pickup.address_list.find(item => item.address_flag.includes('default_address'))?.address_id), { richColors: true })
                 setDisabled(false);
             } else {
-                toast.error(json.message.replaceAll('_', ' '), { richColors: true });
+                if (json.data.message) {
+                    toast.error(json.message?.replaceAll('_', ' '), { richColors: true });
+                }
+                if (json.data.warning) {
+                    toast.warning(json.data.warning, { richColors: true });
+                }
+                if (json.data.error) {
+                    toast.error(json.data.error, {richColors: true})
+                }
                 setDisabled(true);
                 // setShippingParameter([
                 //     {

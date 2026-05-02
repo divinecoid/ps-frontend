@@ -1,5 +1,8 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
+const os = require('os');
+const fs = require('fs');
+
 const { getToken, saveToken, getRefreshToken, saveRefreshToken, deleteToken, deleteRefreshToken } = require(path.join(__dirname, "keytar.js"));
 
 let win = null;
@@ -211,15 +214,22 @@ ipcMain.on("start-print", () => {
   if (!printWin) return;
 
   printWin.webContents.print({
-    silent: false, //TODO: ganti true
-    preview: true,
     printBackground: true,
     margins: {
       marginType: "custom",
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
+      top: 0.5,
+      bottom: 0.5,
+      left: 0.5,
+      right: 0.5,
     },
   });
+});
+ipcMain.handle('save-file', async (_event, buffer, filename) => {
+  const filePath = path.join(os.homedir(), 'Downloads', filename);
+  fs.writeFileSync(filePath, Buffer.from(buffer));
+  return filePath;
+});
+
+ipcMain.handle('open-file', async (_event, filePath) => {
+  return await require('electron').shell.openPath(filePath);
 });

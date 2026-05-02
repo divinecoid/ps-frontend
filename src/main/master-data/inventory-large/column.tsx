@@ -1,7 +1,7 @@
-import { Inventory } from "@/interfaces/inventory"
+import { LargeInventory } from "@/interfaces/inventory-large"
 import { ColumnDef } from "@tanstack/react-table"
 
-export const columns: ColumnDef<Inventory>[] = [
+export const columns: ColumnDef<LargeInventory>[] = [
   {
     accessorKey: "model.name",
     header: "Model",

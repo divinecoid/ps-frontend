@@ -16,11 +16,8 @@ const getFilename = (res: Response) => {
 
 export const downloadFile = async (res: Response) => {
   const blob = await res.blob();
-  let filename = getFilename(res) || "download.pdf";
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
+  const filename = getFilename(res) || "download.pdf";
+  const buffer = await blob.arrayBuffer();
+  const filePath = await window.electronAPI.saveFile(buffer, filename);
+  return filePath;
+};

@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FormField } from "@/components/ui/form"
-import { InventoryDetail } from "@/interfaces/inventory";
+import { LargeInventoryDetail } from "@/interfaces/inventory-large";
 import { useFormContext } from "react-hook-form";
 
 interface DetailQuantityProps {
@@ -25,7 +25,7 @@ export default function DetailQuantity({ rowKey }: DetailQuantityProps) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {field.value?.map((row: InventoryDetail, index: number) => (
+                    {field.value?.map((row: LargeInventoryDetail, index: number) => (
                         <TableRow key={index}>
                             <TableCell>{row.series}</TableCell>
                             <TableCell className="text-end">{row.quantity}</TableCell>

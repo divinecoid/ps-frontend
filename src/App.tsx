@@ -32,8 +32,10 @@ import ViewFormRequest from './main/transaction/request/view/form-request';
 import Order from './main/transaction/order';
 import FormOrder from './main/transaction/order/view/form-order';
 import Mutation from './main/transaction/mutation';
-import MasterInventories from './main/master-data/inventory';
-import FormInventory from './main/master-data/inventory/form-inventory';
+import MasterLargeInventories from './main/master-data/inventory-large';
+import MasterSmallInventories from './main/master-data/inventory-small';
+import FormSmallInventory from './main/master-data/inventory-small/form-inventory';
+import FormLargeInventory from './main/master-data/inventory-large/form-inventory';
 import ViewFormReceiveLog from './main/transaction/receive-logs/form-receive-logs';
 
 function App() {
@@ -65,7 +67,7 @@ function App() {
               <Route path="/master-data/rack" element={<MasterRacks />} />
               <Route path="/master-data/warehouse" element={<MasterWarehouse />} />
               <Route path="/master-data/cmt" element={<MasterCMTs />} />
-              {/* <Route path="/master-data/product" element={<MasterProducts />} /> */}
+              <Route path="/master-data/product" element={<MasterProducts />} />
               <Route path="/master-data/product-model" element={<MasterProductModels />} />
               <Route path="/master-data/size" element={<MasterSizes />} />
               <Route path="/master-data/color" element={<MasterColors />} />
@@ -87,9 +89,10 @@ function App() {
               <Route path="/transaction/mutation/" element={<Mutation />} />
               <Route path="/transaction/order" element={<Order />} />
               <Route path="/transaction/order/:id" element={<FormOrder />} />
-              <Route path="/product" element={<MasterProducts />} />
-              <Route path="/inventory" element={<MasterInventories />} />
-              <Route path="/inventory/:id" element={<FormInventory />} />
+              <Route path="/small-inventory" element={<MasterSmallInventories />} />
+              <Route path="/small-inventory/:id" element={<FormSmallInventory />} />
+              <Route path="/large-inventory" element={<MasterLargeInventories />} />
+              <Route path="/large-inventory/:id" element={<FormLargeInventory />} />
             </>
           )}
 

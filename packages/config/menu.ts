@@ -154,7 +154,7 @@ export const Menu = {
   navInventory: [
     {
       name: "Gudang Kecil",
-      url: "/product",
+      url: "/small-inventory",
       icon: Grid2X2,
       role: [
         'preparist',
@@ -164,7 +164,7 @@ export const Menu = {
     },
     {
       name: "Gudang Besar",
-      url: "/inventory",
+      url: "/large-inventory",
       icon: Grid2X2,
       role: [
         'preparist',
@@ -259,13 +259,13 @@ export const Menu = {
             'admin'
           ]
         },
-        // {
-        //   title: "Inventory",
-        //   url: "/master-data/inventory",
-        //   role: [
-        //     'admin'
-        //   ]
-        // },
+        {
+          title: "Product",
+          url: "/master-data/product",
+          role: [
+            'admin'
+          ]
+        },
         {
           title: "Ukuran",
           url: "/master-data/size",

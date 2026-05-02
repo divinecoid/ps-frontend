@@ -34,3 +34,7 @@ export const destroy: BaseApiCallDeleteProps = async (id) => {
 export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
     return await DELETE(`${ENDPOINT.ONLINE_STORE}`, ids)
 }
+
+export const refreshToken: BaseApiCallViewProps = async (id) => {
+    return await POST(`marketplace-auth/refresh-token`, {'online_store_id': id});
+}

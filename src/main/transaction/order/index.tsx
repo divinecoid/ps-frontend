@@ -31,10 +31,25 @@ export default function OrderPage() {
         try {
             const res = await checkMarketplace(data)?.(values);
             if (res?.ok) {
-                downloadFile(res);
+                const filePath = await downloadFile(res);
+                if (filePath) {
+                    toast.info(`Download completed on ${filePath}`, {
+                        action: {
+                            label: 'Open',
+                            onClick: () => {
+                                window.electronAPI.openFile(filePath);
+                            },
+                        },
+                        richColors: true
+                    });
+                } else {
+                    toast.error("File path not valid", { richColors: true });
+                }
             } else {
                 const json = await res?.json();
-                toast.error(json.message, { richColors: true })
+                //Shopee API Error: {\"error\":\"logistics.shipping_document_should_print_first\",\"message\":\"The package should print first. Detail: these orders: 260321N9H94XJ7 should print\",\"request_id\":\"e3e3e7f34e15b2d401b6e0da57c7a800:010003c503470939:000000a08e9b68b4\"}
+                const test = JSON.parse(String(json.message).substring(json.message.indexOf(': ') + 1));
+                toast.error(test.message, { richColors: true })
             }
         } catch (error) {
             if (error instanceof Error) {

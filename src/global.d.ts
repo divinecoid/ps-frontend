@@ -21,6 +21,9 @@ declare global {
       printPreview: (options: PrintOptions) => Promise<boolean>;
       startPrint: () => void;
       onSetPrintData: (callback: (data: PrintOptions) => void) => () => void;
+      saveFile: (buffer, filename) => Promise<string|null>;
+      openFile: (path: string) => Promise<string>;
+
     };
   }
 
@@ -33,4 +36,5 @@ declare global {
   interface ImportMeta {
     readonly env: ImportMetaEnv;
   }
+  module '*.css';
 }

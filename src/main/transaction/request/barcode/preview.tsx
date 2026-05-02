@@ -101,7 +101,7 @@ export default function DocumentBarcodePreview() {
                             className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
                         >
                             <QRCode value={code} size={100} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
-                            {code}
+                            <div className="text-wrap break-all w-22">{code}</div>
                         </div>
                     ))}
                     {barcodes?.map((code, i) => (
@@ -110,7 +110,7 @@ export default function DocumentBarcodePreview() {
                             className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
                         >
                             <QRCode value={code} size={100} bgColor="transparent" fgColor="black" />
-                            {code}
+                            <div className="text-wrap break-all w-22">{code}</div>
                         </div>
                     ))}
                 </div>
