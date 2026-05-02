@@ -1,0 +1,58 @@
+import { columns } from "./column";
+import Services from "@/services";
+import OverviewPage from "@/components/custom/overview-page";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Clipboard, Download, Eye } from "lucide-react";
+import { TooltipHover } from "@/components/custom/tooltip-hover";
+import { Order } from "@/interfaces/order";
+import { toast } from "sonner";
+import { downloadFile } from "@/lib/file";
+
+export default function OrderPage() {
+
+    const checkMarketplace = (data: Order) => {
+        switch (data.marketplace.code) {
+            case 'shopee':
+                return Services.TransactionShopeeOrder.downloadShippingDocument;
+            case 'tiktok':
+                return;
+            case 'lazada':
+                return;
+            default:
+                return;
+        }
+    }
+    const downloadDocument = async (data: Order) => {
+        const values = {
+            order_sn: data.order_sn,
+            // shipping_document_type: 'NORMAL_AIR_WAYBILL'
+        }
+        try {
+            const res = await checkMarketplace(data)?.(values);
+            if (res?.ok) {
+                downloadFile(res);
+            } else {
+                const json = await res?.json();
+                toast.error(json.message, { richColors: true })
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message, { richColors: true })
+            }
+        }
+    }
+    return <OverviewPage
+        columns={columns}
+        source={Services.TransactionOrder}
+        rowActions={({ row }) => (
+            <div className="flex gap-2 justify-end">
+                <TooltipHover tooltip="Lihat"><Button asChild variant="outline"><Link to={`./${row.id}`}><Eye /></Link></Button></TooltipHover>
+                {(row.status.toLowerCase() === 'ready_to_pickup' || row.status.toLowerCase() === 'ready_to_ship') && (
+                    <TooltipHover tooltip="Unduh"><Button variant="outline" onClick={() => downloadDocument(row)}><Download /></Button></TooltipHover>
+                )}
+                <TooltipHover tooltip="Salin Order SN"><Button variant="outline" className="cursor-pointer" onClick={async () => await navigator.clipboard.writeText(row.order_sn)}><Clipboard /></Button></TooltipHover>
+            </div>
+        )}
+    />
+}

@@ -1,4 +1,4 @@
-import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2 } from "lucide-react";
+import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2, ArrowDownLeft, History, ArrowDownLeftFromSquare } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -153,7 +153,17 @@ export const Menu = {
   // ],
   navInventory: [
     {
-      name: "Produk",
+      name: "Gudang Kecil",
+      url: "/product",
+      icon: Grid2X2,
+      role: [
+        'preparist',
+        'checker',
+        'admin',
+      ]
+    },
+    {
+      name: "Gudang Besar",
       url: "/inventory",
       icon: Grid2X2,
       role: [
@@ -163,36 +173,60 @@ export const Menu = {
       ]
     }
   ],
-  navTransaction: [
+  navCMTTransaction: [
     {
-      title: "Transaksi",
-      url: "#",
+      name: "Permintaan",
+      url: "/transaction/request",
       icon: Repeat2,
       role: [
         'preparist',
         'checker',
         'admin'
-      ],
-      items: [
-        {
-          title: "Permintaan",
-          url: "/transaction/request",
-          role: [
-            'preparist',
-            'checker',
-            'admin'
-          ]
-        },
-        {
-          title: "Pesanan",
-          url: "/transaction/order",
-          role: [
-            'preparist',
-            'checker'
-          ]
-        },
       ]
-    }
+    },
+    {
+      name: "Penerimaan",
+      url: "/transaction/receive",
+      icon: ArrowDownLeft,
+      role: [
+        'preparist',
+        'checker',
+        'admin'
+      ]
+    },
+    {
+      name: "Riwayat penerimaan",
+      url: "/transaction/receive-logs",
+      icon: History,
+      role: [
+        'preparist',
+        'checker',
+        'admin'
+      ]
+    },
+  ],
+  navWarehouseMutation: [
+    {
+      name: "Mutasi",
+      url: "/transaction/mutation",
+      icon: ArrowDownLeftFromSquare,
+      role: [
+        'preparist',
+        'checker',
+        'admin'
+      ]
+    },
+  ],
+  navStoreTransaction: [
+    {
+      name: "Pesanan",
+      url: "/transaction/order",
+      icon: Repeat2,
+      role: [
+        'preparist',
+        'checker'
+      ]
+    },
   ],
   navMaster: [
     {

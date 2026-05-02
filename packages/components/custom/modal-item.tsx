@@ -34,6 +34,7 @@ interface ModalItemProps<T extends FieldValues> {
     id?: string;
     setId?: React.Dispatch<React.SetStateAction<string | undefined>>
     isEdit?: boolean,
+    disabled?: boolean;
     title?: string;
     description?: string;
     children?: React.ReactNode;
@@ -48,6 +49,7 @@ export default function ModalItem<T extends FieldValues>({
     id,
     setId,
     isEdit,
+    disabled,
     title,
     description,
     children,
@@ -116,7 +118,7 @@ export default function ModalItem<T extends FieldValues>({
                     <Button variant="outline"><Plus /> Tambah</Button>
                 </DialogTrigger>
             )}
-            <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none ${loading ? 'cursor-wait' : 'cursor-default'}`}>
+            <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none ${loading ? 'cursor-progress' : undefined}`}>
                 <DialogHeader className="px-6 pt-6">
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
@@ -124,7 +126,7 @@ export default function ModalItem<T extends FieldValues>({
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submitForm, onError)}
                         className="flex flex-col flex-1 h-0 select-none">
-                        <ScrollArea className="flex-1 space-y-8 overflow-y-auto">
+                        <ScrollArea className="flex-1 overflow-y-auto">
                             {Object.entries((schema as z.ZodObject<T>).shape).map(([key]) => {
                                 const fieldMeta = meta[key];
                                 const fieldSource = api[key];
@@ -142,6 +144,7 @@ export default function ModalItem<T extends FieldValues>({
                                                         field={field}
                                                         meta={fieldMeta}
                                                         api={fieldSource}
+                                                        disabled={disabled || fieldMeta.disabled}
                                                     />
                                                 </FormControl>
                                                 <FormDescription>{fieldMeta.description}</FormDescription>
@@ -154,10 +157,18 @@ export default function ModalItem<T extends FieldValues>({
                             {children}
                         </ScrollArea>
                         <DialogFooter className="sm:justify-end px-6 pb-6">
-                            <DialogClose asChild>
-                                <Button variant="outline">Batal</Button>
-                            </DialogClose>
-                            <Button type="submit">Simpan</Button>
+                            {disabled ? (
+                                <DialogClose asChild>
+                                    <Button variant="outline">Tutup</Button>
+                                </DialogClose>
+                            ) : (
+                                <>
+                                    <DialogClose asChild>
+                                        <Button variant="outline">Batal</Button>
+                                    </DialogClose>
+                                    <Button type="submit">Simpan</Button>
+                                </>
+                            )}
                         </DialogFooter>
                     </form>
                 </Form>

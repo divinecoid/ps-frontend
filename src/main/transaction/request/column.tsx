@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Request } from "@/interfaces/request";
+import { formatDateTime } from "@/lib/format-date";
 import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Request>[] = [
@@ -9,19 +10,11 @@ export const columns: ColumnDef<Request>[] = [
     enableSorting: true,
   },
   {
-    accessorKey: "created_date",
+    accessorKey: "created_at",
     header: "Tanggal pengajuan",
     enableSorting: true,
     cell: (({ row }) => {
-      return new Date(row.original.created_date).toLocaleString("id-ID", {
-        timeZone: "Asia/Jakarta",
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      });
+      return formatDateTime(row.original.created_at)
     })
   },
   {

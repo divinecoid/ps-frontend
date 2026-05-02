@@ -1,14 +1,14 @@
-import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallRestoreProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
+import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallMultiDeleteProps, BaseApiCallRestoreProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
 import { DELETE, GET, PATCH, POST } from "./api"
 import { OnlineStore } from "@/interfaces/online-store";
 import { ENDPOINT } from "./endpoints";
 
-export const index: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(ENDPOINT.ONLINE_STORE, { page, per_page, search });
+export const index: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(ENDPOINT.ONLINE_STORE, { page, per_page, search, sort });
 }
 
-export const master: BaseApiCallIndexProps = async (page, per_page, search) => {
-    return await GET(`${ENDPOINT.ONLINE_STORE}/master`, { page, per_page, search });
+export const master: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(`${ENDPOINT.ONLINE_STORE}/master`, { page, per_page, search, sort });
 }
 
 export const store: BaseApiCallCreateProps<OnlineStore> = async (values) => {
@@ -29,4 +29,8 @@ export const restore: BaseApiCallRestoreProps = async (id) => {
 
 export const destroy: BaseApiCallDeleteProps = async (id) => {
     return await DELETE(`${ENDPOINT.ONLINE_STORE}/${id}`);
+}
+
+export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
+    return await DELETE(`${ENDPOINT.ONLINE_STORE}`, ids)
 }

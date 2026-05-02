@@ -9,7 +9,7 @@ export const columns: ColumnDef<Request>[] = [
     enableSorting: true,
   },
   {
-    accessorKey: "created_date",
+    accessorKey: "created_at",
     header: "Tanggal pengajuan",
     enableSorting: true,
   },

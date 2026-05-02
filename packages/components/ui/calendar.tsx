@@ -125,7 +125,6 @@ function Calendar({
         hidden: cn("invisible", defaultClassNames.hidden),
         ...classNames,
       }}
-      /* eslint-disable react/prop-types */
       components={{
         Root: ({ className, rootRef, ...props }) => {
           return (
@@ -169,7 +168,6 @@ function Calendar({
         },
         ...components,
       }}
-      /* eslint-enable react/prop-types */
       {...props}
     />
   )

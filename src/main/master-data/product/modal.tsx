@@ -47,6 +47,7 @@ export default function ModalProduct(props: BaseModalForm) {
                 schema: z.string().min(2, {
                     message: "Barcode produk setidaknya memiliki 2 karakter.",
                 }),
+                disabled: props.isEdit,
                 label: "Barcode",
                 description: "Masukkan barcode produk.",
                 placeholder: "Barcode produk",

@@ -1,0 +1,77 @@
+import { Badge } from "@/components/ui/badge";
+import { Order } from "@/interfaces/order";
+import { formatDateTime } from "@/lib/format-date";
+import { ColumnDef } from "@tanstack/react-table"
+
+export const columns: ColumnDef<Order>[] = [
+  {
+    accessorKey: "order_sn",
+    header: "Nomor order",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "awb_code",
+    header: "Nomor resi",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "read_at",
+    header: "Waktu baca",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return row.original.read_at ? formatDateTime(row.original.read_at) : "-";
+    })
+  },
+  {
+    accessorKey: "prepared_at",
+    header: "Waktu penyiapan",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return row.original.prepared_at ? formatDateTime(row.original.prepared_at) : "-";
+    })
+  },
+  {
+    accessorKey: "readytoship_at",
+    header: "Tanggal siap dikirim",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return row.original.readytoship_at ? formatDateTime(row.original.readytoship_at) : "-";
+    })
+  },
+  {
+    accessorKey: "item_count",
+    header: "Jumlah barang",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "unique_item_count",
+    header: "Jumlah barang unik",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const data = row.original;
+      switch (data.status.toLowerCase()) {
+        case "delivered":
+        case "ready_to_pickup":
+          return <Badge variant="success">{data.status.replaceAll('_', ' ')}</Badge>
+        case "pending":
+        case "prepared":
+        case "read":
+        case "shipped":
+        case "ready_to_ship":
+        case "retry_ship":
+          return <Badge variant="secondary">{data.status.replaceAll('_', ' ')}</Badge>
+        case "cancelled":
+        case "returned":
+          return <Badge variant="destructive">{data.status}</Badge>
+          default: 
+          return <Badge variant="default">{data.status.replaceAll('_', ' ')}</Badge>
+      }
+    })
+  },
+
+]

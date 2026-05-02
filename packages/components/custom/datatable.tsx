@@ -2,11 +2,12 @@ import * as React from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
+  ColumnSort,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   // getPaginationRowModel,
-  getSortedRowModel,
+  // getSortedRowModel,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -50,9 +51,13 @@ interface DataTableProps<TData, TValue> {
   onPageSizeChange?: (size: number) => void;
   filterComponents?: React.ReactNode;
   selectable?: boolean;
+  onSelectionChange?: (rows: TData[]) => void
   actions?: React.ReactNode[];
   rowActions?: (cell: { row: TData }) => React.ReactNode;
   loading?: boolean;
+  sorting?: ColumnSort[];
+  setSorting?: React.Dispatch<React.SetStateAction<SortingState>>;
+  onTableReady?: (table: ReturnType<typeof useReactTable<TData>>) => void;
 }
 
 const pageSizes = [10, 20, 50, 100];
@@ -67,10 +72,14 @@ export default function DataTable<TData, TValue>({
   onPageSizeChange,
   filterComponents,
   selectable,
+  onSelectionChange,
   actions,
   rowActions,
+  sorting = [],
+  setSorting,
+  onTableReady,
   loading }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  // const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -84,8 +93,9 @@ export default function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    manualSorting: true,
     // getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    // getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
@@ -96,6 +106,21 @@ export default function DataTable<TData, TValue>({
       rowSelection,
     },
   })
+
+  const selectedRows = React.useMemo(() => {
+    return table
+      .getSelectedRowModel()
+      .rows
+      .map(row => row.original)
+  }, [table.getState().rowSelection])
+
+  React.useEffect(() => {
+    onSelectionChange?.(selectedRows)
+  }, [selectedRows])
+
+  React.useEffect(() => {
+    onTableReady?.(table)
+  }, [table])
 
   return (
     <div className="w-full">
@@ -125,7 +150,7 @@ export default function DataTable<TData, TValue>({
                             column.toggleVisibility(!!value)
                           }
                         >
-                          {column.id}
+                          {column.columnDef.header?.toString()}
                         </DropdownMenuCheckboxItem>
                       )
                     })}

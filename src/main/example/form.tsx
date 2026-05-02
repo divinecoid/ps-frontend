@@ -35,7 +35,7 @@ export default function FormExample(props: BaseForm) {
         id={String(param)}
         {...props}
         onError={console.log}
-        services={Services.Request}
+        services={Services.TransactionRequest}
         formShape={[
             {
                 key: "cmt_id",

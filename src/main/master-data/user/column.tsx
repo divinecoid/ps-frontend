@@ -20,18 +20,17 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     header: "Peran",
-    enableSorting: true,
     cell: (({row}) => {
       return row.original.roles.map(r => r.name).join(", ")
     })
   },
   {
-    accessorKey: "is_deleted",
+    accessorKey: "deleted_at",
     header: "Status pengguna",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
-      switch (data.is_deleted) {
+      switch (data.deleted_at) {
         case true:
           return <Badge variant="destructive">Nonaktif</Badge>
         case false:

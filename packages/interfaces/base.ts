@@ -15,14 +15,14 @@ export interface IndexResponse extends BaseResponse {
 
 export interface MasterData {
   id: string
-  is_deleted: boolean
+  deleted_at: boolean
 }
 
 export interface BaseResponse {
   success: boolean
   message: string
 }
-export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: string) => Promise<Response>;
+export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: string, sort?: string) => Promise<Response>;
 
 export type BaseApiCallCreateProps<T> = (values: T) => Promise<Response>;
 
@@ -34,6 +34,8 @@ export type BaseApiCallRestoreProps = (id: string) => Promise<Response>;
 
 export type BaseApiCallDeleteProps = (id: string) => Promise<Response>;
 
+export type BaseApiCallMultiDeleteProps = (id: string[]) => Promise<Response>;
+
 export interface BaseApiCallProps<T> {
   index?: BaseApiCallIndexProps
   master?: BaseApiCallIndexProps
@@ -44,10 +46,10 @@ export interface BaseApiCallProps<T> {
   destroy?: BaseApiCallDeleteProps
 }
 
-interface BaseModal {
+interface BaseModal<T = string> {
   onSubmit?: () => void
-  id?: string
-  setId?: React.Dispatch<React.SetStateAction<string | undefined>>
+  id?: T
+  setId?: React.Dispatch<React.SetStateAction<T | undefined>>
 }
 
 interface Modal {
@@ -65,11 +67,21 @@ export interface BaseForm {
   disabled?: boolean
 };
 
-export interface BaseDialog extends BaseModal {
+export interface BaseDialog<T = string> extends BaseModal<T> {
   title?: string
   description?: string
-  action?: ((id: string) => Promise<Response> | void)
+  action?: ((id: T) => Promise<Response> | void)
   variant?: "default" | "destructive"
+};
+
+export interface SelectActionDialog<T> {
+  title?: string
+  description?: string
+  variant?: "default" | "destructive"
+  selectedRows?: T[];
+  action: ((id: string[]) => Promise<Response> | void)
+  onSubmit?: () => void
+  trigger?: string
 };
 
 export interface Dialog extends Modal {
@@ -92,6 +104,7 @@ export interface FormShape<T> {
   step?: number;
   options?: Record<string, string>;
   passwordEdit?: boolean;
+  disabled?: boolean;
   source?: {
     id: string;
     label: string;

@@ -6,7 +6,6 @@ import { z } from "zod/v3";
 import { Request } from "@/interfaces/request";
 import DetailList from "./form-request-detail-variant-list";
 
-
 export default function FormRequest(props: BaseForm) {
     const { id } = useParams();
 
@@ -16,15 +15,6 @@ export default function FormRequest(props: BaseForm) {
         }),
         dozen_qty: z.coerce.number().min(0).default(0),
         piece_qty: z.coerce.number().min(0).default(0),
-    }).superRefine((data, ctx) => {
-        const totalPiece = data.dozen_qty * 12 + data.piece_qty
-        if (totalPiece < 1) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Jumlah total minimal 1 piece.",
-                path: ["piece_qty"],
-            })
-        }
     })
 
     const detailSchema = {
@@ -48,6 +38,16 @@ export default function FormRequest(props: BaseForm) {
                 }
                 seen.add(item.size_id)
             })
+            const totalAllPiece = data.reduce((acc, item) => {
+                return acc + (item.dozen_qty * 12) + item.piece_qty
+            }, 0)
+            if (totalAllPiece < 1) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Total semua varian minimal 1 piece.",
+                    path: [0, "piece_qty"],
+                })
+            }
         })
     }
 
@@ -86,7 +86,7 @@ export default function FormRequest(props: BaseForm) {
     return <ItemForm<Request>
         id={id}
         {...props}
-        services={Services.Request}
+        services={Services.TransactionRequest}
         formShape={[
             {
                 key: "cmt_id",

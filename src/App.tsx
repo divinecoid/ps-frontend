@@ -23,16 +23,25 @@ import { hasRole } from '@/lib/jwt-decode';
 import FormExample from './main/example/form';
 import WidgetPreviewPage from './main/example/widget-preview';
 import Request from './main/transaction/request';
-import FormRequest from './main/transaction/request/new-edit/form-request';
-import DocumentBarcodePreview from './main/transaction/request/document-barcode-preview';
+import FormRequest from './main/transaction/request/new/form-request';
+import DocumentBarcodePreview from './main/transaction/request/barcode/preview';
 import Print from './main/print';
+import Receive from './main/transaction/receive';
+import ReceiveLogs from './main/transaction/receive-logs';
+import ViewFormRequest from './main/transaction/request/view/form-request';
+import Order from './main/transaction/order';
+import FormOrder from './main/transaction/order/view/form-order';
+import Mutation from './main/transaction/mutation';
+import MasterInventories from './main/master-data/inventory';
+import FormInventory from './main/master-data/inventory/form-inventory';
+import ViewFormReceiveLog from './main/transaction/receive-logs/form-receive-logs';
 
 function App() {
   const { token } = useAuth();
   const isAdmin = token ? hasRole(token, "admin") : false;
   const isPreparist = token ? hasRole(token, "preparist") : false;
   const isChecker = token ? hasRole(token, "checker") : false;
-  const dummiesEnabled = true;
+  const dummiesEnabled = false;
   return (
     <HashRouter>
       <Routes>
@@ -70,20 +79,24 @@ function App() {
             <>
               <Route path="/transaction/request" element={<Request />} />
               <Route path="/transaction/request/new" element={<FormRequest />} />
-              <Route path="/transaction/request/view/:id" element={<FormRequest disabled={true} />} />
-              <Route path="/transaction/request/barcode/:id" element={<DocumentBarcodePreview />} />
-              <Route path="/transaction/order" element={<></>} />
-              <Route path="/inventory" element={<MasterProducts />} />
-
+              <Route path="/transaction/request/:id" element={<ViewFormRequest disabled={true} />} />
+              <Route path="/transaction/request/:id/barcode" element={<DocumentBarcodePreview />} />
+              <Route path="/transaction/receive/" element={<Receive />} />
+              <Route path="/transaction/receive-logs/" element={<ReceiveLogs />} />
+              <Route path="/transaction/receive-logs/:id" element={<ViewFormReceiveLog />} />
+              <Route path="/transaction/mutation/" element={<Mutation />} />
+              <Route path="/transaction/order" element={<Order />} />
+              <Route path="/transaction/order/:id" element={<FormOrder />} />
+              <Route path="/product" element={<MasterProducts />} />
+              <Route path="/inventory" element={<MasterInventories />} />
+              <Route path="/inventory/:id" element={<FormInventory />} />
             </>
           )}
 
 
-
-
           <Route path="*" element={<EmptyPage />} />
         </Route>
-        <Route path="/print" element={<Print/>} />
+        <Route path="/print" element={<Print />} />
       </Routes>
     </HashRouter>
   );
