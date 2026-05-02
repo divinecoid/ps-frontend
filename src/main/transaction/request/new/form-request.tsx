@@ -102,6 +102,14 @@ export default function FormRequest(props: BaseForm) {
                 }
             },
             {
+                key: "serial_number",
+                type: "text",
+                schema: z.string(),
+                label: "Series",
+                description: "Masukkan seri.",
+                placeholder: "Seri",
+            },
+            {
                 key: "request_detail",
                 type: "custom",
                 schema: schema.request_detail,

@@ -108,6 +108,14 @@ export default function ViewFormRequest(props: BaseForm) {
                     api: Services.MasterCMT.index
                 }
             },
+             {
+                key: "serial_number",
+                type: "text",
+                schema: z.string(),
+                label: "Series",
+                description: "Masukkan seri.",
+                placeholder: "Seri",
+            },
             {
                 key: "request_detail",
                 type: "hidden",
