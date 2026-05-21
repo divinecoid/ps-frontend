@@ -1,6 +1,12 @@
 import { BaseResponse, IndexResponse, MasterData } from "./base"
 import { Product } from "./product"
 
+export interface Products {
+    series: string
+    count: number
+    items: Product[]
+}
+
 export interface SmallInventory extends MasterData {
     code: string
     name: string
@@ -8,7 +14,7 @@ export interface SmallInventory extends MasterData {
     warehouse: {
         name: string
     }
-    products: Product[]
+    products: Products[]
 }
 
 export interface SmallInventoryResponse extends IndexResponse {

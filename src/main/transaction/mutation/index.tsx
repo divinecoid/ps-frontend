@@ -1,4 +1,4 @@
-import { KeyboardEvent, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Items } from "./items";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,9 @@ import ModalConfirmReset from "./confirm-reset";
 import { MutationValidateResponse } from "@/interfaces/mutation";
 import { ComboboxAutoHighlight } from "@/components/custom/combobox-autohighlight";
 import { BaseResponse } from "@/interfaces/base";
-
+/**
+ * FIXME: AI generated code
+ */
 export interface Item {
     cmt: string
     barcode: string
@@ -44,114 +46,124 @@ export interface DeleteRowProps {
 export default function Mutation() {
 
     const [rack, setRack] = useState<string>("");
+    const [rackName, setRackName] = useState<string>("");
     const [search, setSearch] = useState<string>("");
     const [items, setItems] = useState<Item[]>([]);
     const [barcodes, setBarcodes] = useState<Barcode[]>([]);
     const [deleteRow, setDeleteRow] = useState<DeleteRowProps>();
     const [deleteBarcodeRow, setDeleteBarcodeRow] = useState<DeleteRowProps>();
-    const [loading, setLoading] = useState(false);
+    const [loadingCount, setLoadingCount] = useState(0);
     const [submitConfirm, setSubmitConfirm] = useState<boolean>();
     const [resetConfirm, setResetConfirm] = useState<boolean>();
 
-    const findProduct = async (event: KeyboardEvent<HTMLInputElement>) => {
-        const [prefix, group, sequence] = splitBarcode(search);
-        if (event.key === "Enter" && prefix != '' && group != '' && sequence != '') {//barcode valid harus punya prefix, group dan sequence
-            switch (group) {
-                case 'P'://kalau piece
-                    if (barcodes.some(item => item.barcode == search)) {
-                        toast.error("Barcode sudah ada!", { richColors: true })
-                    } else {
-                        const validation = await validateBarcode(search);
-                        if (validation) {
-                            validatePieceBarcode(search, rack);
-                        }
-                    }
-                    break;
-                case 'D'://kalau group ada
-                    toast.error("Produk lusin harus dibuka menjadi satuan!", { richColors: true })
-                    break;
-                default:
-                    toast.error("Barcode tidak valid!", { richColors: true })
-                    break;
-            }
-            setSearch("");
-        }
-    }
+    const loading = loadingCount > 0;
 
-    const validatePieceBarcode = async (full_barcode: string, rack_id: string) => {
-        const rackName = await getRack(rack_id);
-        const item = await validateBarcode(full_barcode);
-        if (item && rackName) {
-            const barcode: Barcode = {
-                barcode: full_barcode,
-                rack: {
-                    name: rackName ?? ""
-                },
-                rack_id: rack_id
-            }
-            addRow(item, barcode);
-        } else {
-            if (!rackName) {
-                toast.error("Rack tidak valid!", { richColors: true })
-            }
-        }
-    }
+    const startLoading = () => setLoadingCount(c => c + 1);
+    const stopLoading = () => setLoadingCount(c => Math.max(0, c - 1));
 
-    const getRack = async (rack_id: string): Promise<string | undefined> => {
+    useEffect(() => {
+        if (rack) loadRack(rack);
+        else setRackName("");
+    }, [rack]);
+
+    const splitBarcode = (barcode: string) => {
+        const split = barcode.split("|");
+        return [
+            split.slice(0, 5).join("|"),
+            split[5],
+            split[6]
+        ];
+    };
+    const loadRack = async (rackId: string) => {
         try {
-            setLoading(true);
-            const res = await Services.MasterRack.show(rack_id);
+            startLoading();
+            const res = await Services.MasterRack.show(rackId);
             const json: RackViewResponse = await res.json();
             if (res.ok) {
-                setLoading(false);
-                const data = json.data;
-                return data.name;
+                setRackName(json.data.name);
             } else {
-                toast.error(json.message, { richColors: true })
+                toast.error(json.message, { richColors: true });
+                setRackName("");
             }
-            setLoading(false);
         } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message, { richColors: true });
             }
-            setLoading(false);
-
+        } finally {
+            stopLoading();
         }
-    }
+    };
 
     const validateBarcode = async (barcode: string): Promise<Item | undefined> => {
-        const [prefix, _group, _sequence] = splitBarcode(barcode);
+        const [prefix] = splitBarcode(barcode);
         try {
-            setLoading(true);
+            startLoading();
             const res = await Services.TransactionMutation.validate({ barcode });
-            const rackName = await getRack(rack);
             const json: MutationValidateResponse = await res.json();
-            if (res.ok) {
-                setLoading(false);
-                const data = json.data;
-                return {
-                    rack_id: rack,
-                    rack: {
-                        name: rackName ?? ""
-                    },
-                    barcode: prefix,
-                    cmt: data.cmt.name ?? "",
-                    model: data.model.name ?? "",
-                    color: data.color.name ?? "",
-                    size: data.size.name ?? "",
-                    rec_qty: 1
-                };
-            } else {
-                toast.error(json.message, { richColors: true })
+            if (!res.ok) {
+                toast.error(json.message, { richColors: true });
+                return;
             }
-            setLoading(false);
+            const data = json.data;
+            return {
+                rack_id: rack,
+                rack: {
+                    name: rackName
+                },
+                barcode: prefix,
+                cmt: data.cmt.name ?? "",
+                model: data.model.name ?? "",
+                color: data.color.name ?? "",
+                size: data.size.name ?? "",
+                rec_qty: 1
+            };
         } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message, { richColors: true });
             }
-            setLoading(false);
+        } finally {
+            stopLoading();
         }
-    }
+    };
+
+    const findProduct = async (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key !== "Enter") return;
+
+        const [, group, sequence] = splitBarcode(search);
+
+        if (!group || !sequence) {
+            toast.error("Barcode tidak valid!", { richColors: true });
+            return;
+        }
+
+        if (group === "D") {
+            toast.error("Produk lusin harus dibuka menjadi satuan!", { richColors: true });
+            return;
+        }
+
+        if (group !== "P") {
+            toast.error("Barcode tidak valid!", { richColors: true });
+            return;
+        }
+        if (barcodes.some(item => item.barcode === search)) {
+            toast.error("Barcode sudah ada!", { richColors: true });
+            return;
+        }
+
+        const item = await validateBarcode(search);
+
+        if (!item) return;
+
+        addRow(item, {
+            barcode: search,
+            rack_id: rack,
+            rack: {
+                name: rackName
+            }
+        });
+
+        setSearch("");
+    };
 
     const addRow = (item: Item, barcode: Barcode) => {
         setItems(prev => {
@@ -159,10 +171,7 @@ export default function Mutation() {
             if (index !== -1) {
                 return prev.map((i, idx) =>
                     idx === index
-                        ? {
-                            ...i,
-                            rec_qty: i.rec_qty + item.rec_qty,
-                        }
+                        ? { ...i, rec_qty: i.rec_qty + item.rec_qty }
                         : i
                 );
             }
@@ -172,42 +181,27 @@ export default function Mutation() {
     }
 
     const removeRow = (deleteRow: DeleteRowProps) => {
-        setItems(prev => prev.filter(item => !(item.barcode == deleteRow.barcode && item.rack_id == deleteRow.rack_id)))//kalau item yang dihapus, semua kode batang yang berkaitan juga dihapus
-        setBarcodes(prev => prev.filter(item => !(item.barcode.includes(deleteRow.barcode) && item.rack_id == deleteRow.rack_id)));
+        setItems(prev => prev.filter(item => !(item.barcode === deleteRow.barcode && item.rack_id === deleteRow.rack_id)));
+        setBarcodes(prev => prev.filter(item => !(item.barcode.includes(deleteRow.barcode) && item.rack_id === deleteRow.rack_id)));
     }
 
     const removeBarcodeRow = (deleteRow: DeleteRowProps) => {
-        const [prefix, _group, _sequence] = splitBarcode(deleteRow.barcode);
-        setItems(prev => {
-            const index = prev.findIndex(i => i.barcode === prefix && i.rack_id == deleteRow.rack_id);
-            if (index !== -1) {
-                return prev.map((i, idx) =>
-                    idx === index
-                        ? {
-                            ...i,
-                            rec_qty: i.rec_qty - 1,
-                        }
-                        : i
-                ).filter(
-                    item =>
-                        !(item.rec_qty === 0)
-                )
-            }
-            return prev;
-        });
-        setBarcodes(prev => prev.filter(item => !(item.barcode == deleteRow.barcode && item.rack_id == deleteRow.rack_id)));
-    }
-
-    const splitBarcode = (barcode: string) => {
-        const split = barcode.split("|");
-        const prefix = split.slice(0, 5).join("|");
-        const group = split[5];
-        const sequence = split[6];
-        return [prefix, group, sequence];
+        const [prefix] = splitBarcode(deleteRow.barcode);
+        setItems(prev =>
+            prev.map(item => item.barcode === prefix && item.rack_id === deleteRow.rack_id ? {
+                ...item,
+                rec_qty:
+                    item.rec_qty - 1
+            } : item).filter(
+                item => item.rec_qty > 0
+            )
+        );
+        setBarcodes(prev => prev.filter(item => !(item.barcode === deleteRow.barcode && item.rack_id === deleteRow.rack_id)));
     }
 
     const submit = async () => {
         try {
+            startLoading();
             const result = {
                 items: Object.entries(
                     barcodes.reduce((a, { rack_id, barcode }) => {
@@ -215,7 +209,7 @@ export default function Mutation() {
                         return a;
                     }, {} as Record<string, string[]>)
                 ).map(([rack_id, barcodes]) => ({ rack_id, barcodes }))
-            };//mengkelompokkan rack barcodes yang flat menjadi group
+            }
 
             const res = await Services.TransactionMutation.store(result);
             const json: BaseResponse = await res.json();
@@ -227,8 +221,10 @@ export default function Mutation() {
             }
         } catch (error) {
             if (error instanceof Error) {
-                toast.error(error.message, { richColors: true })
+                toast.error(error.message, { richColors: true });
             }
+        } finally {
+            stopLoading();
         }
     }
 
@@ -245,7 +241,7 @@ export default function Mutation() {
         setBarcodes([]);
     };
 
-    return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? 'cursor-progress' : undefined}`}>
+    return <div className={`flex flex-col gap-4 py-4 md:gap-6 md:py-6 h-full select-none ${loading ? "cursor-progress" : ""}`}>
         <ModalConfirm<DeleteRowProps> action={removeRow} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirm<DeleteRowProps> action={removeBarcodeRow} id={deleteBarcodeRow} setId={setDeleteBarcodeRow} variant="destructive" title="Apakah anda yakin untuk menghapus barang ini?" description="Barang ini akan dibatalkan dari penerimaan." />
         <ModalConfirmReset resetConfirm={resetConfirm} setResetConfirm={setResetConfirm} onSubmit={resetState} />
@@ -268,7 +264,7 @@ export default function Mutation() {
                 </TabsContent>
             </Tabs>
         </div>
-        <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
+        <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end px-7 py-2">
             <Button variant="destructive" type="button" onClick={() => setResetConfirm(true)}>Atur Ulang</Button>
             <Button type="button" onClick={confirm}>Kirim</Button>
         </div>
