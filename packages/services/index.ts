@@ -14,6 +14,8 @@ import * as MasterSmallInventory from './master-inventory-small';
 import * as MasterLargeInventory from './master-inventory-large';
 import * as MasterOnlineStore from './master-online-store';
 import * as MasterMarketplace from './master-marketplace';
+import * as MasterFabric from './master-fabric';
+import * as MasterRollSize from './master-roll-size';
 import * as TransactionRequest from './transaction-request';
 import * as TransactionInbound from './transaction-inbound';
 import * as TransactionMutation from './transaction-mutation';
@@ -34,6 +36,8 @@ const Services = {
     MasterFactory,
     MasterSmallInventory,
     MasterLargeInventory,
+    MasterFabric,
+    MasterRollSize,
     MasterOnlineStore,
     MasterMarketplace,
     TransactionRequest,

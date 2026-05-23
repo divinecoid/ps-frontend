@@ -37,6 +37,8 @@ import MasterSmallInventories from './main/master-data/inventory-small';
 import FormSmallInventory from './main/master-data/inventory-small/form-inventory';
 import FormLargeInventory from './main/master-data/inventory-large/form-inventory';
 import ViewFormReceiveLog from './main/transaction/receive-logs/form-receive-logs';
+import MasterFabrics from './main/master-data/fabric';
+import MasterRollSizes from './main/master-data/roll-size';
 
 function App() {
   const { token } = useAuth();
@@ -70,6 +72,7 @@ function App() {
               <Route path="/master-data/product" element={<MasterProducts />} />
               <Route path="/master-data/product-model" element={<MasterProductModels />} />
               <Route path="/master-data/size" element={<MasterSizes />} />
+              <Route path="/master-data/roll-size" element={<MasterRollSizes />} />
               <Route path="/master-data/color" element={<MasterColors />} />
               <Route path="/master-data/factory" element={<MasterFactories />} />
               <Route path="/master-data/online-store" element={<MasterOnlineStores />} />
@@ -93,6 +96,8 @@ function App() {
               <Route path="/small-inventory/:id" element={<FormSmallInventory />} />
               <Route path="/large-inventory" element={<MasterLargeInventories />} />
               <Route path="/large-inventory/:id" element={<FormLargeInventory />} />
+              <Route path="/fabric" element={<MasterFabrics />} />
+              {/* <Route path="/fabric/:id" element={<FormFabric />} /> */}
             </>
           )}
 
