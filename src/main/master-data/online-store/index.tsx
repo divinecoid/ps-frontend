@@ -85,7 +85,7 @@ export default function MasterOnlineStores() {
                     : <>
                         <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.marketplace_id, row.redirect_uri)}>Sambungkan</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => refreshOnlineStore(row.id)}>Refresh Token</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Sunting</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
                     </>
                 }

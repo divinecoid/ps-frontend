@@ -6,8 +6,8 @@ import { z } from "zod/v3";
 
 export default function ModalFabric(props: BaseModalForm) {
     return <ModalItem<Fabric>
-        title={props.isEdit ? "Sunting Kain" : "Tambah Kain"}
-        description={props.isEdit ? "Sunting Kain yang sudah ada" : "Tambah Kain baru"}
+        title={props.isEdit ? "Edit Kain" : "Tambah Kain"}
+        description={props.isEdit ? "Edit Kain yang sudah ada" : "Tambah Kain baru"}
         {...props}
         formShape={[
             {

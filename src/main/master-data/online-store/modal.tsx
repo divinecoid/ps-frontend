@@ -6,8 +6,8 @@ import { z } from "zod/v3"
 
 export default function ModalOnlineStore(props: BaseModalForm) {
     return <ModalItem<OnlineStore>
-        title={props.isEdit ? "Sunting Toko Online" : "Tambah Toko Online"}
-        description={props.isEdit ? "Sunting toko online yang sudah ada" : "Tambah toko online baru"}
+        title={props.isEdit ? "Edit Toko Online" : "Tambah Toko Online"}
+        description={props.isEdit ? "Edit toko online yang sudah ada" : "Tambah toko online baru"}
         {...props}
         formShape={[
             {

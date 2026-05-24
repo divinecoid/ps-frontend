@@ -5,8 +5,8 @@ import { z } from "zod/v3";
 
 export default function ModalMarketplace(props: BaseModalForm) {
     return <ModalItem<Marketplace>
-        title={props.isEdit ? "Sunting Marketplace" : "Tambah Marketplace"}
-        description={props.isEdit ? "Sunting marketplace yang sudah ada" : "Tambah marketplace baru"}
+        title={props.isEdit ? "Edit Marketplace" : "Tambah Marketplace"}
+        description={props.isEdit ? "Edit marketplace yang sudah ada" : "Tambah marketplace baru"}
         {...props}
         formShape={[
             {

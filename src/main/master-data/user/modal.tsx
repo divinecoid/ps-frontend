@@ -6,8 +6,8 @@ import { z } from "zod/v3";
 
 export default function ModalUser(props: BaseModalForm) {
     return <ModalItem<User>
-        title={props.isEdit ? "Sunting Pengguna" : "Tambah pengguna"}
-        description={props.isEdit ? "Sunting pengguna yang sudah ada" : "Tambah pengguna baru"}
+        title={props.isEdit ? "Edit Pengguna" : "Tambah pengguna"}
+        description={props.isEdit ? "Edit pengguna yang sudah ada" : "Tambah pengguna baru"}
         {...props}
         formShape={[
             {

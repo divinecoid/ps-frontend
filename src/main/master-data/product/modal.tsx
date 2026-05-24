@@ -7,8 +7,8 @@ import { z } from "zod/v3";
 export default function ModalProduct(props: BaseModalForm) {
     return <ModalItem<Product>
         disabled
-        title={props.isEdit ? "Sunting Produk" : "Tambah Produk"}
-        description={props.isEdit ? "Sunting produk yang sudah ada" : "Tambah produk baru"}
+        title={props.isEdit ? "Edit Produk" : "Tambah Produk"}
+        description={props.isEdit ? "Edit produk yang sudah ada" : "Tambah produk baru"}
         {...props}
         formShape={[
             {

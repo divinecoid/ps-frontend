@@ -5,8 +5,8 @@ import { z } from "zod/v3";
 
 export default function ModalWarehouse(props: BaseModalForm) {
     return <ModalItem<Warehouse>
-        title={props.isEdit ? "Sunting Gudang" : "Tambah Gudang"}
-        description={props.isEdit ? "Sunting gudang yang sudah ada" : "Tambah gudang baru"}
+        title={props.isEdit ? "Edit Gudang" : "Tambah Gudang"}
+        description={props.isEdit ? "Edit gudang yang sudah ada" : "Tambah gudang baru"}
         {...props}
         formShape={[
             {

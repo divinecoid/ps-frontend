@@ -5,8 +5,8 @@ import { z } from "zod/v3";
 
 export default function ModalColor(props: BaseModalForm) {
     return <ModalItem<Color>
-        title={props.isEdit ? "Sunting Warna" : "Tambah Warna"}
-        description={props.isEdit ? "Sunting warna yang sudah ada" : "Tambah warna baru"}
+        title={props.isEdit ? "Edit Warna" : "Tambah Warna"}
+        description={props.isEdit ? "Edit warna yang sudah ada" : "Tambah warna baru"}
         {...props}
         formShape={[
             {

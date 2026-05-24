@@ -6,8 +6,8 @@ import { z } from "zod/v3";
 
 export default function ModalRack(props: BaseModalForm) {
     return <ModalItem<Rack>
-        title={props.isEdit ? "Sunting Rak" : "Tambah Rak"}
-        description={props.isEdit ? "Sunting rak yang sudah ada" : "Tambah rak baru"}
+        title={props.isEdit ? "Edit Rak" : "Tambah Rak"}
+        description={props.isEdit ? "Edit rak yang sudah ada" : "Tambah rak baru"}
         {...props}
         formShape={[
             {
