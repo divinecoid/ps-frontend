@@ -37,5 +37,18 @@ export default function ModalWarehouse(props: BaseModalForm) {
                 description: "Prioritas gudang",
                 placeholder: "1",
             },
+            {
+                key: "type",
+                type: "select",
+                schema: z.enum(["BIG", "SMALL"]),
+                label: "Tipe Gudang",
+                description: "Pilih tipe/ukuran gudang.",
+                placeholder: "Pilih tipe gudang",
+                options: {
+                    BIG: "Gudang Besar",
+                    SMALL: "Gudang Kecil",
+                },
+                defaultValue: "SMALL",
+            },
         ]} />
 }

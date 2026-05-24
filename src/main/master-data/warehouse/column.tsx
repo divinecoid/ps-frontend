@@ -19,6 +19,21 @@ export const columns: ColumnDef<Warehouse>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "type",
+    header: "Tipe Gudang",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const data = row.original;
+      switch (data.type) {
+        case 'BIG':
+          return <Badge variant="default">Gudang Besar</Badge>
+        case 'SMALL':
+        default:
+          return <Badge variant="secondary">Gudang Kecil</Badge>
+      }
+    })
+  },
+  {
     accessorKey: "deleted_at",
     header: "Status gudang",
     enableSorting: true,

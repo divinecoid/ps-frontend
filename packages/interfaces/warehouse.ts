@@ -4,6 +4,7 @@ export interface Warehouse extends MasterData {
   code: string
   name: string
   priority: number
+  type?: 'BIG' | 'SMALL'
 }
 
 export interface WarehouseResponse extends IndexResponse {

@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/custom/date-picker";
 import { Mode } from "react-day-picker";
 
-export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea" | "custom" | "tel";
+export type InputTypes = React.HTMLInputTypeAttribute | "combobox" | "multi-combobox" | "switch" | "textarea" | "custom" | "tel" | "select" | "radio";
 
 export interface InputMeta {
     label?: string;
