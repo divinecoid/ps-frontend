@@ -7,7 +7,7 @@ export const ENDPOINT = {
     FACTORY: "factory",
     SMALLINVENTORY: "small-inventory",
     LARGEINVENTORY: "inventory",
-    FABRIC: "fabric",
+    FABRIC: "cloth",
     ROLL_SIZE: "roll-size",
     MARKETPLACE: "marketplace",
     ONLINE_STORE: "onlinestore",

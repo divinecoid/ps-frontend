@@ -19,7 +19,7 @@ export const columns: ColumnDef<Fabric>[] = [
     enableSorting: true,
   },
   {
-    accessorKey: "roll_size.name",
+    accessorKey: "roll_size.size",
     header: "Setting",
     enableSorting: true,
   },

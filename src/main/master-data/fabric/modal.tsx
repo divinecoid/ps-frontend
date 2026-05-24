@@ -78,7 +78,7 @@ export default function ModalFabric(props: BaseModalForm) {
             {
                 key: "quantity",
                 type: "number",
-                schema: z.number(),
+                schema: z.coerce.number(),
                 label: "Jumlah",
                 description: "Masukkan jumlah.",
                 placeholder: "12",
