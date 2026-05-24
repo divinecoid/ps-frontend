@@ -43,5 +43,31 @@ export default function ModalRack(props: BaseModalForm) {
                     api: Services.MasterWarehouse.index
                 }
             },
+            {
+                key: "model_id",
+                type: "combobox",
+                schema: z.string().nullable().optional(),
+                label: "Model",
+                description: "Model produk untuk rak ini (opsional).",
+                placeholder: "Pilih model",
+                source: {
+                    id: "id",
+                    label: "name",
+                    api: Services.MasterProductModel.index
+                }
+            },
+            {
+                key: "color_id",
+                type: "combobox",
+                schema: z.string().nullable().optional(),
+                label: "Warna",
+                description: "Warna produk untuk rak ini (opsional).",
+                placeholder: "Pilih warna",
+                source: {
+                    id: "id",
+                    label: "name",
+                    api: Services.MasterColor.index
+                }
+            },
         ]} />
 }

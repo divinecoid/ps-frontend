@@ -4,6 +4,7 @@ export interface LargeInventory extends MasterData {
     model_id: string
     color_id: string
     size_id: string
+    rack_id?: string
     model: {
         name: string
     }
@@ -13,6 +14,10 @@ export interface LargeInventory extends MasterData {
     size: {
         name: string
     }
+    rack?: {
+        code: string
+        name: string
+    } | null
     detail: LargeInventoryDetail[]
     total: number
 }
