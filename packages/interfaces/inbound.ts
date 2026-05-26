@@ -31,6 +31,15 @@ export interface InboundValidateResponse extends BaseResponse {
         color: Color
         size: Size
         is_dozen: boolean
+        rack?: {
+            id: string
+            code: string
+            name: string
+            warehouse: {
+                id: string
+                name: string
+            }
+        } | null
     }
 }
 
