@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/dialog";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import React, { useEffect } from "react";
-import { ReceiveLogDetail } from "@/interfaces/request";
+import { Product } from "@/interfaces/product";
 
-interface ViewReceiveLogDetailProps {
-    data: ReceiveLogDetail[] | undefined
+interface ViewSmallInventoryItemProps {
+    data: Product[] | undefined
     open: boolean | undefined
     setOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>
 }
-export default function ViewReceiveLogDetail({ data, open, setOpen }: ViewReceiveLogDetailProps) {
-    const [detail, setDetail] = React.useState<ReceiveLogDetail[]>();
+export default function ViewSmallInventoryItems({ data, open, setOpen }: ViewSmallInventoryItemProps) {
+    const [detail, setDetail] = React.useState<Product[]>();
     useEffect(() => {
         if (data != null) {
             setDetail(data);
@@ -28,29 +28,29 @@ export default function ViewReceiveLogDetail({ data, open, setOpen }: ViewReceiv
     return <Dialog open={open} onOpenChange={(open) => { setOpen(open) }}>
         <DialogContent className={`flex flex-col max-h-[90vh] p-0 select-none sm:max-w-[calc(100%-2rem)]`}>
             <DialogHeader className="px-6 pt-6">
-                <DialogTitle>Detail riwayat penerimaan</DialogTitle>
-                <DialogDescription>Riwayat penerimaan barang di dalam permintaan ini</DialogDescription>
+                <DialogTitle>Detail seri</DialogTitle>
+                <DialogDescription>Detail barang dengan seri ini</DialogDescription>
             </DialogHeader>
             <div className="flex flex-col flex-1 h-0 px-4 select-none">
                 <Table>
-                    <TableCaption>Daftar barang yang diterima dari penjahit.</TableCaption>
+                    <TableCaption>Daftar barang yang ada di rak ini.</TableCaption>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Model</TableHead>
-                            <TableHead>Warna</TableHead>
-                            <TableHead>Ukuran</TableHead>
-                            <TableHead>Barcode</TableHead>
-                            <TableHead>Jumlah</TableHead>
+                            <TableHead className="w-0">Model</TableHead>
+                            <TableHead className="w-0">Warna</TableHead>
+                            <TableHead className="w-0">Ukuran</TableHead>
+                            <TableHead className="w-0">Series</TableHead>
+                            <TableHead className="w-0">Barcode</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {(detail ?? []).map((row, index) => (
                             <TableRow key={index}>
-                                <TableCell>{row.model.name}</TableCell>
-                                <TableCell>{row.color.name}</TableCell>
-                                <TableCell>{row.size.name}</TableCell>
-                                <TableCell>{row.barcode}</TableCell>
-                                <TableCell>{row.qty}</TableCell>
+                                <TableCell className="w-0">{row.model.name}</TableCell>
+                                <TableCell className="w-0">{row.color.name}</TableCell>
+                                <TableCell className="w-0">{row.size.name}</TableCell>
+                                <TableCell>{row.series}</TableCell>
+                                <TableCell className="w-0">{row.barcode}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

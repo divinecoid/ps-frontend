@@ -1,36 +1,36 @@
 import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallMultiDeleteProps, BaseApiCallRestoreProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
 import { DELETE, GET, PATCH, POST } from "./api"
-import { Inventory } from "@/interfaces/inventory";
+import { Fabric } from "@/interfaces/fabric";
 import { ENDPOINT } from "./endpoints";
 
 export const index: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
-    return await GET(ENDPOINT.INVENTORY, { page, per_page, search, sort });
+    return await GET(ENDPOINT.FABRIC, { page, per_page, search, sort });
 }
 
 export const master: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
-    return await GET(`${ENDPOINT.INVENTORY}/master`, { page, per_page, search, sort });
+    return await GET(`${ENDPOINT.FABRIC}/master`, { page, per_page, search, sort });
 }
 
-export const store: BaseApiCallCreateProps<Inventory> = async (values) => {
-    return await POST(ENDPOINT.INVENTORY, values);
+export const store: BaseApiCallCreateProps<Fabric> = async (values) => {
+    return await POST(ENDPOINT.FABRIC, values);
 }
 
-export const update: BaseApiCallUpdateProps<Inventory> = async (id, values) => {
-    return await PATCH(`${ENDPOINT.INVENTORY}/${id}`, values);
+export const update: BaseApiCallUpdateProps<Fabric> = async (id, values) => {
+    return await PATCH(`${ENDPOINT.FABRIC}/${id}`, values);
 }
 
 export const show: BaseApiCallViewProps = async (id) => {
-    return await GET(`${ENDPOINT.INVENTORY}/${id}`);
+    return await GET(`${ENDPOINT.FABRIC}/${id}`);
 }
 
 export const restore: BaseApiCallRestoreProps = async (id) => {
-    return await POST(`${ENDPOINT.INVENTORY}/${id}/restore`);
+    return await POST(`${ENDPOINT.FABRIC}/${id}/restore`);
 }
 
 export const destroy: BaseApiCallDeleteProps = async (id) => {
-    return await DELETE(`${ENDPOINT.INVENTORY}/${id}`);
+    return await DELETE(`${ENDPOINT.FABRIC}/${id}`);
 }
 
 export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
-    return await DELETE(`${ENDPOINT.INVENTORY}`, ids)
+    return await DELETE(`${ENDPOINT.FABRIC}`, ids)
 }

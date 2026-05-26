@@ -107,6 +107,14 @@ export default function FormRequest(props: BaseForm) {
             {
                 key: "serial_number",
                 type: "text",
+                schema: z.string(),
+                label: "Series",
+                description: "Masukkan seri.",
+                placeholder: "Seri",
+            },
+            {
+                key: "serial_number",
+                type: "text",
                 schema: schema.serial_number,
                 label: "Nomor Seri",
                 description: "Nomor seri atau referensi untuk request CMT ini.",

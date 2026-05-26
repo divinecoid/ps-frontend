@@ -6,6 +6,7 @@ import { z } from "zod/v3";
 
 export default function ModalProduct(props: BaseModalForm) {
     return <ModalItem<Product>
+        disabled
         title={props.isEdit ? "Sunting Produk" : "Tambah Produk"}
         description={props.isEdit ? "Sunting produk yang sudah ada" : "Tambah produk baru"}
         {...props}
@@ -40,7 +41,15 @@ export default function ModalProduct(props: BaseModalForm) {
                 description: "Masukkan rak produk.",
                 placeholder: "Rak produk",
             },
-            
+            {
+                key: "series",
+                type: "text",
+                schema: z.string(),
+                disabled: props.isEdit,
+                label: "Series",
+                description: "Masukkan series produk.",
+                placeholder: "Series produk",
+            },
             {
                 key: "barcode",
                 type: "text",

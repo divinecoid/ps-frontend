@@ -1,4 +1,4 @@
-import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2, ArrowDownLeft, History, ArrowDownLeftFromSquare } from "lucide-react";
+import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2, ArrowDownLeft, History, ArrowDownLeftFromSquare, FileStack } from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -153,8 +153,16 @@ export const Menu = {
   // ],
   navInventory: [
     {
+      name: "Gudang Kain",
+      url: "/fabric",
+      icon: FileStack,
+      role: [
+        'admin',
+      ]
+    },
+    {
       name: "Gudang Kecil",
-      url: "/product",
+      url: "/small-inventory",
       icon: Grid2X2,
       role: [
         'preparist',
@@ -164,7 +172,7 @@ export const Menu = {
     },
     {
       name: "Gudang Besar",
-      url: "/inventory",
+      url: "/large-inventory",
       icon: Grid2X2,
       role: [
         'preparist',
@@ -259,13 +267,13 @@ export const Menu = {
             'admin'
           ]
         },
-        // {
-        //   title: "Inventory",
-        //   url: "/master-data/inventory",
-        //   role: [
-        //     'admin'
-        //   ]
-        // },
+        {
+          title: "Product",
+          url: "/master-data/product",
+          role: [
+            'admin'
+          ]
+        },
         {
           title: "Ukuran",
           url: "/master-data/size",
@@ -287,16 +295,16 @@ export const Menu = {
             'admin'
           ]
         },
-        // {
-        //   title: "Produk",
-        //   url: "/master-data/product",
-        //   role: [
-        //     'admin'
-        //   ]
-        // },
         {
           title: "Pabrik",
           url: "/master-data/factory",
+          role: [
+            'admin'
+          ]
+        },
+        {
+          title: "Ukuran Roll",
+          url: "/master-data/roll-size",
           role: [
             'admin'
           ]

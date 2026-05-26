@@ -3,6 +3,16 @@ import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Inbound>[] = [
   {
+    accessorKey: "cmt.code",
+    header: "Kode CMT",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "cmt.name",
+    header: "Nama CMT",
+    enableSorting: true,
+  },
+  {
     accessorKey: "received_date",
     header: "Tanggal",
     enableSorting: true,
@@ -19,26 +29,13 @@ export const columns: ColumnDef<Inbound>[] = [
     }
   },
   {
-    accessorKey: "user.name",
+    accessorKey: "name",
     header: "Penerima",
     enableSorting: true,
   },
   {
-    accessorKey: "request.cmt.name",
-    header: "CMT",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "warehouse.name",
-    header: "Gudang",
-    enableSorting: true,
-    cell: ({ row }) => {
-      return row.original.warehouse?.name ?? '-'
-    }
-  },
-  {
-    accessorKey: "notes",
-    header: "Catatan",
+    accessorKey: "items",
+    header: "Jumlah barang",
     enableSorting: true,
   }
 ]

@@ -1,31 +1,16 @@
 import { Badge } from "@/components/ui/badge";
-import { Product } from "@/interfaces/product"
+import { RollSize } from "@/interfaces/roll-size";
 import { ColumnDef } from "@tanstack/react-table"
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<RollSize>[] = [
   {
-    accessorKey: "model.name",
-    header: "Model",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "rack.name",
-    header: "Rak",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "series",
-    header: "Series",
-    enableSorting: true,
-  },
-  {
-    accessorKey: "barcode",
-    header: "Barcode",
+    accessorKey: "size",
+    header: "Ukuran",
     enableSorting: true,
   },
   {
     accessorKey: "deleted_at",
-    header: "Status produk",
+    header: "Status Kain",
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;

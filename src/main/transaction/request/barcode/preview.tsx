@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Barcodes } from "@/interfaces/print";
 import { RequestViewResponse } from "@/interfaces/request";
 import Services from "@/services";
 import { useEffect, useState } from "react";
@@ -6,13 +7,12 @@ import QRCode from "react-qrcode-logo";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
-interface Barcodes {
-    code: string,
-    count: number
-}
 
 interface RequestDetail {
     barcode: string;
+    serial_number: string;
+    colors: string;
+    sizes: string;
     req_dozen_qty: number;
     req_piece_qty: number;
 }
@@ -21,8 +21,8 @@ export default function DocumentBarcodePreview() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const [barcodes, setBarcodes] = useState<string[]>();
-    const [dozenBarcodes, setDozenBarcodes] = useState<string[]>();
+    const [barcodes, setBarcodes] = useState<Barcodes[]>();
+    const [dozenBarcodes, setDozenBarcodes] = useState<Barcodes[]>();
     const [loading, setLoading] = useState(id ? true : false);
     const [isClosed, setClosed] = useState(true);
 
@@ -45,20 +45,21 @@ export default function DocumentBarcodePreview() {
             try {
                 const res = await Services.TransactionRequest.barcode(String(id));
                 const json = await res.json();
-                const temp: string[] = [];
-                const dozenTemp: string[] = [];
+                const temp: Barcodes[] = [];
+                const dozenTemp: Barcodes[] = [];
                 json.data.request_detail.map((item: RequestDetail) => {
                     return {
+                        ...item,
                         code: item.barcode,
                         count: item.req_dozen_qty * 12 + item.req_piece_qty
                     }
                 }).map((barcode: Barcodes) => {
                     const groupCount = Math.floor(barcode.count / 12);
                     for (let i = 0; i < groupCount; i++) {
-                        dozenTemp.push(`${barcode.code}|D|${i + 1}`);
+                        dozenTemp.push({ ...barcode, code: `${barcode.code}|D|${i + 1}` });
                     }
                     for (let i = 0; i < barcode.count; i++) {
-                        temp.push(`${barcode.code}|P|${i + 1}`);
+                        temp.push({ ...barcode, code: `${barcode.code}|P|${i + 1}` });
                     }
                 });
                 setBarcodes(temp);
@@ -76,7 +77,7 @@ export default function DocumentBarcodePreview() {
     }, []);
 
     const handlePrint = async () => {
-        if (!barcodes?.length || !dozenBarcodes?.length) {
+        if (!barcodes?.length) {
             toast.error("Tidak ada barcode untuk dicetak", { richColors: true });
             return;
         }
@@ -94,23 +95,23 @@ export default function DocumentBarcodePreview() {
     return <div className={`flex flex-col flex-1 h-0 ${loading ? 'cursor-progress' : undefined} bg-black/20 dark:bg-white/20`}>
         {!loading && (
             <div className={`flex justify-center p-4 overflow-auto`}>
-                <div className={`grid grid-cols-5 gap-2 bg-white p-4 drop-shadow-xl drop-shadow-black/50 mb-16 shrink-0`}>
+                <div className={`grid grid-cols-5 gap-1 bg-white p-4 drop-shadow-xl drop-shadow-black/50 mb-16 shrink-0`}>
                     {dozenBarcodes?.map((code, i) => (
                         <div
                             key={i}
-                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
+                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl pb-6 pt-60 px-4 text-xs text-center text-black"
                         >
-                            <QRCode value={code} size={100} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
-                            {code}
+                            <QRCode value={code.code} size={120} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
+                            <div className="text-nowrap w-22">{code.serial_number} - {code.colors} - {code.sizes}</div>
                         </div>
                     ))}
                     {barcodes?.map((code, i) => (
                         <div
                             key={i}
-                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl p-2 text-xs text-center text-black"
+                            className="print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl pb-6 pt-60 px-4 text-xs text-center text-black"
                         >
-                            <QRCode value={code} size={100} bgColor="transparent" fgColor="black" />
-                            {code}
+                            <QRCode value={code.code} size={120} bgColor="transparent" fgColor="black" />
+                            <div className="text-nowrap w-22">{code.serial_number} - {code.colors} - {code.sizes}</div>
                         </div>
                     ))}
                 </div>

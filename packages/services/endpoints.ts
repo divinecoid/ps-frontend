@@ -5,7 +5,10 @@ export const ENDPOINT = {
     CMT: "cmt",
     COLOR: "color",
     FACTORY: "factory",
-    INVENTORY: "inventory",
+    SMALLINVENTORY: "small-inventory",
+    LARGEINVENTORY: "inventory",
+    FABRIC: "cloth",
+    ROLL_SIZE: "roll-size",
     MARKETPLACE: "marketplace",
     ONLINE_STORE: "onlinestore",
     PRODUCT_MODEL: "model",
@@ -21,5 +24,6 @@ export const ENDPOINT = {
     INBOUND: "inbound",
     MUTATION: "mutation",
     ORDER: "order",
-    CONFIGURATION: "configuration"
+    CONFIGURATION: "configuration",
+    SHOPEE: "shopee"
 }

@@ -6,10 +6,17 @@ export interface Product extends MasterData {
   model: {
     name: string
   }
+  color: {
+    name: string
+  }
+  size: {
+    name: string
+  }
   rack: {
     name: string
   }
   barcode: string
+  series: string
 }
 
 export interface ProductResponse extends IndexResponse {

@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { FormField } from "@/components/ui/form";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ReceiveLog, ReceiveLogDetail } from "@/interfaces/request";
-import { formatDate } from "@/lib/format-date";
+import { formatDateTime } from "@/lib/format-date";
 import ViewReceiveLogDetail from "./dialog-receive-log-detail-view";
 
 export default function ReceivedLogList() {
@@ -34,7 +34,7 @@ export default function ReceivedLogList() {
                             {(field.value ?? []).map((row: ReceiveLog, index: number) => (
                                 <TableRow key={`${row.id}-${index}`}>
                                     <TableCell>{row.user?.name}</TableCell>
-                                    <TableCell>{formatDate(row.received_date)}</TableCell>
+                                    <TableCell>{formatDateTime(row.received_date)}</TableCell>
                                     <TableCell>{row.warehouse?.name}</TableCell>
                                     <TableCell className="w-0">
                                         <Button type="button" onClick={() => { setViewLogDetail(row.details); setOpen(true) }}><Eye /></Button>

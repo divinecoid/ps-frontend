@@ -1,9 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { Order } from "@/interfaces/order";
-import { formatDate } from "@/lib/format-date";
+import { formatDateTime } from "@/lib/format-date";
 import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Order>[] = [
+  {
+    accessorKey: "marketplace.name",
+    header: "Marketplace",
+    enableSorting: true,
+  },
   {
     accessorKey: "order_sn",
     header: "Nomor order",
@@ -19,7 +24,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Waktu baca",
     enableSorting: true,
     cell: (({ row }) => {
-      return row.original.read_at ? formatDate(row.original.read_at) : "-";
+      return row.original.read_at ? formatDateTime(row.original.read_at) : "-";
     })
   },
   {
@@ -27,7 +32,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Waktu penyiapan",
     enableSorting: true,
     cell: (({ row }) => {
-      return row.original.prepared_at ? formatDate(row.original.prepared_at) : "-";
+      return row.original.prepared_at ? formatDateTime(row.original.prepared_at) : "-";
     })
   },
   {
@@ -35,7 +40,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Tanggal siap dikirim",
     enableSorting: true,
     cell: (({ row }) => {
-      return row.original.readytoship_at ? formatDate(row.original.readytoship_at) : "-";
+      return row.original.readytoship_at ? formatDateTime(row.original.readytoship_at) : "-";
     })
   },
   {
@@ -54,18 +59,22 @@ export const columns: ColumnDef<Order>[] = [
     enableSorting: true,
     cell: (({ row }) => {
       const data = row.original;
-      switch (data.status) {
+      switch (data.status.toLowerCase()) {
         case "delivered":
-          return <Badge variant="success">{data.status}</Badge>
+        case "ready_to_pickup":
+          return <Badge variant="success">{data.status.replaceAll('_', ' ')}</Badge>
         case "pending":
         case "prepared":
         case "read":
         case "shipped":
         case "ready_to_ship":
-          return <Badge variant="secondary">{data.status}</Badge>
+        case "retry_ship":
+          return <Badge variant="secondary">{data.status.replaceAll('_', ' ')}</Badge>
         case "cancelled":
         case "returned":
           return <Badge variant="destructive">{data.status}</Badge>
+          default: 
+          return <Badge variant="default">{data.status.replaceAll('_', ' ')}</Badge>
       }
     })
   },

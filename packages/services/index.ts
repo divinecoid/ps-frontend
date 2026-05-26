@@ -10,14 +10,18 @@ import * as MasterProductModel from './master-product-model';
 import * as MasterSize from './master-size';
 import * as MasterColor from './master-color';
 import * as MasterFactory from './master-factory';
-import * as MasterInventory from './master-inventory';
+import * as MasterSmallInventory from './master-inventory-small';
+import * as MasterLargeInventory from './master-inventory-large';
 import * as MasterOnlineStore from './master-online-store';
 import * as MasterMarketplace from './master-marketplace';
+import * as MasterFabric from './master-fabric';
+import * as MasterRollSize from './master-roll-size';
 import * as TransactionRequest from './transaction-request';
 import * as TransactionInbound from './transaction-inbound';
 import * as TransactionMutation from './transaction-mutation';
 import * as TransactionOrder from './transaction-order';
 import * as MasterConfiguration from './master-configuration';
+import * as TransactionShopeeOrder from './transaction-shopee-order';
 
 const Services = {
     Auth,
@@ -31,14 +35,18 @@ const Services = {
     MasterSize,
     MasterColor,
     MasterFactory,
-    MasterInventory,
+    MasterSmallInventory,
+    MasterLargeInventory,
+    MasterFabric,
+    MasterRollSize,
     MasterOnlineStore,
     MasterMarketplace,
     MasterConfiguration,
     TransactionRequest,
     TransactionInbound,
     TransactionMutation,
-    TransactionOrder
+    TransactionOrder,
+    TransactionShopeeOrder
 };
 
 export default Services;

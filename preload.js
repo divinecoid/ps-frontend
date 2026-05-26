@@ -22,4 +22,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
             ipcRenderer.removeListener("set-print-data", listener);
         };
     },
+    saveFile: (buffer, filename) => ipcRenderer.invoke('save-file', buffer, filename),
+    openFile: (filePath) => ipcRenderer.invoke('open-file', filePath),
 });
