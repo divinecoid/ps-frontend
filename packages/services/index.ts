@@ -1,44 +1,48 @@
-export { setTokenRefreshListener } from './api';
-import * as Auth from './auth';
-import * as MasterUser from './master-user';
-import * as MasterRole from './master-role';
-import * as MasterRack from './master-rack';
-import * as MasterWarehouse from './master-warehouse';
-import * as MasterCMT from './master-cmt';
-import * as MasterProduct from './master-product';
-import * as MasterProductModel from './master-product-model';
-import * as MasterSize from './master-size';
-import * as MasterColor from './master-color';
-import * as MasterFactory from './master-factory';
-import * as MasterInventory from './master-inventory';
-import * as MasterOnlineStore from './master-online-store';
-import * as MasterMarketplace from './master-marketplace';
-import * as TransactionRequest from './transaction-request';
-import * as TransactionInbound from './transaction-inbound';
-import * as TransactionMutation from './transaction-mutation';
-import * as TransactionOrder from './transaction-order';
-import * as TransactionShopeeOrder from './transaction-shopee-order';
+export { setTokenRefreshListener } from "./api";
+import * as Auth from "./auth";
+import * as MasterUser from "./master-user";
+import * as MasterRole from "./master-role";
+import * as MasterRack from "./master-rack";
+import * as MasterWarehouse from "./master-warehouse";
+import * as MasterCMT from "./master-cmt";
+import * as MasterProduct from "./master-product";
+import * as MasterProductModel from "./master-product-model";
+import * as MasterSize from "./master-size";
+import * as MasterColor from "./master-color";
+import * as MasterConfiguration from "./master-configuration";
+import * as MasterFactory from "./master-factory";
+import * as MasterInventory from "./master-inventory";
+import * as MasterOnlineStore from "./master-online-store";
+import * as MasterMarketplace from "./master-marketplace";
+import * as TransactionRequest from "./transaction-request";
+import * as TransactionInbound from "./transaction-inbound";
+import * as TransactionMutation from "./transaction-mutation";
+import * as TransactionOrder from "./transaction-order";
+import * as TransactionFabricPurchase from "./transaction-fabric-purchase";
+import * as TransactionShopeeOrder from "./transaction-shopee-order";
 
 const Services = {
-    Auth,
-    MasterUser,
-    MasterRole,
-    MasterRack,
-    MasterWarehouse,
-    MasterCMT,
-    MasterProduct,
-    MasterProductModel,
-    MasterSize,
-    MasterColor,
-    MasterFactory,
-    MasterInventory,
-    MasterOnlineStore,
-    MasterMarketplace,
-    TransactionRequest,
-    TransactionInbound,
-    TransactionMutation,
-    TransactionOrder,
-    TransactionShopeeOrder
+  Auth,
+  MasterUser,
+  MasterRole,
+  MasterRack,
+  MasterWarehouse,
+  MasterCMT,
+  MasterProduct,
+  MasterProductModel,
+  MasterSize,
+  MasterColor,
+  MasterConfiguration,
+  MasterFactory,
+  MasterInventory,
+  MasterOnlineStore,
+  MasterMarketplace,
+  TransactionRequest,
+  TransactionInbound,
+  TransactionMutation,
+  TransactionOrder,
+  TransactionFabricPurchase,
+  TransactionShopeeOrder,
 };
 
 export default Services;

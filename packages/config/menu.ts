@@ -1,4 +1,13 @@
-import { Repeat2, SquareTerminal, UserCog, Construction, Grid2X2, ArrowDownLeft, History, ArrowDownLeftFromSquare } from "lucide-react";
+import {
+  Repeat2,
+  SquareTerminal,
+  UserCog,
+  Construction,
+  Grid2X2,
+  ArrowDownLeft,
+  History,
+  ArrowDownLeftFromSquare,
+} from "lucide-react";
 
 // export const Menu = {
 //   user: {
@@ -156,53 +165,39 @@ export const Menu = {
       name: "Gudang Kecil",
       url: "/product",
       icon: Grid2X2,
-      role: [
-        'preparist',
-        'checker',
-        'admin',
-      ]
+      role: ["preparist", "checker", "admin"],
     },
     {
       name: "Gudang Besar",
       url: "/inventory",
       icon: Grid2X2,
-      role: [
-        'preparist',
-        'checker',
-        'admin',
-      ]
-    }
+      role: ["preparist", "checker", "admin"],
+    },
   ],
   navCMTTransaction: [
     {
       name: "Permintaan",
       url: "/transaction/request",
       icon: Repeat2,
-      role: [
-        'preparist',
-        'checker',
-        'admin'
-      ]
+      role: ["preparist", "checker", "admin"],
     },
     {
       name: "Penerimaan",
       url: "/transaction/receive",
       icon: ArrowDownLeft,
-      role: [
-        'preparist',
-        'checker',
-        'admin'
-      ]
+      role: ["preparist", "checker", "admin"],
     },
     {
       name: "Riwayat penerimaan",
       url: "/transaction/receive-logs",
       icon: History,
-      role: [
-        'preparist',
-        'checker',
-        'admin'
-      ]
+      role: ["preparist", "checker", "admin"],
+    },
+    {
+      name: "Pembelian Kain",
+      url: "/transaction/fabric-purchase",
+      icon: Repeat2,
+      role: ["preparist", "checker", "admin"],
     },
   ],
   navWarehouseMutation: [
@@ -210,11 +205,7 @@ export const Menu = {
       name: "Mutasi",
       url: "/transaction/mutation",
       icon: ArrowDownLeftFromSquare,
-      role: [
-        'preparist',
-        'checker',
-        'admin'
-      ]
+      role: ["preparist", "checker", "admin"],
     },
   ],
   navStoreTransaction: [
@@ -222,10 +213,7 @@ export const Menu = {
       name: "Pesanan",
       url: "/transaction/order",
       icon: Repeat2,
-      role: [
-        'preparist',
-        'checker'
-      ]
+      role: ["preparist", "checker"],
     },
   ],
   navMaster: [
@@ -233,31 +221,22 @@ export const Menu = {
       title: "Master Data",
       url: "#",
       icon: SquareTerminal,
-      role: [
-        'admin',
-        'user'
-      ],
+      role: ["admin", "user"],
       items: [
         {
           title: "Gudang",
           url: "/master-data/warehouse",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
         {
           title: "Rak",
           url: "/master-data/rack",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
         {
           title: "CMT",
           url: "/master-data/cmt",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
         // {
         //   title: "Inventory",
@@ -269,23 +248,17 @@ export const Menu = {
         {
           title: "Ukuran",
           url: "/master-data/size",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
         {
           title: "Warna",
           url: "/master-data/color",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
         {
           title: "Model",
           url: "/master-data/product-model",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
         // {
         //   title: "Produk",
@@ -297,23 +270,17 @@ export const Menu = {
         {
           title: "Pabrik",
           url: "/master-data/factory",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
         {
           title: "Toko online",
           url: "/master-data/online-store",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
         {
           title: "Marketplace",
           url: "/master-data/marketplace",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
       ],
     },
@@ -321,27 +288,20 @@ export const Menu = {
       title: "Administrasi",
       url: "#",
       icon: UserCog,
-      role: [
-        'admin',
-        'user'
-      ],
+      role: ["admin", "user"],
       items: [
         {
           title: "Pengguna",
           url: "/master-data/user",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
         {
           title: "Peran",
           url: "/master-data/role",
-          role: [
-            'admin'
-          ]
+          role: ["admin"],
         },
-      ]
-    }
+      ],
+    },
   ],
   // projects: [
   //   {
@@ -372,4 +332,4 @@ export const Menu = {
       icon: Construction,
     },
   ],
-}
+};
