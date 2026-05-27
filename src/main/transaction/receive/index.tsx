@@ -80,9 +80,9 @@ export default function Receive() {
             const barcode: Barcode = {
                 barcode: full_barcode,
                 rack: {
-                    name: ""
+                    name: item.recommendedRack?.name ?? ""
                 },
-                rack_id: ""
+                rack_id: item.recommendedRack?.id ?? ""
             }
             addRow(item, barcode);
         }
@@ -125,7 +125,7 @@ export default function Receive() {
         }
     }
 
-    const validateBarcode = async (barcode: string): Promise<Item | undefined> => {
+    const validateBarcode = async (barcode: string): Promise<Item & { recommendedRack?: any } | undefined> => {
         const [prefix, _group, _sequence] = splitBarcode(barcode);
         try {
             setLoading(true);
@@ -141,7 +141,8 @@ export default function Receive() {
                     color: data.color.name ?? "",
                     size: data.size.name ?? "",
                     rec_dozen_qty: data.is_dozen ? 1 : 0,
-                    rec_piece_qty: data.is_dozen ? 0 : 1
+                    rec_piece_qty: data.is_dozen ? 0 : 1,
+                    recommendedRack: data.rack
                 };
             } else {
                 toast.error(json.message, { richColors: true })
