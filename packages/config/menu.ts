@@ -273,13 +273,6 @@ export const Menu = {
         {
           title: "Ukuran Roll",
           url: "/master-data/roll-size",
-          role: [
-            'admin'
-          ]
-        },
-        {
-          title: "Ukuran Roll",
-          url: "/master-data/roll-size",
           role: ['admin']
         },
         {
