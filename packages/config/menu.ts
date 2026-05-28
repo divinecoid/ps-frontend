@@ -181,6 +181,14 @@ export const Menu = {
       role: ["preparist", "checker", "admin"],
     },
   ],
+  navFabricTransaction: [
+    {
+      name: "Pembelian Kain",
+      url: "/transaction/fabric-purchase",
+      icon: Repeat2,
+      role: ["preparist", "checker", "admin"],
+    },
+  ],
   navCMTTransaction: [
     {
       name: "Permintaan",
@@ -198,12 +206,6 @@ export const Menu = {
       name: "Riwayat penerimaan",
       url: "/transaction/receive-logs",
       icon: History,
-      role: ["preparist", "checker", "admin"],
-    },
-    {
-      name: "Pembelian Kain",
-      url: "/transaction/fabric-purchase",
-      icon: Repeat2,
       role: ["preparist", "checker", "admin"],
     },
   ],
