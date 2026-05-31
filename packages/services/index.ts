@@ -24,6 +24,7 @@ import * as TransactionOrder from "./transaction-order";
 import * as TransactionFabricPurchase from "./transaction-fabric-purchase";
 import * as TransactionShopeeOrder from "./transaction-shopee-order";
 import * as Dashboard from "./dashboard";
+import * as Acm from "./acm";
 
 const Services = {
   Auth,
@@ -50,7 +51,8 @@ const Services = {
     MasterLargeInventory,
     MasterFabric,
     MasterRollSize,
-    Dashboard
+    Dashboard,
+    Acm
 };
 
 export default Services;

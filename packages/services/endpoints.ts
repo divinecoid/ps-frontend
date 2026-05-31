@@ -28,4 +28,5 @@ export const ENDPOINT = {
     SHOPEE: "shopee",
     FABRIC_PURCHASE: "fabric-purchase",
     DASHBOARD: "dashboard",
+    ACM: "acm",
 };

@@ -43,6 +43,7 @@ import ViewFormFabricPurchase from "./main/transaction/fabric-purchase/view/form
 import MasterFabrics from './main/master-data/fabric';
 import MasterRollSizes from './main/master-data/roll-size';
 import MasterConfigurations from './main/master-data/configuration';
+import AcmPage from './main/master-data/acm';
 
 function App() {
   const { token } = useAuth();
@@ -110,6 +111,7 @@ function App() {
                 element={<MasterMarketplaces />}
               />
               <Route path="/master-data/configuration" element={<MasterConfigurations />} />
+              <Route path="/master-data/acm" element={<AcmPage />} />
             </>
           )}
 
