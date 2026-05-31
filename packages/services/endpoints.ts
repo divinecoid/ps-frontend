@@ -24,5 +24,6 @@ export const ENDPOINT = {
     INBOUND: "inbound",
     MUTATION: "mutation",
     ORDER: "order",
+    CONFIGURATION: "configuration",
     SHOPEE: "shopee"
 }

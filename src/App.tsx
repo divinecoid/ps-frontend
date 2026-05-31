@@ -39,6 +39,7 @@ import FormLargeInventory from './main/master-data/inventory-large/form-inventor
 import ViewFormReceiveLog from './main/transaction/receive-logs/form-receive-logs';
 import MasterFabrics from './main/master-data/fabric';
 import MasterRollSizes from './main/master-data/roll-size';
+import MasterConfigurations from './main/master-data/configuration';
 
 function App() {
   const { token } = useAuth();
@@ -77,6 +78,7 @@ function App() {
               <Route path="/master-data/factory" element={<MasterFactories />} />
               <Route path="/master-data/online-store" element={<MasterOnlineStores />} />
               <Route path="/master-data/marketplace" element={<MasterMarketplaces />} />
+              <Route path="/master-data/configuration" element={<MasterConfigurations />} />
             </>
           )}
 
