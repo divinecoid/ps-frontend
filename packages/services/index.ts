@@ -23,6 +23,7 @@ import * as TransactionMutation from "./transaction-mutation";
 import * as TransactionOrder from "./transaction-order";
 import * as TransactionFabricPurchase from "./transaction-fabric-purchase";
 import * as TransactionShopeeOrder from "./transaction-shopee-order";
+import * as Dashboard from "./dashboard";
 
 const Services = {
   Auth,
@@ -48,7 +49,8 @@ const Services = {
     MasterSmallInventory,
     MasterLargeInventory,
     MasterFabric,
-    MasterRollSize
+    MasterRollSize,
+    Dashboard
 };
 
 export default Services;
