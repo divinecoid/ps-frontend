@@ -1,12 +1,12 @@
-import * as React from "react"
+import * as React from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MoreHorizontalIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -14,10 +14,10 @@ function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
       role="navigation"
       aria-label="pagination"
       data-slot="pagination"
-      className={cn("mx-auto flex w-full justify-center", className)}
+      className={cn("mx-auto flex w-full justify-center py-2", className)}
       {...props}
     />
-  )
+  );
 }
 
 function PaginationContent({
@@ -27,20 +27,20 @@ function PaginationContent({
   return (
     <ul
       data-slot="pagination-content"
-      className={cn("flex flex-row items-center gap-1", className)}
+      className={cn("flex flex-row items-center gap-2", className)}
       {...props}
     />
-  )
+  );
 }
 
 function PaginationItem({ ...props }: React.ComponentProps<"li">) {
-  return <li data-slot="pagination-item" {...props} />
+  return <li data-slot="pagination-item" {...props} />;
 }
 
 type PaginationLinkProps = {
-  isActive?: boolean
+  isActive?: boolean;
 } & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">
+  React.ComponentProps<"a">;
 
 function PaginationLink({
   className,
@@ -55,14 +55,15 @@ function PaginationLink({
       data-active={isActive}
       className={cn(
         buttonVariants({
-          variant: isActive ? "outline" : "ghost",
+          variant: isActive ? "default" : "ghost",
           size,
         }),
-        className
+        "h-9 w-9",
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function PaginationPrevious({
@@ -72,14 +73,13 @@ function PaginationPrevious({
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      size="default"
-      className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
+      size="icon"
+      className={cn(className)}
       {...props}
     >
-      <ChevronLeftIcon />
-      <span className="hidden sm:block">Sebelumnya</span>
+      <ChevronLeftIcon className="h-4 w-4" />
     </PaginationLink>
-  )
+  );
 }
 
 function PaginationNext({
@@ -89,14 +89,13 @@ function PaginationNext({
   return (
     <PaginationLink
       aria-label="Go to next page"
-      size="default"
-      className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
+      size="icon"
+      className={cn(className)}
       {...props}
     >
-      <span className="hidden sm:block">Berikutnya</span>
-      <ChevronRightIcon />
+      <ChevronRightIcon className="h-4 w-4" />
     </PaginationLink>
-  )
+  );
 }
 
 function PaginationEllipsis({
@@ -107,13 +106,16 @@ function PaginationEllipsis({
     <span
       aria-hidden
       data-slot="pagination-ellipsis"
-      className={cn("flex size-9 items-center justify-center", className)}
+      className={cn(
+        "flex h-9 w-9 items-center justify-center text-muted-foreground",
+        className,
+      )}
       {...props}
     >
-      <MoreHorizontalIcon className="size-4" />
+      <MoreHorizontalIcon className="h-4 w-4" />
       <span className="sr-only">Halaman lainnya</span>
     </span>
-  )
+  );
 }
 
 export {
@@ -124,4 +126,4 @@ export {
   PaginationPrevious,
   PaginationNext,
   PaginationEllipsis,
-}
+};

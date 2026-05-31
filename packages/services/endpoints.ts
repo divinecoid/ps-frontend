@@ -4,6 +4,7 @@ export const ENDPOINT = {
     REFRESH: "auth/refresh",
     CMT: "cmt",
     COLOR: "color",
+    CONFIGURATION: "configuration",
     FACTORY: "factory",
     SMALLINVENTORY: "small-inventory",
     LARGEINVENTORY: "inventory",
@@ -24,6 +25,6 @@ export const ENDPOINT = {
     INBOUND: "inbound",
     MUTATION: "mutation",
     ORDER: "order",
-    CONFIGURATION: "configuration",
-    SHOPEE: "shopee"
-}
+    SHOPEE: "shopee",
+    FABRIC_PURCHASE: "fabric-purchase",
+};

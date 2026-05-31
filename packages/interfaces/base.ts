@@ -1,32 +1,40 @@
-import { InputTypes } from "@/components/custom/dynamic-input"
-import { Mode } from "react-day-picker"
-import z from "zod/v3"
+import { InputTypes } from "@/components/custom/dynamic-input";
+import { Mode } from "react-day-picker";
+import z from "zod/v3";
 
 export interface Pagination {
-  current_page: number
-  per_page: number
-  last_page: number
-  total: number
+  current_page: number;
+  per_page: number;
+  last_page: number;
+  total: number;
 }
 
 export interface IndexResponse extends BaseResponse {
-  pagination: Pagination
+  pagination: Pagination;
 }
 
 export interface MasterData {
-  id: string
-  deleted_at: boolean
+  id: string;
+  deleted_at: boolean;
 }
 
 export interface BaseResponse {
-  success: boolean
-  message: string
+  success: boolean;
+  message: string;
 }
-export type BaseApiCallIndexProps = (page?: number, per_page?: number, search?: string, sort?: string) => Promise<Response>;
+export type BaseApiCallIndexProps = (
+  page?: number,
+  per_page?: number,
+  search?: string,
+  sort?: string,
+) => Promise<Response>;
 
 export type BaseApiCallCreateProps<T> = (values: T) => Promise<Response>;
 
-export type BaseApiCallUpdateProps<T> = (id: string, values: T) => Promise<Response>;
+export type BaseApiCallUpdateProps<T> = (
+  id: string,
+  values: T,
+) => Promise<Response>;
 
 export type BaseApiCallViewProps = (id: string) => Promise<Response>;
 
@@ -37,59 +45,59 @@ export type BaseApiCallDeleteProps = (id: string) => Promise<Response>;
 export type BaseApiCallMultiDeleteProps = (id: string[]) => Promise<Response>;
 
 export interface BaseApiCallProps<T> {
-  index?: BaseApiCallIndexProps
-  master?: BaseApiCallIndexProps
-  store?: BaseApiCallCreateProps<T>
-  update?: BaseApiCallUpdateProps<T>
-  show?: BaseApiCallViewProps
-  restore?: BaseApiCallRestoreProps
-  destroy?: BaseApiCallDeleteProps
+  index?: BaseApiCallIndexProps;
+  master?: BaseApiCallIndexProps;
+  store?: BaseApiCallCreateProps<T>;
+  update?: BaseApiCallUpdateProps<T>;
+  show?: BaseApiCallViewProps;
+  restore?: BaseApiCallRestoreProps;
+  destroy?: BaseApiCallDeleteProps;
 }
 
 interface BaseModal<T = string> {
-  onSubmit?: () => void
-  id?: T
-  setId?: React.Dispatch<React.SetStateAction<T | undefined>>
+  onSubmit?: () => void;
+  id?: T;
+  setId?: React.Dispatch<React.SetStateAction<T | undefined>>;
 }
 
 interface Modal {
-  onSubmit?: () => void
-  index?: number
-  setIndex?: React.Dispatch<React.SetStateAction<number | undefined>>
+  onSubmit?: () => void;
+  index?: number;
+  setIndex?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
 export interface BaseModalForm extends BaseModal {
-  isEdit?: boolean
-};
+  isEdit?: boolean;
+}
 
 export interface BaseForm {
-  id?: string
-  disabled?: boolean
-};
+  id?: string;
+  disabled?: boolean;
+}
 
 export interface BaseDialog<T = string> extends BaseModal<T> {
-  title?: string
-  description?: string
-  action?: ((id: T) => Promise<Response> | void)
-  variant?: "default" | "destructive"
-};
+  title?: string;
+  description?: string;
+  action?: (id: T) => Promise<Response> | void;
+  variant?: "default" | "destructive";
+}
 
 export interface SelectActionDialog<T> {
-  title?: string
-  description?: string
-  variant?: "default" | "destructive"
+  title?: string;
+  description?: string;
+  variant?: "default" | "destructive";
   selectedRows?: T[];
-  action: ((id: string[]) => Promise<Response> | void)
-  onSubmit?: () => void
-  trigger?: string
-};
+  action: (id: string[]) => Promise<Response> | void;
+  onSubmit?: () => void;
+  trigger?: string;
+}
 
 export interface Dialog extends Modal {
-  title?: string
-  description?: string
-  action?: ((id: number) => Promise<Response> | void)
-  variant?: "default" | "destructive"
-};
+  title?: string;
+  description?: string;
+  action?: (id: number) => Promise<Response> | void;
+  variant?: "default" | "destructive";
+}
 
 export interface FormShape<T> {
   key: keyof T & string;
@@ -109,7 +117,8 @@ export interface FormShape<T> {
     id: string;
     label: string;
     api: BaseApiCallIndexProps | null;
-  },
+  };
   defaultValue?: string | number | (string | number)[];
-  custom?: | React.ReactElement | ((index: number) => React.ReactNode)
+  group?: string;
+  custom?: React.ReactElement | ((index: number) => React.ReactNode);
 }
