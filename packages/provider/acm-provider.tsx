@@ -9,6 +9,7 @@ interface AcmContextType {
         can_read: boolean;
         can_update: boolean;
         can_delete: boolean;
+        can_force_delete: boolean;
     }>;
     loading: boolean;
     isAdmin: boolean;
@@ -23,6 +24,7 @@ export function AcmProvider({ children }: { children: React.ReactNode }) {
         can_read: boolean;
         can_update: boolean;
         can_delete: boolean;
+        can_force_delete: boolean;
     }>>({});
     const [loading, setLoading] = useState<boolean>(true);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -98,6 +100,7 @@ export function AcmProvider({ children }: { children: React.ReactNode }) {
                     can_read: boolean;
                     can_update: boolean;
                     can_delete: boolean;
+                    can_force_delete: boolean;
                 }> = {};
 
                 allPermsList.forEach(perms => {
@@ -109,12 +112,14 @@ export function AcmProvider({ children }: { children: React.ReactNode }) {
                                 can_read: false,
                                 can_update: false,
                                 can_delete: false,
+                                can_force_delete: false,
                             };
                         }
                         merged[p.menu_key].can_create = merged[p.menu_key].can_create || !!p.can_create;
                         merged[p.menu_key].can_read = merged[p.menu_key].can_read || !!p.can_read;
                         merged[p.menu_key].can_update = merged[p.menu_key].can_update || !!p.can_update;
                         merged[p.menu_key].can_delete = merged[p.menu_key].can_delete || !!p.can_delete;
+                        merged[p.menu_key].can_force_delete = merged[p.menu_key].can_force_delete || !!p.can_force_delete;
                     });
                 });
 
@@ -152,6 +157,7 @@ export function useAcm(menuKey: string) {
             canRead: true,
             canUpdate: true,
             canDelete: true,
+            canForceDelete: true,
             loading: false,
         };
     }
@@ -162,6 +168,7 @@ export function useAcm(menuKey: string) {
         canRead: perm ? perm.can_read : false,
         canUpdate: perm ? perm.can_update : false,
         canDelete: perm ? perm.can_delete : false,
+        canForceDelete: perm ? perm.can_force_delete : false,
         loading,
     };
 }

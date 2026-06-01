@@ -35,6 +35,14 @@ export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
     return await DELETE(`${ENDPOINT.PRODUCT_MODEL}`, ids)
 }
 
+export const forceDestroy: BaseApiCallDeleteProps = async (id) => {
+    return await DELETE(`${ENDPOINT.PRODUCT_MODEL}/${id}/force`);
+}
+
+export const multiForceDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
+    return await DELETE(`${ENDPOINT.PRODUCT_MODEL}/force`, ids)
+}
+
 export const model_color = async (id: string, page?: number, per_page?: number, search?: string) => {
     return await GET(`${ENDPOINT.MODEL_COLOR}/${id}`, {page, per_page, search});
 }

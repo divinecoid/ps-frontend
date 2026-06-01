@@ -34,3 +34,11 @@ export const destroy: BaseApiCallDeleteProps = async (id) => {
 export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
     return await DELETE(`${ENDPOINT.COLOR}`, ids)
 }
+
+export const forceDestroy: BaseApiCallDeleteProps = async (id) => {
+    return await DELETE(`${ENDPOINT.COLOR}/${id}/force`);
+}
+
+export const multiForceDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
+    return await DELETE(`${ENDPOINT.COLOR}/force`, ids)
+}

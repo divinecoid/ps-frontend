@@ -19,15 +19,17 @@ interface PermissionRow {
     can_read: boolean;
     can_update: boolean;
     can_delete: boolean;
+    can_force_delete: boolean;
 }
 
-type CrudField = 'can_create' | 'can_read' | 'can_update' | 'can_delete';
+type CrudField = 'can_create' | 'can_read' | 'can_update' | 'can_delete' | 'can_force_delete';
 
 const COLUMNS: { field: CrudField; label: string }[] = [
     { field: 'can_create', label: 'Create' },
     { field: 'can_read',   label: 'Read' },
     { field: 'can_update', label: 'Update' },
-    { field: 'can_delete', label: 'Delete' },
+    { field: 'can_delete', label: 'Soft Delete' },
+    { field: 'can_force_delete', label: 'Force Delete' },
 ];
 
 const GROUPS: { label: string; keys: string[] }[] = [
@@ -120,8 +122,8 @@ export default function AcmPage() {
         if (!selectedRoleId) return;
         setSaving(true);
         try {
-            const payload = permissions.map(({ menu_key, can_create, can_read, can_update, can_delete }) => ({
-                menu_key, can_create, can_read, can_update, can_delete,
+            const payload = permissions.map(({ menu_key, can_create, can_read, can_update, can_delete, can_force_delete }) => ({
+                menu_key, can_create, can_read, can_update, can_delete, can_force_delete,
             }));
             const res = await Services.Acm.upsert(selectedRoleId, payload);
             if (res.ok) {
@@ -195,15 +197,15 @@ export default function AcmPage() {
                 <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
 
                     {/* Table Header with Select-All checkboxes */}
-                    <div className="grid grid-cols-[1fr_100px_100px_100px_100px] border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/40">
+                    <div className="grid grid-cols-[1fr_100px_100px_100px_100px_100px] border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/40">
                         <div className="px-6 py-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                             Menu
                         </div>
                         {COLUMNS.map(({ field, label }) => (
-                            <div key={field} className="px-4 py-4 flex flex-col items-center gap-2">
-                                <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{label}</span>
+                            <div key={field} className="px-4 py-4 flex flex-col items-center justify-between text-center h-full gap-2">
+                                <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider block min-h-[32px] flex items-center justify-center">{label}</span>
                                 {!loadingPerms && permissions.length > 0 && (
-                                    <div className="flex flex-col items-center gap-1">
+                                    <div className="flex flex-col items-center gap-1 mt-auto">
                                         <Checkbox
                                             id={`select-all-${field}`}
                                             checked={isAllChecked(field)}
@@ -244,7 +246,7 @@ export default function AcmPage() {
                                         {groupPerms.map((perm, pi) => (
                                             <div
                                                 key={perm.menu_key}
-                                                className={`grid grid-cols-[1fr_100px_100px_100px_100px] items-center hover:bg-zinc-50/60 dark:hover:bg-zinc-800/40 transition-colors ${pi < groupPerms.length - 1 ? 'border-b border-zinc-100 dark:border-zinc-800' : ''}`}
+                                                className={`grid grid-cols-[1fr_100px_100px_100px_100px_100px] items-center hover:bg-zinc-50/60 dark:hover:bg-zinc-800/40 transition-colors ${pi < groupPerms.length - 1 ? 'border-b border-zinc-100 dark:border-zinc-800' : ''}`}
                                             >
                                                 <div className="px-6 py-4">
                                                     <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{perm.label}</span>
