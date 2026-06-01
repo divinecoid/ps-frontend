@@ -144,22 +144,22 @@ export default function AcmPage() {
     const permMap = new Map(permissions.map(p => [p.menu_key, p]));
 
     return (
-        <div className="flex-1 p-8 pt-6 space-y-6 bg-zinc-50 min-h-screen">
+        <div className="flex-1 p-8 pt-6 space-y-6 bg-zinc-50 dark:bg-zinc-950 min-h-screen">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-zinc-900 rounded-lg">
+                    <div className="p-2 bg-zinc-900 dark:bg-zinc-800 rounded-lg">
                         <ShieldCheck className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-zinc-800">Access Control Matrix</h1>
-                        <p className="text-sm text-zinc-500 mt-0.5">Atur izin akses CRUD per role untuk setiap menu</p>
+                        <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">Access Control Matrix</h1>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">Atur izin akses CRUD per role untuk setiap menu</p>
                     </div>
                 </div>
                 <Button
                     onClick={handleSave}
                     disabled={!selectedRoleId || saving || loadingPerms}
-                    className="bg-zinc-900 hover:bg-zinc-700 text-white gap-2"
+                    className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-700 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 gap-2"
                 >
                     <Save className="w-4 h-4" />
                     {saving ? "Menyimpan..." : "Simpan Perubahan"}
@@ -167,13 +167,13 @@ export default function AcmPage() {
             </div>
 
             {/* Role Selector */}
-            <div className="bg-white rounded-2xl border border-zinc-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] p-6">
-                <label className="block text-sm font-semibold text-zinc-700 mb-2">Pilih Role</label>
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] p-6">
+                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Pilih Role</label>
                 {loadingRoles ? (
                     <Skeleton className="h-10 w-[240px]" />
                 ) : (
                     <Select value={selectedRoleId} onValueChange={setSelectedRoleId}>
-                        <SelectTrigger className="w-[240px] bg-white border-zinc-300">
+                        <SelectTrigger className="w-[240px] bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300">
                             <SelectValue placeholder="Pilih role..." />
                         </SelectTrigger>
                         <SelectContent>
@@ -186,22 +186,22 @@ export default function AcmPage() {
                     </Select>
                 )}
                 {!selectedRoleId && !loadingRoles && (
-                    <p className="text-xs text-zinc-400 mt-2">Pilih role untuk melihat dan mengatur permission-nya.</p>
+                    <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-2">Pilih role untuk melihat dan mengatur permission-nya.</p>
                 )}
             </div>
 
             {/* Permission Matrix */}
             {selectedRoleId && (
-                <div className="bg-white rounded-2xl border border-zinc-200/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+                <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
 
                     {/* Table Header with Select-All checkboxes */}
-                    <div className="grid grid-cols-[1fr_100px_100px_100px_100px] border-b border-zinc-100 bg-zinc-50/70">
-                        <div className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                    <div className="grid grid-cols-[1fr_100px_100px_100px_100px] border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/40">
+                        <div className="px-6 py-4 text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                             Menu
                         </div>
                         {COLUMNS.map(({ field, label }) => (
                             <div key={field} className="px-4 py-4 flex flex-col items-center gap-2">
-                                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">{label}</span>
+                                <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{label}</span>
                                 {!loadingPerms && permissions.length > 0 && (
                                     <div className="flex flex-col items-center gap-1">
                                         <Checkbox
@@ -209,9 +209,9 @@ export default function AcmPage() {
                                             checked={isAllChecked(field)}
                                             data-state={isIndeterminate(field) ? "indeterminate" : isAllChecked(field) ? "checked" : "unchecked"}
                                             onCheckedChange={() => toggleAll(field)}
-                                            className="data-[state=checked]:bg-zinc-900 data-[state=checked]:border-zinc-900 data-[state=indeterminate]:bg-zinc-400 data-[state=indeterminate]:border-zinc-400"
+                                            className="border-zinc-300 dark:border-zinc-700 data-[state=checked]:bg-zinc-900 dark:data-[state=checked]:bg-zinc-100 dark:data-[state=checked]:text-zinc-900 data-[state=checked]:border-zinc-900 dark:data-[state=checked]:border-zinc-100 data-[state=indeterminate]:bg-zinc-400 dark:data-[state=indeterminate]:bg-zinc-500 data-[state=indeterminate]:border-zinc-400 dark:data-[state=indeterminate]:border-zinc-500"
                                         />
-                                        <span className="text-[10px] text-zinc-400 font-medium">Semua</span>
+                                        <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">Semua</span>
                                     </div>
                                 )}
                             </div>
@@ -235,8 +235,8 @@ export default function AcmPage() {
                                 return (
                                     <div key={group.label}>
                                         {/* Group Header */}
-                                        <div className="px-6 py-2.5 bg-zinc-50 border-t border-b border-zinc-100">
-                                            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">
+                                        <div className="px-6 py-2.5 bg-zinc-50 dark:bg-zinc-900/30 border-t border-b border-zinc-100 dark:border-zinc-800">
+                                            <span className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
                                                 {group.label}
                                             </span>
                                         </div>
@@ -244,10 +244,10 @@ export default function AcmPage() {
                                         {groupPerms.map((perm, pi) => (
                                             <div
                                                 key={perm.menu_key}
-                                                className={`grid grid-cols-[1fr_100px_100px_100px_100px] items-center hover:bg-zinc-50/60 transition-colors ${pi < groupPerms.length - 1 ? 'border-b border-zinc-100' : ''}`}
+                                                className={`grid grid-cols-[1fr_100px_100px_100px_100px] items-center hover:bg-zinc-50/60 dark:hover:bg-zinc-800/40 transition-colors ${pi < groupPerms.length - 1 ? 'border-b border-zinc-100 dark:border-zinc-800' : ''}`}
                                             >
                                                 <div className="px-6 py-4">
-                                                    <span className="text-sm font-medium text-zinc-700">{perm.label}</span>
+                                                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{perm.label}</span>
                                                 </div>
                                                 {COLUMNS.map(({ field }) => (
                                                     <div key={field} className="flex items-center justify-center px-4 py-4">
@@ -255,7 +255,7 @@ export default function AcmPage() {
                                                             id={`${perm.menu_key}-${field}`}
                                                             checked={perm[field]}
                                                             onCheckedChange={() => toggleCell(perm.menu_key, field)}
-                                                            className="data-[state=checked]:bg-zinc-900 data-[state=checked]:border-zinc-900"
+                                                            className="border-zinc-300 dark:border-zinc-700 data-[state=checked]:bg-zinc-900 dark:data-[state=checked]:bg-zinc-100 dark:data-[state=checked]:text-zinc-900 data-[state=checked]:border-zinc-900 dark:data-[state=checked]:border-zinc-100"
                                                         />
                                                     </div>
                                                 ))}
