@@ -47,7 +47,10 @@ export default function MasterOnlineStores() {
     }
 
     const authOnlineStore = async (id: string, marketplace_id: string, successUrl: string) => {
-        const url = `${import.meta.env.VITE_APP_BASE_URL}/${await getMarketplaceAlias(marketplace_id)}/login/${id}`;
+        const baseUrl = typeof window !== "undefined" && !window.electronAPI && window.location.origin
+            ? window.location.origin
+            : (import.meta.env.VITE_APP_BASE_URL || "");
+        const url = `${baseUrl}/${await getMarketplaceAlias(marketplace_id)}/login/${id}`;
         await window.electronAPI.startOauth(url, successUrl);
     }
     const refreshOnlineStore = async (id: string) => {

@@ -61,7 +61,10 @@ const fetchWithTimeout = async (input: string | URL | globalThis.Request, init?:
 }
 
 export const GET = async (path: string, params?: Record<string, unknown>) => {
-    const url = new URL(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path);
+    const baseUrl = typeof window !== "undefined" && !window.electronAPI && window.location.origin
+        ? window.location.origin
+        : (import.meta.env.VITE_APP_BASE_URL || "");
+    const url = new URL(`${baseUrl}/api/` + path);
     if (params) {
         Object.entries(params).forEach(([key, value]) => {
             if (value !== undefined && value !== null && value !== "") {
@@ -75,35 +78,50 @@ export const GET = async (path: string, params?: Record<string, unknown>) => {
 }
 
 export const POST = async (path: string, body?: object) => {
-    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
+    const baseUrl = typeof window !== "undefined" && !window.electronAPI && window.location.origin
+        ? window.location.origin
+        : (import.meta.env.VITE_APP_BASE_URL || "");
+    return await fetchWithTimeout(`${baseUrl}/api/` + path, {
         method: 'POST',
         body: JSON.stringify(body),
     })
 }
 
 export const PATCH = async (path: string, body?: object) => {
-    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
+    const baseUrl = typeof window !== "undefined" && !window.electronAPI && window.location.origin
+        ? window.location.origin
+        : (import.meta.env.VITE_APP_BASE_URL || "");
+    return await fetchWithTimeout(`${baseUrl}/api/` + path, {
         method: 'PATCH',
         body: JSON.stringify(body),
     })
 }
 
 export const PUT = async (path: string, body?: object) => {
-    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
+    const baseUrl = typeof window !== "undefined" && !window.electronAPI && window.location.origin
+        ? window.location.origin
+        : (import.meta.env.VITE_APP_BASE_URL || "");
+    return await fetchWithTimeout(`${baseUrl}/api/` + path, {
         method: 'PUT',
         body: JSON.stringify(body),
     })
 }
 
 export const DELETE = async (path: string, body?: object) => {
-    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
+    const baseUrl = typeof window !== "undefined" && !window.electronAPI && window.location.origin
+        ? window.location.origin
+        : (import.meta.env.VITE_APP_BASE_URL || "");
+    return await fetchWithTimeout(`${baseUrl}/api/` + path, {
         method: 'DELETE',
         body: JSON.stringify(body),
     })
 }
 
 export const DELETE_ALL = async (path: string) => {
-    return await fetchWithTimeout(`${import.meta.env.VITE_APP_BASE_URL}/api/` + path, {
+    const baseUrl = typeof window !== "undefined" && !window.electronAPI && window.location.origin
+        ? window.location.origin
+        : (import.meta.env.VITE_APP_BASE_URL || "");
+    return await fetchWithTimeout(`${baseUrl}/api/` + path, {
         method: 'DELETE',
     })
 }
