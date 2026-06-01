@@ -310,6 +310,11 @@ export const Menu = {
           url: "/master-data/acm",
           role: ["admin"],
         },
+        {
+          title: "Audit Log",
+          url: "/master-data/audit-log",
+          role: ["admin"],
+        },
       ],
     },
   ],

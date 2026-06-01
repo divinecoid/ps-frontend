@@ -29,4 +29,6 @@ export const ENDPOINT = {
     FABRIC_PURCHASE: "fabric-purchase",
     DASHBOARD: "dashboard",
     ACM: "acm",
+    AUDIT_LOG: "audit-log",
 };
+

@@ -46,6 +46,10 @@ const GROUPS: { label: string; keys: string[] }[] = [
             "master_roll_size", "master_toko", "master_marketplace", "master_konfigurasi",
         ],
     },
+    {
+        label: "Administrasi",
+        keys: ["audit_log"],
+    },
 ];
 
 export default function AcmPage() {

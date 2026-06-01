@@ -44,6 +44,8 @@ import MasterFabrics from './main/master-data/fabric';
 import MasterRollSizes from './main/master-data/roll-size';
 import MasterConfigurations from './main/master-data/configuration';
 import AcmPage from './main/master-data/acm';
+import MasterAuditLogs from "./main/master-data/audit-log";
+
 
 function App() {
   const { token } = useAuth();
@@ -112,6 +114,7 @@ function App() {
               />
               <Route path="/master-data/configuration" element={<MasterConfigurations />} />
               <Route path="/master-data/acm" element={<AcmPage />} />
+              <Route path="/master-data/audit-log" element={<MasterAuditLogs />} />
             </>
           )}
 
