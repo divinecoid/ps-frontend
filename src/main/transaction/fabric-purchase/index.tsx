@@ -7,30 +7,36 @@ import { Eye, Plus, Trash } from "lucide-react";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import { useState } from "react";
+import { useAcm } from "@/provider/acm-provider";
 
 export default function FabricPurchase() {
   const [deleteRow, setDeleteRow] = useState<string>();
+  const { canCreate, canDelete } = useAcm("pembelian_kain");
 
   return (
     <OverviewPage
       columns={columns}
       source={Services.TransactionFabricPurchase}
       actions={(props) => [
-        <Button asChild variant="outline">
-          <Link to={`./new`}>
-            <Plus />
-            Pengajuan Baru
-          </Link>
-        </Button>,
-        <ModalConfirm
-          {...props}
-          action={Services.TransactionFabricPurchase.destroy}
-          id={deleteRow}
-          setId={setDeleteRow}
-          variant="destructive"
-          title="Apakah anda yakin untuk membatalkan pengajuan ini?"
-          description="Pengajuan ini akan dibatalkan."
-        />,
+        canCreate && (
+          <Button asChild variant="outline">
+            <Link to={`./new`}>
+              <Plus />
+              Pengajuan Baru
+            </Link>
+          </Button>
+        ),
+        canDelete && (
+          <ModalConfirm
+            {...props}
+            action={Services.TransactionFabricPurchase.destroy}
+            id={deleteRow}
+            setId={setDeleteRow}
+            variant="destructive"
+            title="Apakah anda yakin untuk membatalkan pengajuan ini?"
+            description="Pengajuan ini akan dibatalkan."
+          />
+        ),
       ]}
       rowActions={({ row }) => (
         <div className="flex gap-2 justify-end">
@@ -41,7 +47,7 @@ export default function FabricPurchase() {
               </Link>
             </Button>
           </TooltipHover>
-          {row.status === "OPEN" && (
+          {canDelete && row.status === "OPEN" && (
             <TooltipHover tooltip="Hapus">
               <Button
                 variant="destructive"

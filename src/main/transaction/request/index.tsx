@@ -10,6 +10,7 @@ import { TooltipHover } from "@/components/custom/tooltip-hover";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DatatableSelectAction from "@/components/custom/datatable-select-action";
 import { Barcodes } from "@/interfaces/print";
+import { useAcm } from "@/provider/acm-provider";
 
 
 interface RequestDetail {
@@ -20,6 +21,7 @@ interface RequestDetail {
 
 export default function Request() {
     const [deleteRow, setDeleteRow] = useState<string>();
+    const { canCreate, canDelete } = useAcm("permintaan");
     const paperWidthMm = 240;
     const paperHeightMm = 300;
 
@@ -67,10 +69,11 @@ export default function Request() {
     return <OverviewPage
         columns={columns}
         source={Services.TransactionRequest}
+        selectable={canDelete}
         actions={(props) => [
-            <DatatableSelectAction {...props} action={Services.TransactionRequest.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} pengajuan?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} pengajuan terpilih dari daftar pilihan.`} />,
-            <Button asChild variant="outline"><Link to={`./new`}><Plus />Pengajuan Baru</Link></Button>,
-            <ModalConfirm {...props} action={Services.TransactionRequest.destroy} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
+            canDelete && <DatatableSelectAction {...props} action={Services.TransactionRequest.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} pengajuan?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} pengajuan terpilih dari daftar pilihan.`} />,
+            canCreate && <Button asChild variant="outline"><Link to={`./new`}><Plus />Pengajuan Baru</Link></Button>,
+            canDelete && <ModalConfirm {...props} action={Services.TransactionRequest.destroy} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />
         ]}
         rowActions={({ row }) => (
             <div className="flex gap-2 justify-end">
@@ -78,7 +81,7 @@ export default function Request() {
                 <TooltipHover tooltip="Lihat QR"><Button asChild variant="outline"><Link to={`./${row.id}/barcode`}><QrCode /></Link></Button></TooltipHover>
                 {row.status == 'OPEN' && <>
                     <TooltipHover tooltip="Cetak QR"><Button variant="outline" className="cursor-pointer" onClick={() => handlePrint(row.id)}><Printer /></Button></TooltipHover>
-                    <TooltipHover tooltip="Hapus"><Button variant="destructive" className="cursor-pointer" onClick={() => setDeleteRow(row.id)}><Trash /></Button></TooltipHover>
+                    {canDelete && <TooltipHover tooltip="Hapus"><Button variant="destructive" className="cursor-pointer" onClick={() => setDeleteRow(row.id)}><Trash /></Button></TooltipHover>}
                 </>
                 }
             </div>

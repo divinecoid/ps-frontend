@@ -14,6 +14,8 @@ import ModalConfirmReset from "./confirm-reset";
 import { MutationValidateResponse } from "@/interfaces/mutation";
 import { ComboboxAutoHighlight } from "@/components/custom/combobox-autohighlight";
 import { BaseResponse } from "@/interfaces/base";
+import { useAcm } from "@/provider/acm-provider";
+
 /**
  * FIXME: AI generated code
  */
@@ -55,6 +57,7 @@ export default function Mutation() {
     const [loadingCount, setLoadingCount] = useState(0);
     const [submitConfirm, setSubmitConfirm] = useState<boolean>();
     const [resetConfirm, setResetConfirm] = useState<boolean>();
+    const { canCreate } = useAcm("mutasi");
 
     const loading = loadingCount > 0;
 
@@ -248,25 +251,27 @@ export default function Mutation() {
         <ModalConfirmSubmit submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
         <div className="px-4 lg:px-6">
             <Label>Rak</Label>
-            <ComboboxAutoHighlight source={Services.MasterRack.index} id="id" label="name" placeholder="Cari rak atau masukkan id barcode disini" value={rack} onValueChange={setRack} errorMessage="Rak tidak valid!" className="mt-2 mb-4" onFocus={e=>e.target.select()} />
+            <ComboboxAutoHighlight disabled={!canCreate} source={Services.MasterRack.index} id="id" label="name" placeholder={canCreate ? "Cari rak atau masukkan id barcode disini" : "Anda tidak memiliki akses untuk mutasi"} value={rack} onValueChange={setRack} errorMessage="Rak tidak valid!" className="mt-2 mb-4" onFocus={e=>e.target.select()} />
             <Label>Barcode</Label>
-            <Input onKeyDown={findProduct} value={search} disabled={!rack} placeholder={!rack ? 'Silakan tentukan rak terlebih dahulu' : "Masukkan barcode barang di sini"} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
+            <Input onKeyDown={findProduct} value={search} disabled={!rack || !canCreate} placeholder={!canCreate ? "Anda tidak memiliki akses untuk mutasi" : !rack ? 'Silakan tentukan rak terlebih dahulu' : "Masukkan barcode barang di sini"} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
             <Tabs defaultValue="items">
                 <TabsList>
                     <TabsTrigger value="items">Barang diterima</TabsTrigger>
                     <TabsTrigger value="barcodes">Kode batang</TabsTrigger>
                 </TabsList>
                 <TabsContent value="items">
-                    <Items rows={items} removeRow={setDeleteRow} />
+                    <Items rows={items} removeRow={canCreate ? setDeleteRow : undefined} />
                 </TabsContent>
                 <TabsContent value="barcodes">
-                    <Barcodes rows={barcodes} removeRow={setDeleteBarcodeRow} />
+                    <Barcodes rows={barcodes} removeRow={canCreate ? setDeleteBarcodeRow : undefined} />
                 </TabsContent>
             </Tabs>
         </div>
-        <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end px-7 py-2">
-            <Button variant="destructive" type="button" onClick={() => setResetConfirm(true)}>Atur Ulang</Button>
-            <Button type="button" onClick={confirm}>Kirim</Button>
-        </div>
+        {canCreate && (
+            <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end px-7 py-2">
+                <Button variant="destructive" type="button" onClick={() => setResetConfirm(true)}>Atur Ulang</Button>
+                <Button type="button" onClick={confirm}>Kirim</Button>
+            </div>
+        )}
     </div>
 }

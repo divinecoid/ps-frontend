@@ -15,6 +15,7 @@ import ModalConfirmSubmit from "./confirm-submit";
 import { BaseResponse } from "@/interfaces/base";
 import ModalConfirmReset from "./confirm-reset";
 import ModalRecommendRack from "./recommend-rack";
+import { useAcm } from "@/provider/acm-provider";
 
 export interface Item {
     cmt: string
@@ -45,6 +46,7 @@ export default function Receive() {
     const [barcodeConfirm, setBarcodeConfirm] = useState<string>();
     const [submitConfirm, setSubmitConfirm] = useState<boolean>();
     const [resetConfirm, setResetConfirm] = useState<boolean>();
+    const { canCreate } = useAcm("penerimaan");
     const [recommendConfirm, setRecommendConfirm] = useState<{
         barcode: string;
         item: Item;
@@ -325,23 +327,25 @@ export default function Receive() {
         <ModalRecommendRack data={recommendConfirm} onConfirm={handleRecommendConfirm} onCancel={() => setRecommendConfirm(undefined)} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
-            <Input onKeyDown={findProduct} value={search} placeholder="Masukkan barcode barang lusin atau satuan di sini" onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
+            <Input disabled={!canCreate} onKeyDown={findProduct} value={search} placeholder={canCreate ? "Masukkan barcode barang lusin atau satuan di sini" : "Anda tidak memiliki akses untuk menerima barang"} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
             <Tabs defaultValue="items">
                 <TabsList>
                     <TabsTrigger value="items">Barang diterima</TabsTrigger>
                     <TabsTrigger value="barcodes">Kode batang</TabsTrigger>
                 </TabsList>
                 <TabsContent value="items">
-                    <Items rows={items} removeRow={setDeleteRow} />
+                    <Items rows={items} removeRow={canCreate ? setDeleteRow : undefined} />
                 </TabsContent>
                 <TabsContent value="barcodes">
-                    <Barcodes rows={barcodes} removeRow={setDeleteBarcodeRow} />
+                    <Barcodes rows={barcodes} removeRow={canCreate ? setDeleteBarcodeRow : undefined} />
                 </TabsContent>
             </Tabs>
         </div>
-        <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
-            <Button variant="destructive" type="button" onClick={() => setResetConfirm(true)}>Atur Ulang</Button>
-            <Button type="button" onClick={confirm}>Kirim</Button>
-        </div>
+        {canCreate && (
+            <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
+                <Button variant="destructive" type="button" onClick={() => setResetConfirm(true)}>Atur Ulang</Button>
+                <Button type="button" onClick={confirm}>Kirim</Button>
+            </div>
+        )}
     </div>
 }

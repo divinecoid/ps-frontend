@@ -4,6 +4,7 @@ import App from "./App";
 import { ThemeProvider } from "@/provider/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/provider/auth-provider";
+import { AcmProvider } from "@/provider/acm-provider";
 
 const initialToken = await window.electronAPI?.getToken();
 
@@ -13,14 +14,16 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthProvider initialToken={initialToken}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <App />
-        <Toaster
-          position="top-right"
-          swipeDirections={["left", "right"]}
-          className="select-none"
-        />
-      </ThemeProvider>
+      <AcmProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <App />
+          <Toaster
+            position="top-right"
+            swipeDirections={["left", "right"]}
+            className="select-none"
+          />
+        </ThemeProvider>
+      </AcmProvider>
     </AuthProvider>
   </React.StrictMode>,
 );
