@@ -73,7 +73,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
           aria-expanded={open}
           aria-invalid={ariaInvalid}
           disabled={disabled}
-          className={cn("justify-between aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive truncate", className)}
+          className={cn("justify-between font-normal aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive truncate", className)}
         >
           <span className="truncate flex-1 text-left">
             {value && Array.isArray(value) && value.length > 0 ? (              // multiselect
@@ -81,7 +81,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
             ) : !Array.isArray(value) && value ? (                              // singleselect
               options.find(o => o.value === value)?.label
             ) : (
-              <p className="opacity-50">{placeholder}</p>
+              <span className="opacity-50">{placeholder}</span>
             )}
           </span>
           <ChevronsUpDown className="opacity-50" />
