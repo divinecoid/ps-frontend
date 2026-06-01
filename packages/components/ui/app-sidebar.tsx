@@ -36,7 +36,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden p-1">
                   <img src="/iconps.png" alt="PS Desktop" className="w-full h-full object-contain" />
                 </div>
-                <div className="flex flex-col gap-0.5 leading-none">
+                <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
                   <span className="font-medium truncate line-clamp-1">PS Desktop</span>
                   <span className="">v1.0.0</span>
                 </div>

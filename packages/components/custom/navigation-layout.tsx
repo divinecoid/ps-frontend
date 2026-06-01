@@ -17,6 +17,34 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { ModeToggle } from "@/components/ui/mode-toggle"
 import React, { useEffect } from "react"
 
+const BREADCRUMB_LABELS: Record<string, string> = {
+  home: "Dashboard",
+  "master-data": "Master Data",
+  transaction: "Transaksi",
+  warehouse: "Gudang",
+  rack: "Rak",
+  cmt: "CMT",
+  product: "Produk",
+  size: "Ukuran",
+  color: "Warna",
+  "product-model": "Model",
+  factory: "Pabrik",
+  "roll-size": "Ukuran Roll",
+  "online-store": "Toko Online",
+  marketplace: "Marketplace",
+  configuration: "Konfigurasi",
+  acm: "ACM",
+  fabric: "Kain",
+  "fabric-purchase": "Pembelian Kain",
+  request: "Permintaan",
+  receive: "Penerimaan",
+  "receive-logs": "Riwayat Penerimaan",
+  mutation: "Mutasi",
+  order: "Pesanan",
+  "small-inventory": "Gudang Kecil",
+  "large-inventory": "Gudang Besar",
+};
+
 export default function NavigationLayout() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -44,15 +72,16 @@ export default function NavigationLayout() {
                 {path.map((segment, index) => {
                   const fullPath = "/" + path.slice(0, index + 1).join("/");
                   const isLast = index === path.length - 1;
+                  const label = BREADCRUMB_LABELS[segment.toLowerCase()] || segment;
                   return (
                     <React.Fragment key={segment}>
                       <BreadcrumbItem>
                         {!isLast ? (
                           <BreadcrumbLink asChild>
-                            <Link to={fullPath}>{segment}</Link>
+                            <Link to={fullPath}>{label}</Link>
                           </BreadcrumbLink>
                         ) : (
-                          <BreadcrumbPage>{segment}</BreadcrumbPage>
+                          <BreadcrumbPage>{label}</BreadcrumbPage>
                         )}
                       </BreadcrumbItem>
                       {!isLast && <BreadcrumbSeparator />}
