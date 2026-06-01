@@ -88,7 +88,7 @@ export default function MasterOnlineStores() {
                     {row.deleted_at ?
                         (canUpdate && <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Kembalikan</DropdownMenuItem>)
                         : <>
-                            <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.marketplace_id, row.redirect_uri)}>Sambungkan</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.marketplace_id, row.redirect_uri)}>Connect</DropdownMenuItem>
                             <DropdownMenuItem onSelect={() => refreshOnlineStore(row.id)}>Refresh Token</DropdownMenuItem>
                             {canUpdate && <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>}
                             {canDelete && <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>}
