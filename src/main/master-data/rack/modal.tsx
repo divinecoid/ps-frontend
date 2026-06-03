@@ -6,8 +6,8 @@ import { z } from "zod/v3";
 
 export default function ModalRack(props: BaseModalForm) {
     return <ModalItem<Rack>
-        title={props.isEdit ? "Sunting Rak" : "Tambah Rak"}
-        description={props.isEdit ? "Sunting rak yang sudah ada" : "Tambah rak baru"}
+        title={props.isEdit ? "Edit Rak" : "Tambah Rak"}
+        description={props.isEdit ? "Edit rak yang sudah ada" : "Tambah rak baru"}
         {...props}
         formShape={[
             {
@@ -41,6 +41,32 @@ export default function ModalRack(props: BaseModalForm) {
                     id: "id",
                     label: "name",
                     api: Services.MasterWarehouse.index
+                }
+            },
+            {
+                key: "model_id",
+                type: "combobox",
+                schema: z.string().nullable().optional(),
+                label: "Model",
+                description: "Model produk untuk rak ini (opsional).",
+                placeholder: "Pilih model",
+                source: {
+                    id: "id",
+                    label: "name",
+                    api: Services.MasterProductModel.index
+                }
+            },
+            {
+                key: "color_id",
+                type: "combobox",
+                schema: z.string().nullable().optional(),
+                label: "Warna",
+                description: "Warna produk untuk rak ini (opsional).",
+                placeholder: "Pilih warna",
+                source: {
+                    id: "id",
+                    label: "name",
+                    api: Services.MasterColor.index
                 }
             },
         ]} />

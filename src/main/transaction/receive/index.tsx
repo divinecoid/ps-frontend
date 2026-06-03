@@ -14,6 +14,8 @@ import { RackViewResponse } from "@/interfaces/rack";
 import ModalConfirmSubmit from "./confirm-submit";
 import { BaseResponse } from "@/interfaces/base";
 import ModalConfirmReset from "./confirm-reset";
+import ModalRecommendRack from "./recommend-rack";
+import { useAcm } from "@/provider/acm-provider";
 
 export interface Item {
     cmt: string
@@ -44,6 +46,20 @@ export default function Receive() {
     const [barcodeConfirm, setBarcodeConfirm] = useState<string>();
     const [submitConfirm, setSubmitConfirm] = useState<boolean>();
     const [resetConfirm, setResetConfirm] = useState<boolean>();
+    const { canCreate } = useAcm("penerimaan");
+    const [recommendConfirm, setRecommendConfirm] = useState<{
+        barcode: string;
+        item: Item;
+        rack: {
+            id: string;
+            code: string;
+            name: string;
+            warehouse: {
+                id: string;
+                name: string;
+            }
+        }
+    } | undefined>();
 
     const findProduct = async (event: KeyboardEvent<HTMLInputElement>) => {
         const [prefix, group, sequence] = splitBarcode(search);
@@ -53,10 +69,7 @@ export default function Receive() {
                     if (barcodes.some(item => item.barcode == search)) {
                         toast.error("Barcode sudah ada!", { richColors: true })
                     } else {
-                        const validation = await validateBarcode(search);
-                        if (validation) {
-                            setBarcodeConfirm(search);
-                        }
+                        await validatePieceBarcodeWithRecommend(search);
                     }
                     break;
                 case 'D'://kalau group ada
@@ -87,6 +100,61 @@ export default function Receive() {
             addRow(item, barcode);
         }
     }
+
+    const validatePieceBarcodeWithRecommend = async (full_barcode: string) => {
+        const [prefix, _group, _sequence] = splitBarcode(full_barcode);
+        try {
+            setLoading(true);
+            const res = await Services.TransactionInbound.validate({ barcode: full_barcode });
+            const json: InboundValidateResponse = await res.json();
+            if (res.ok) {
+                setLoading(false);
+                const data = json.data;
+                const item: Item = {
+                    barcode: prefix,
+                    cmt: data.cmt.name ?? "",
+                    model: data.model.name ?? "",
+                    color: data.color.name ?? "",
+                    size: data.size.name ?? "",
+                    rec_dozen_qty: 0,
+                    rec_piece_qty: 1
+                };
+
+                if (data.rack) {
+                    setRecommendConfirm({
+                        barcode: full_barcode,
+                        item,
+                        rack: data.rack
+                    });
+                } else {
+                    setBarcodeConfirm(full_barcode);
+                }
+            } else {
+                toast.error(json.message, { richColors: true })
+            }
+            setLoading(false);
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message, { richColors: true });
+            }
+            setLoading(false);
+        }
+    }
+
+    const handleRecommendConfirm = () => {
+        if (recommendConfirm) {
+            const { item, barcode, rack } = recommendConfirm;
+            const newBarcode: Barcode = {
+                barcode: barcode,
+                rack: {
+                    name: `${rack.code} - ${rack.name}`
+                },
+                rack_id: rack.id
+            };
+            addRow(item, newBarcode);
+            setRecommendConfirm(undefined);
+        }
+    };
 
     const validatePieceBarcode = async (full_barcode: string, rack_id: string) => {
         const rackName = await getRack(rack_id);
@@ -256,25 +324,28 @@ export default function Receive() {
         <ModalConfirmItemPiece barcode={barcodeConfirm} setBarcode={setBarcodeConfirm} onSubmit={validatePieceBarcode} />
         <ModalConfirmReset resetConfirm={resetConfirm} setResetConfirm={setResetConfirm} onSubmit={resetState} />
         <ModalConfirmSubmit hasDozen={barcodes.some(item => !item.barcode.includes('|P|'))} submitConfirm={submitConfirm} setSubmitConfirm={setSubmitConfirm} onSubmit={submit} />
+        <ModalRecommendRack data={recommendConfirm} onConfirm={handleRecommendConfirm} onCancel={() => setRecommendConfirm(undefined)} />
         <div className="px-4 lg:px-6">
             <Label>Barcode</Label>
-            <Input onKeyDown={findProduct} value={search} placeholder="Masukkan barcode barang lusin atau satuan di sini" onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
+            <Input disabled={!canCreate} onKeyDown={findProduct} value={search} placeholder={canCreate ? "Masukkan barcode barang lusin atau satuan di sini" : "Anda tidak memiliki akses untuk menerima barang"} onChange={e => setSearch(e.target.value)} className="mt-2 mb-4" />
             <Tabs defaultValue="items">
                 <TabsList>
                     <TabsTrigger value="items">Barang diterima</TabsTrigger>
                     <TabsTrigger value="barcodes">Kode batang</TabsTrigger>
                 </TabsList>
                 <TabsContent value="items">
-                    <Items rows={items} removeRow={setDeleteRow} />
+                    <Items rows={items} removeRow={canCreate ? setDeleteRow : undefined} />
                 </TabsContent>
                 <TabsContent value="barcodes">
-                    <Barcodes rows={barcodes} removeRow={setDeleteBarcodeRow} />
+                    <Barcodes rows={barcodes} removeRow={canCreate ? setDeleteBarcodeRow : undefined} />
                 </TabsContent>
             </Tabs>
         </div>
-        <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
-            <Button variant="destructive" type="button" onClick={() => setResetConfirm(true)}>Atur Ulang</Button>
-            <Button type="button" onClick={confirm}>Kirim</Button>
-        </div>
+        {canCreate && (
+            <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
+                <Button variant="destructive" type="button" onClick={() => setResetConfirm(true)}>Atur Ulang</Button>
+                <Button type="button" onClick={confirm}>Kirim</Button>
+            </div>
+        )}
     </div>
 }

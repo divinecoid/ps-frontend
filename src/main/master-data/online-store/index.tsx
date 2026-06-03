@@ -9,11 +9,13 @@ import { MarketplaceRefreshTokenResponse, MarketplaceViewResponse } from "@/inte
 import { toast } from "sonner";
 import DropdownRowActions from "@/components/custom/dropdown-row-actions";
 import DatatableSelectAction from "@/components/custom/datatable-select-action";
+import { useAcm } from "@/provider/acm-provider";
 
 export default function MasterOnlineStores() {
     const [editRow, setEditRow] = useState<string|undefined>();
     const [restoreRow, setRestoreRow] = useState<string|undefined>();
     const [deleteRow, setDeleteRow] = useState<string|undefined>();
+    const { canCreate, canUpdate, canDelete } = useAcm("master_toko");
     const refreshTableRef = useRef<() => void>(() => { });
 
     useEffect(() => {
@@ -45,7 +47,10 @@ export default function MasterOnlineStores() {
     }
 
     const authOnlineStore = async (id: string, marketplace_id: string, successUrl: string) => {
-        const url = `${import.meta.env.VITE_APP_BASE_URL}/${await getMarketplaceAlias(marketplace_id)}/login/${id}`;
+        const baseUrl = typeof window !== "undefined" && !window.electronAPI && window.location.origin
+            ? window.location.origin
+            : (import.meta.env.VITE_APP_BASE_URL || "");
+        const url = `${baseUrl}/${await getMarketplaceAlias(marketplace_id)}/login/${id}`;
         await window.electronAPI.startOauth(url, successUrl);
     }
     const refreshOnlineStore = async (id: string) => {
@@ -69,26 +74,30 @@ export default function MasterOnlineStores() {
     return <OverviewPage
         columns={columns}
         source={Services.MasterOnlineStore}
-        selectable
+        selectable={canDelete}
         onLoadedRef={(fn) => (refreshTableRef.current = fn)}
         actions={(props) => [
-            <DatatableSelectAction {...props} action={Services.MasterOnlineStore.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} toko online?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} toko online terpilih dari daftar pilihan.`} />,
-            <ModalOnlineStore {...props} />,
-            <ModalOnlineStore {...props} isEdit id={editRow} setId={setEditRow} />,
-            <ModalConfirm {...props} action={Services.MasterOnlineStore.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan toko online ini?" description="Aksi ini akan memunculkan toko online ini kembali ke dalam daftar pilihan." />,
-            <ModalConfirm {...props} action={Services.MasterOnlineStore.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk menghapus toko online ini?" description="Aksi ini akan menghilangkan toko online ini dari daftar pilihan." />
+            canDelete && <DatatableSelectAction {...props} action={Services.MasterOnlineStore.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} toko online?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} toko online terpilih dari daftar pilihan.`} />,
+            canCreate && <ModalOnlineStore {...props} />,
+            canUpdate && <ModalOnlineStore {...props} isEdit id={editRow} setId={setEditRow} />,
+            canUpdate && <ModalConfirm {...props} action={Services.MasterOnlineStore.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan toko online ini?" description="Aksi ini akan memunculkan toko online ini kembali ke dalam daftar pilihan." />,
+            canDelete && <ModalConfirm {...props} action={Services.MasterOnlineStore.destroy} id={deleteRow} setId={setDeleteRow} title="Apakah anda yakin untuk menghapus toko online ini?" description="Aksi ini akan menghilangkan toko online ini dari daftar pilihan." />
         ]}
-        rowActions={({ row }) => (
-            <DropdownRowActions>
-                {row.deleted_at ?
-                    <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Kembalikan</DropdownMenuItem>
-                    : <>
-                        <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.marketplace_id, row.redirect_uri)}>Sambungkan</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => refreshOnlineStore(row.id)}>Refresh Token</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Sunting</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>
-                    </>
-                }
-            </DropdownRowActions>
-        )} />
+        rowActions={({ row }) => {
+            const hasActions = row.deleted_at ? canUpdate : true; // true because of Sambungkan and Refresh Token
+            if (!hasActions) return null;
+            return (
+                <DropdownRowActions>
+                    {row.deleted_at ?
+                        (canUpdate && <DropdownMenuItem onSelect={() => setRestoreRow(row.id)}>Kembalikan</DropdownMenuItem>)
+                        : <>
+                            <DropdownMenuItem onSelect={() => authOnlineStore(row.id, row.marketplace_id, row.redirect_uri)}>Connect</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => refreshOnlineStore(row.id)}>Refresh Token</DropdownMenuItem>
+                            {canUpdate && <DropdownMenuItem onSelect={() => setEditRow(row.id)}>Edit</DropdownMenuItem>}
+                            {canDelete && <DropdownMenuItem onSelect={() => setDeleteRow(row.id)}>Hapus</DropdownMenuItem>}
+                        </>
+                    }
+                </DropdownRowActions>
+            );
+        }} />
 }

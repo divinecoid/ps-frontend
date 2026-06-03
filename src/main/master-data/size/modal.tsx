@@ -5,8 +5,8 @@ import { z } from "zod/v3";
 
 export default function ModalSize(props: BaseModalForm) {
     return <ModalItem<Size>
-        title={props.isEdit ? "Sunting Ukuran" : "Tambah Ukuran"}
-        description={props.isEdit ? "Sunting ukuran yang sudah ada" : "Tambah ukuran baru"}
+        title={props.isEdit ? "Edit Ukuran" : "Tambah Ukuran"}
+        description={props.isEdit ? "Edit ukuran yang sudah ada" : "Tambah ukuran baru"}
         {...props}
         formShape={[
             {

@@ -4,6 +4,7 @@ import Services from "@/services";
 import { useParams } from "react-router-dom";
 import { z } from "zod/v3";
 import DetailList from "./form-detail-list";
+import RollSizeField from "./roll-size-field";
 
 export default function FormFabricPurchase(props: BaseForm) {
   const { id } = useParams();
@@ -29,7 +30,9 @@ export default function FormFabricPurchase(props: BaseForm) {
   const schema = {
     factory_id: z.string().nonempty({ message: "Pabrik dibutuhkan." }),
     gram: z.string().nonempty({ message: "Gram dibutuhkan." }),
-    ukuran: z.coerce.number().int().min(1, { message: "Ukuran dibutuhkan." }),
+    // prefer roll_size_id; ukuran kept for backwards compatibility
+    roll_size_id: z.string().nonempty({ message: "Ukuran dibutuhkan." }),
+    ukuran: z.coerce.number().int().min(1, { message: "Ukuran dibutuhkan." }).optional(),
     details: z
       .array(detailSchema)
       .min(1, { message: "Minimal tambahkan 1 rincian pembelian." }),
@@ -65,12 +68,18 @@ export default function FormFabricPurchase(props: BaseForm) {
         },
         {
           key: "ukuran",
-          type: "number",
+          type: "custom",
           schema: schema.ukuran,
           label: "Ukuran",
-          description: "Isi ukuran kain.",
-          placeholder: "Contoh: 40",
+          description: "Pilih ukuran roll dari master data.",
+          placeholder: "Pilih ukuran",
           group: "size",
+          custom: () => <RollSizeField disabled={props.disabled} />,
+        },
+        {
+          key: "roll_size_id",
+          type: "hidden",
+          schema: schema.roll_size_id,
         },
         {
           key: "details",

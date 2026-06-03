@@ -5,8 +5,8 @@ import { z } from "zod/v3";
 
 export default function ModalCMT(props: BaseModalForm) {
     return <ModalItem<CMT>
-        title={props.isEdit ? "Sunting CMT" : "Tambah CMT"}
-        description={props.isEdit ? "Sunting CMT yang sudah ada" : "Tambah CMT baru"}
+        title={props.isEdit ? "Edit CMT" : "Tambah CMT"}
+        description={props.isEdit ? "Edit CMT yang sudah ada" : "Tambah CMT baru"}
         {...props}
         formShape={[
             {

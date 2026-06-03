@@ -19,6 +19,24 @@ export const columns: ColumnDef<Rack>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "model.name",
+    header: "Model",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const model = row.original.model;
+      return model ? model.name : '-';
+    })
+  },
+  {
+    accessorKey: "color.name",
+    header: "Warna",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const color = row.original.color;
+      return color ? color.name : '-';
+    })
+  },
+  {
     accessorKey: "deleted_at",
     header: "Status rak",
     enableSorting: true,

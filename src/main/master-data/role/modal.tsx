@@ -5,8 +5,8 @@ import { z } from "zod/v3";
 
 export default function ModalRole(props: BaseModalForm) {
     return <ModalItem<Role>
-        title={props.isEdit ? "Sunting Peran" : "Tambah Peran"}
-        description={props.isEdit ? "Sunting peran yang sudah ada" : "Tambah peran baru"}
+        title={props.isEdit ? "Edit Peran" : "Tambah Peran"}
+        description={props.isEdit ? "Edit peran yang sudah ada" : "Tambah peran baru"}
         {...props}
         formShape={[
             {

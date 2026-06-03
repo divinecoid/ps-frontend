@@ -18,6 +18,15 @@ export const columns: ColumnDef<LargeInventory>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "rack.code",
+    header: "Rak",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const rack = row.original.rack;
+      return rack ? `${rack.code} - ${rack.name}` : '-';
+    })
+  },
+  {
     accessorKey: "total",
     header: "Jumlah",
     enableSorting: true,

@@ -5,8 +5,8 @@ import { z } from "zod/v3";
 
 export default function ModalFactory(props: BaseModalForm) {
     return <ModalItem<Factory>
-        title={props.isEdit ? "Sunting Pabrik" : "Tambah Pabrik"}
-        description={props.isEdit ? "Sunting pabrik yang sudah ada" : "Tambah pabrik baru"}
+        title={props.isEdit ? "Edit Pabrik" : "Tambah Pabrik"}
+        description={props.isEdit ? "Edit pabrik yang sudah ada" : "Tambah pabrik baru"}
         {...props}
         formShape={[
             {

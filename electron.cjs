@@ -10,7 +10,7 @@ let printWin = null;
 
 function createWindow() {
   win = new BrowserWindow({
-    title: "PS Frontend",
+    title: "PS Desktop",
     width: 1366,
     height: 768,
     webPreferences: {

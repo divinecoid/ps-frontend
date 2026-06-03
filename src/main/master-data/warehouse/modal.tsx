@@ -5,8 +5,8 @@ import { z } from "zod/v3";
 
 export default function ModalWarehouse(props: BaseModalForm) {
     return <ModalItem<Warehouse>
-        title={props.isEdit ? "Sunting Gudang" : "Tambah Gudang"}
-        description={props.isEdit ? "Sunting gudang yang sudah ada" : "Tambah gudang baru"}
+        title={props.isEdit ? "Edit Gudang" : "Tambah Gudang"}
+        description={props.isEdit ? "Edit gudang yang sudah ada" : "Tambah gudang baru"}
         {...props}
         formShape={[
             {
@@ -36,6 +36,19 @@ export default function ModalWarehouse(props: BaseModalForm) {
                 label: "Prioritas",
                 description: "Prioritas gudang",
                 placeholder: "1",
+            },
+            {
+                key: "type",
+                type: "select",
+                schema: z.enum(["BIG", "SMALL"]),
+                label: "Tipe Gudang",
+                description: "Pilih tipe/ukuran gudang.",
+                placeholder: "Pilih tipe gudang",
+                options: {
+                    BIG: "Gudang Besar",
+                    SMALL: "Gudang Kecil",
+                },
+                defaultValue: "SMALL",
             },
         ]} />
 }

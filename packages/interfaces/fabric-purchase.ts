@@ -40,6 +40,7 @@ export interface FabricPurchaseCreateDetail {
 export interface FabricPurchaseCreate {
   factory_id: string;
   gram: string;
+  roll_size_id: string;
   ukuran: number;
   details: FabricPurchaseCreateDetail[];
 }
