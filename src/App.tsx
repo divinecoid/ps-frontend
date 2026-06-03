@@ -45,7 +45,6 @@ import MasterRollSizes from './main/master-data/roll-size';
 import MasterConfigurations from './main/master-data/configuration';
 import AcmPage from './main/master-data/acm';
 import MasterAuditLogs from "./main/master-data/audit-log";
-
 import FabricCutting from "./main/transaction/fabric-cutting";
 import FormFabricCuttingRequest from "./main/transaction/fabric-cutting/new/form-fabric-cutting-request";
 

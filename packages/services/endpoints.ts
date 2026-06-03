@@ -32,4 +32,3 @@ export const ENDPOINT = {
     AUDIT_LOG: "audit-log",
     FABRIC_CUTTING: "fabric-cutting"
 };
-
