@@ -27,4 +27,5 @@ export const ENDPOINT = {
     ORDER: "order",
     SHOPEE: "shopee",
     FABRIC_PURCHASE: "fabric-purchase",
+    FABRIC_CUTTING: "fabric-cutting"
 };

@@ -8,9 +8,13 @@ export default function DatatableSelectAction<T extends { id: string }>({ action
     const confirm = async () => {
         try {
             if (selectedRows) {
-                const res = await action?.(selectedRows?.map(item => item.id))
+                const res = await action?.(selectedRows?.map(item => item.id));
+                const response = await res?.json();
                 if (res?.ok) {
+                    toast.success(response.message, { richColors: true });
                     onSubmit?.();
+                } else {
+                    toast.error(response.message, { richColors: true });
                 }
             }
         } catch (error) {

@@ -1,0 +1,39 @@
+import { Badge } from "@/components/ui/badge";
+import { FabricCutting } from "@/interfaces/fabric-cutting";
+import { formatDateTime } from "@/lib/format-date";
+import { ColumnDef } from "@tanstack/react-table"
+
+export const columns: ColumnDef<FabricCutting>[] = [
+  {
+    accessorKey: "serial_number",
+    header: "Nomor Seri",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "cmt.code",
+    header: "Kode CMT",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "created_at",
+    header: "Tanggal pengajuan",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return formatDateTime(row.original.created_at)
+    })
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const data = row.original;
+      switch (data.status) {
+        case "OPEN":
+          return <Badge variant="secondary">Sedang Berlangsung</Badge>
+        case "CLOSED":
+          return <Badge variant="success">Selesai</Badge>
+      }
+    })
+  }
+]

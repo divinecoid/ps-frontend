@@ -43,7 +43,6 @@ export interface Request {
   serial_number: string
   cmt_id: string
   cmt: CMT
-  serial_number: string
   status: RequestStatus
   created_at: Date
   request_detail: RequestDetail[]
@@ -62,7 +61,7 @@ export interface RequestDetail {
 }
 
 interface VariantDetail {
-    dozen_qty: number
+  dozen_qty: number
   piece_qty: number
 }
 

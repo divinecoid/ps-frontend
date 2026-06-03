@@ -17,7 +17,7 @@ export default function MasterFactories() {
         source={Services.MasterFactory}
         selectable
         actions={(props) => [
-            <DatatableSelectAction {...props} action={Services.MasterCMT.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} pabrik?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} pabrik terpilih dari daftar pilihan.`} />,
+            <DatatableSelectAction {...props} action={Services.MasterFactory.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} pabrik?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} pabrik terpilih dari daftar pilihan.`} />,
             <ModalFactory {...props} />,
             <ModalFactory {...props} isEdit id={editRow} setId={setEditRow} />,
             <ModalConfirm {...props} action={Services.MasterFactory.restore} id={restoreRow} setId={setRestoreRow} title="Apakah anda yakin untuk mengembalikan pabrik ini?" description="Aksi ini akan memunculkan pabrik ini kembali ke daftar pilihan." />,

@@ -188,6 +188,12 @@ export const Menu = {
       icon: Repeat2,
       role: ["preparist", "checker", "admin"],
     },
+    {
+      name: "Pemotongan Kain",
+      url: "/transaction/fabric-cutting",
+      icon: Repeat2,
+      role: ["preparist", "checker", "admin"],
+    },
   ],
   navCMTTransaction: [
     {

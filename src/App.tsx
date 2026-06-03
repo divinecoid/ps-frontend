@@ -43,6 +43,8 @@ import ViewFormFabricPurchase from "./main/transaction/fabric-purchase/view/form
 import MasterFabrics from './main/master-data/fabric';
 import MasterRollSizes from './main/master-data/roll-size';
 import MasterConfigurations from './main/master-data/configuration';
+import FabricCutting from "./main/transaction/fabric-cutting";
+import FormFabricCuttingRequest from "./main/transaction/fabric-cutting/new/form-fabric-cutting-request";
 
 function App() {
   const { token } = useAuth();
@@ -158,6 +160,8 @@ function App() {
               <Route path="/large-inventory/:id" element={<FormLargeInventory />} />
               <Route path="/fabric" element={<MasterFabrics />} />
               {/* <Route path="/fabric/:id" element={<FormFabric />} /> */}
+              <Route path="/transaction/fabric-cutting"  element={<FabricCutting />} />
+              <Route path="/transaction/fabric-cutting/new"  element={<FormFabricCuttingRequest />}/>
             </>
           )}
 
