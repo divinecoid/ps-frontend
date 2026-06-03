@@ -23,7 +23,7 @@ export interface FabricCutting {
   fabric_id: string
   quantity: number
   serial_number: string
-  request_detail: FabricCuttingRequestDetail
+  request_detail: FabricCuttingRequestDetail[]
   status: CuttingStatus
   created_at: Date
 }
