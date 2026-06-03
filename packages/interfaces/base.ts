@@ -52,6 +52,8 @@ export interface BaseApiCallProps<T> {
   show?: BaseApiCallViewProps;
   restore?: BaseApiCallRestoreProps;
   destroy?: BaseApiCallDeleteProps;
+  forceDestroy?: BaseApiCallDeleteProps;
+  multiForceDestroy?: BaseApiCallMultiDeleteProps;
 }
 
 interface BaseModal<T = string> {

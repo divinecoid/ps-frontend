@@ -26,6 +26,7 @@ import * as TransactionFabricCutting from "./transaction-fabric-cutting";
 import * as TransactionShopeeOrder from "./transaction-shopee-order";
 import * as Dashboard from "./dashboard";
 import * as Acm from "./acm";
+import * as AuditLog from "./audit-log";
 
 const Services = {
   Auth,
@@ -54,7 +55,8 @@ const Services = {
   MasterFabric,
   MasterRollSize,
     Dashboard,
-    Acm
+    Acm,
+    AuditLog
 };
 
 export default Services;

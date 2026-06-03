@@ -9,6 +9,7 @@ export interface AcmPermission {
     can_read: boolean;
     can_update: boolean;
     can_delete: boolean;
+    can_force_delete: boolean;
 }
 
 export const getByRole = async (roleId: string) => {
