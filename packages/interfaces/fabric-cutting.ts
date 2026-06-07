@@ -6,9 +6,10 @@ export interface FabricCuttingRequestDetail {
   id: string
   request_id: string
   product_id: string
-  dozen_qty: number
-  piece_qty: number
-  bs_qty: number
+  req_dozen_qty: number
+  rec_dozen_qty: number
+  req_piece_qty: number
+  rec_piece_qty: number
   code: string
   variant_detail?: VariantDetail[]
 }

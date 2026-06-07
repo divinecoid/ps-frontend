@@ -44,6 +44,6 @@ export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
     return await DELETE(`${ENDPOINT.FABRIC_CUTTING}`, ids)
 }
 
-export const barcode: BaseApiCallViewProps = async (id) => {
-    return await GET(`${ENDPOINT.FABRIC_CUTTING}/barcode/${id}`);
+export const setReceived: BaseApiCallViewProps = async (id) => {
+    return await PATCH(`${ENDPOINT.FABRIC_CUTTING}/${id}`);
 }

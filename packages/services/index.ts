@@ -54,9 +54,9 @@ const Services = {
   MasterLargeInventory,
   MasterFabric,
   MasterRollSize,
-    Dashboard,
-    Acm,
-    AuditLog
+  Dashboard,
+  Acm,
+  AuditLog
 };
 
 export default Services;

@@ -10,8 +10,8 @@ export const columns: ColumnDef<FabricCutting>[] = [
     enableSorting: true,
   },
   {
-    accessorKey: "cmt.code",
-    header: "Kode CMT",
+    accessorKey: "fabric.sequence",
+    header: "Kode Kain",
     enableSorting: true,
   },
   {
@@ -23,17 +23,24 @@ export const columns: ColumnDef<FabricCutting>[] = [
     })
   },
   {
+    accessorKey: "quantity",
+    header: "Jumlah Roll",
+    enableSorting: true,
+  },
+  {
     accessorKey: "status",
     header: "Status",
-    enableSorting: true,
-    cell: (({ row }) => {
-      const data = row.original;
-      switch (data.status) {
-        case "OPEN":
-          return <Badge variant="secondary">Sedang Berlangsung</Badge>
-        case "CLOSED":
-          return <Badge variant="success">Selesai</Badge>
-      }
-    })
+    enableSorting: false,
+    cell: ({ row }) => {
+      const isCompleted = row.original.request_detail.every(
+        detail =>
+          detail.req_dozen_qty === detail.rec_dozen_qty &&
+          detail.req_piece_qty === detail.rec_piece_qty
+      );
+
+      return isCompleted
+        ? <Badge variant="success">Selesai</Badge>
+        : <Badge variant="secondary">Sedang Berlangsung</Badge>
+    }
   }
 ]

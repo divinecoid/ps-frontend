@@ -7,6 +7,10 @@ export const index: BaseApiCallIndexProps = async (page, per_page, search, sort)
     return await GET(ENDPOINT.FABRIC, { page, per_page, search, sort });
 }
 
+export const uncut: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(`${ENDPOINT.FABRIC}/ready-stock`, { page, per_page, search, sort });
+}
+
 export const master: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
     return await GET(`${ENDPOINT.FABRIC}/master`, { page, per_page, search, sort });
 }

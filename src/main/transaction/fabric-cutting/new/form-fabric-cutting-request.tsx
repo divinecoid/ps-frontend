@@ -99,7 +99,7 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
                 source: {
                     id: "id",
                     label: "sequence",
-                    api: Services.MasterFabric.index
+                    api: props.disabled ? Services.MasterFabric.index : Services.MasterFabric.uncut
                 }
             },
             {
