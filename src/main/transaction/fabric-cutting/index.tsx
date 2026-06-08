@@ -25,8 +25,19 @@ export default function FabricCutting() {
         rowActions={({ row }) => (
             <div className="flex gap-2 justify-end">
                 <TooltipHover tooltip="Lihat"><Button asChild variant="outline"><Link to={`./${row.id}`}><Eye /></Link></Button></TooltipHover>
-                <TooltipHover tooltip="Selesaikan"><Button variant="outline" onClick={() => setReceivedRow(row.id)}><Check /></Button></TooltipHover>
-                <TooltipHover tooltip="Hapus"><Button variant="destructive" className="cursor-pointer" onClick={() => setDeleteRow(row.id)}><Trash /></Button></TooltipHover>
+                {
+                    row.request_detail.every(
+                        detail =>
+                            detail.req_dozen_qty === detail.rec_dozen_qty &&
+                            detail.req_piece_qty === detail.rec_piece_qty
+                    ) ?
+                        <></>
+                        :
+                        <>
+                            <TooltipHover tooltip="Selesaikan"><Button variant="outline" onClick={() => setReceivedRow(row.id)}><Check /></Button></TooltipHover>
+                            <TooltipHover tooltip="Hapus"><Button variant="destructive" className="cursor-pointer" onClick={() => setDeleteRow(row.id)}><Trash /></Button></TooltipHover>
+                        </>
+                }
             </ div>
         )}
     />

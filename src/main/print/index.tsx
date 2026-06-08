@@ -39,10 +39,10 @@ export default function Print() {
             {dozenBarcodes?.map((code, i) => (
                 <div
                     key={i}
-                    className="break-inside-avoid print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl pb-6 pt-60 px-4 text-xs text-center text-black"
+                    className="break-inside-avoid print-page flex h-min flex-col items-center shrink-0 justify-center bg-green-50 border-green-200 border-2 rounded-2xl pb-6 pt-6 px-4 text-xs text-center text-black"
                 >
-                    <QRCode value={code.code} size={120} bgColor="transparent" fgColor="black" logoImage="/dozen-icon.png" removeQrCodeBehindLogo />
-                    <div className="text-nowrap w-22">{code.serial_number} - {code.colors} - {code.sizes}</div>
+                    <QRCode value={code.code} size={120} bgColor="transparent" fgColor="black" removeQrCodeBehindLogo />
+                    <div className="text-nowrap w-22">{code.serial_number} - {code.cutting} - {code.sizes}</div>
                 </div>
             ))}
             {barcodes?.map((code, i) => (
@@ -51,7 +51,7 @@ export default function Print() {
                     className="break-inside-avoid print-page flex flex-col items-center shrink-0 justify-center bg-blue-50 border-blue-200 border-2 rounded-2xl pb-6 pt-60 px-4 text-xs text-center text-black"
                 >
                     <QRCode value={code.code} size={120} bgColor="transparent" fgColor="black" />
-                    <div className="text-nowrap w-22">{code.serial_number} - {code.colors} - {code.sizes}</div>
+                    <div className="text-nowrap w-22">{code.serial_number} - {code.cutting} - {code.sizes}</div>
                 </div>
             ))}
         </div>

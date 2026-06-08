@@ -163,7 +163,6 @@ function App() {
               <Route path="/large-inventory" element={<MasterLargeInventories />} />
               <Route path="/large-inventory/:id" element={<FormLargeInventory />} />
               <Route path="/fabric" element={<MasterFabrics />} />
-              {/* <Route path="/fabric/:id" element={<FormFabric />} /> */}
               <Route path="/transaction/fabric-cutting"  element={<FabricCutting />} />
               <Route path="/transaction/fabric-cutting/new"  element={<FormFabricCuttingRequest />}/>
               <Route path="/transaction/fabric-cutting/:id"  element={<FormFabricCuttingRequest disabled />}/>

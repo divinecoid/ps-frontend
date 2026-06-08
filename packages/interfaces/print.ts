@@ -2,7 +2,7 @@ export interface Barcodes {
   code: string
   count: number
   serial_number: string;
-  colors: string;
+  cutting: string;
   sizes: string;
 }
 

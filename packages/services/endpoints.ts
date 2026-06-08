@@ -30,5 +30,6 @@ export const ENDPOINT = {
     DASHBOARD: "dashboard",
     ACM: "acm",
     AUDIT_LOG: "audit-log",
-    FABRIC_CUTTING: "fabric-cutting"
+    FABRIC_CUTTING: "fabric-cutting",
+    FABRIC_COLOR: "get-fabric-color"
 };

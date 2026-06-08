@@ -21,7 +21,7 @@ export default function FormRequest(props: BaseForm) {
         model_id: z.string().nonempty({
             message: "Model dibutuhkan.",
         }),
-        color_id: z.string().nonempty({
+        cloth_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
         variant_detail: z.array(variantDetailSchema).min(1, {
@@ -58,7 +58,7 @@ export default function FormRequest(props: BaseForm) {
         serial_number: z.string().nonempty({
             message: "Nomor seri dibutuhkan",
         }),
-        color_id: z.string().nonempty({
+        cloth_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
         request_detail: z.array(z.object(detailSchema)).min(1, {
@@ -66,7 +66,7 @@ export default function FormRequest(props: BaseForm) {
         }).superRefine((data, ctx) => {
             const seen = new Map<string, number>()
             data.forEach((item, index) => {
-                const key = `${item.model_id}::${item.color_id}`
+                const key = `${item.model_id}::${item.cloth_id}`
                 if (seen.has(key)) {
                     const firstIndex = seen.get(key)!
                     ctx.addIssue({
@@ -108,7 +108,7 @@ export default function FormRequest(props: BaseForm) {
                 key: "serial_number",
                 type: "text",
                 schema: schema.serial_number,
-                label: "Nomor Seri",
+                label: "Nomor Seri (Serial Number)",
                 description: "Nomor seri atau referensi untuk request CMT ini.",
                 placeholder: "Contoh: 0001",
             },

@@ -111,21 +111,13 @@ export default function ViewFormRequest(props: BaseForm) {
                     api: Services.MasterCMT.index
                 }
             },
-             {
-                key: "serial_number",
-                type: "text",
-                schema: z.string(),
-                label: "Series",
-                description: "Masukkan seri.",
-                placeholder: "Seri",
-            },
             {
                 key: "serial_number",
                 type: "text",
                 schema: schema.serial_number,
                 label: "Nomor Seri (Serial Number)",
                 description: "Nomor seri atau referensi untuk request CMT ini.",
-                placeholder: "Contoh: REQ-CMT-001/2026",
+                placeholder: "Contoh: 0001",
             },
             {
                 key: "request_detail",

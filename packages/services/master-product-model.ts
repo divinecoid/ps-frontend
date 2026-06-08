@@ -47,6 +47,10 @@ export const model_color = async (id: string, page?: number, per_page?: number, 
     return await GET(`${ENDPOINT.MODEL_COLOR}/${id}`, {page, per_page, search});
 }
 
+export const fabric_color = async (id: string, page?: number, per_page?: number, search?: string) => {
+    return await GET(`${ENDPOINT.FABRIC_COLOR}/${id}`, {page, per_page, search});
+}
+
 export const model_size = async (id: string) => {
     return await GET(`${ENDPOINT.MODEL_SIZE}/${id}`);
 }

@@ -51,6 +51,14 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
     });
 
     React.useEffect(() => {
+        form.setValue(
+            `${parentKey}.${index}.cloth_id`,
+            undefined,
+            {
+                shouldValidate: true,
+                shouldDirty: true,
+            }
+        );
         if (!modelId) {
             setSizes([]);
             return;
@@ -92,7 +100,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
     const colorSource = React.useMemo((): BaseApiCallIndexProps | undefined => {
         if (!modelId) return undefined;
         return (page, limit, search) =>
-            Services.MasterProductModel.model_color(modelId, page, limit, search);
+            Services.MasterProductModel.fabric_color(modelId, page, limit, search);
     }, [modelId]);
 
     return <>
@@ -124,15 +132,15 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                         />
                         <FormField
                             control={form.control}
-                            name={`${parentKey}.${index}.color_id`}
+                            name={`${parentKey}.${index}.cloth_id`}
                             render={({ field }) => (
                                 <FormItem className="w-[40%]">
-                                    <FormLabel>Warna</FormLabel>
+                                    <FormLabel>Seri Kain</FormLabel>
                                     <FormControl>
                                         <DynamicCombobox
                                             id="id"
                                             label="name"
-                                            placeholder="Warna"
+                                            placeholder="Seri Kain"
                                             type={"single"}
                                             source={colorSource}
                                             value={field.value}
