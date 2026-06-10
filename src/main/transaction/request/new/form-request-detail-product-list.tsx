@@ -55,8 +55,8 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
             `${parentKey}.${index}.cloth_id`,
             undefined,
             {
-                shouldValidate: true,
-                shouldDirty: true,
+                shouldValidate: false,
+                shouldDirty: false,
             }
         );
         if (!modelId) {

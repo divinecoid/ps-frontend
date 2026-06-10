@@ -72,12 +72,12 @@ export default function FormRequest(props: BaseForm) {
                     ctx.addIssue({
                         code: z.ZodIssueCode.custom,
                         message: "Model dan warna tidak boleh duplikat.",
-                        path: [index, "color_id"],
+                        path: [index, "cloth_id"],
                     })
                     ctx.addIssue({
                         code: z.ZodIssueCode.custom,
                         message: "Model dan warna tidak boleh duplikat.",
-                        path: [firstIndex, "color_id"],
+                        path: [firstIndex, "cloth_id"],
                     })
                 } else {
                     seen.set(key, index)

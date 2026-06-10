@@ -35,7 +35,7 @@ export default function ViewFormRequest(props: BaseForm) {
         model_id: z.string().nonempty({
             message: "Model dibutuhkan.",
         }),
-        color_id: z.string().nonempty({
+        cloth_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
         variant_detail: z.array(variantDetailSchema).min(1, {
@@ -64,7 +64,7 @@ export default function ViewFormRequest(props: BaseForm) {
         serial_number: z.string().nonempty({
             message: "Nomor seri dibutuhkan",
         }),
-        color_id: z.string().nonempty({
+        cloth_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
         request_detail: z.array(z.object(detailSchema)).min(1, {
@@ -72,18 +72,18 @@ export default function ViewFormRequest(props: BaseForm) {
         }).superRefine((data, ctx) => {
             const seen = new Map<string, number>()
             data.forEach((item, index) => {
-                const key = `${item.model_id}::${item.color_id}`
+                const key = `${item.model_id}::${item.cloth_id}`
                 if (seen.has(key)) {
                     const firstIndex = seen.get(key)!
                     ctx.addIssue({
                         code: z.ZodIssueCode.custom,
                         message: "Model dan warna tidak boleh duplikat.",
-                        path: [index, "color_id"],
+                        path: [index, "cloth_id"],
                     })
                     ctx.addIssue({
                         code: z.ZodIssueCode.custom,
                         message: "Model dan warna tidak boleh duplikat.",
-                        path: [firstIndex, "color_id"],
+                        path: [firstIndex, "cloth_id"],
                     })
                 } else {
                     seen.set(key, index)
