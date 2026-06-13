@@ -11,6 +11,7 @@ import ConfirmDetail from "./form-request-detail-confirm";
 import { ModelSize } from "@/interfaces/model-size";
 import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
+import { FabricCutting } from "@/interfaces/fabric-cutting";
 
 interface DetailProductListProps<T> {
     form: UseFormReturn<FieldValues, T, FieldValues>
@@ -48,6 +49,11 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
     const modelId = useWatch({
         control: form.control,
         name: `${parentKey}.${index}.model_id`,
+    });
+
+    const clothDetail = useWatch({
+        control: form.control,
+        name: `${parentKey}.${index}.cloth_detail`,
     });
 
     React.useEffect(() => {
@@ -95,6 +101,26 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                 applySizes(json.data);
             });
     }, [modelId]);
+
+    React.useEffect(() => {
+        if (!clothDetail || sizes.length === 0) {
+            return;
+        }
+
+        const next = sizes.map(size => {
+            const stock = clothDetail.find((d: { size_id: string; }) => d.size_id === size.id);
+
+            const recQty = stock?.rec_qty ?? 0;
+
+            return {
+                size_id: size.id,
+                dozen_qty: Math.floor(recQty / 12),
+                piece_qty: recQty % 12,
+            };
+        });
+
+        replace(next);
+    }, [clothDetail, sizes, replace]);
 
 
     const colorSource = React.useMemo((): BaseApiCallIndexProps | undefined => {
@@ -145,6 +171,17 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                             source={colorSource}
                                             value={field.value}
                                             onValueChange={field.onChange}
+                                            onItemChange={(item) => {
+                                                const fabric = item;
+                                                form.setValue(
+                                                    `${parentKey}.${index}.cloth_detail`,
+                                                    fabric.detail,
+                                                    {
+                                                        shouldValidate: false,
+                                                        shouldDirty: false,
+                                                    }
+                                                );
+                                            }}
                                             disabled={disabled} />
                                     </FormControl>
                                     <FormMessage />

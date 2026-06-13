@@ -31,14 +31,16 @@ interface DynamicComboboxProps {
   onValueChange: (values: string | string[]) => void;
   className?: string | undefined;
   "aria-invalid"?: boolean
+  onItemChange?: (item: Record<string, unknown>) => void;
 }
 
 interface Options {
   value: string;
   label: string;
+  raw: Record<string, unknown>;
 }
 
-export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, disabled, value, onValueChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
+export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, disabled, value, onValueChange, onItemChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
@@ -49,10 +51,11 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
         const result = await source?.(1, 10, filter);
         if (result?.ok) {
           const json = (await result.json());
-          const mapped = json.data.map((item: Record<string, string>) => ({
-            value: item[id],
-            label: item[label]
-          }))
+          const mapped = json.data.map((item: Record<string, unknown>) => ({
+            value: String(item[id]),
+            label: String(item[label]),
+            raw: item,
+          }));
           setOptions(mapped);
         }
       } catch (error) {
@@ -99,7 +102,8 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
                   value={item.value}
                   onSelect={() => {
                     if (type === 'single') {
-                      onValueChange(item.value)
+                      onValueChange(item.value);
+                      onItemChange?.(item.raw);
                       setOpen(false)
                     } else {
                       const current = Array.isArray(value) ? value.map(String) : [];

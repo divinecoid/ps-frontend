@@ -27,7 +27,7 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
     const handleAdd = () => {
         append({
             model_id: undefined,
-            cloth_id: undefined,
+            color_id: undefined,
         })
     }
 

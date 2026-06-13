@@ -24,6 +24,10 @@ export default function FormRequest(props: BaseForm) {
         cloth_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
+        cloth_detail: z.array(z.object({
+            size_id: z.string(),
+            rec_qty: z.number(),
+        })).default([]),
         variant_detail: z.array(variantDetailSchema).min(1, {
             message: "Minimal tambahkan 1 varian yang akan dijahit."
         }).superRefine((data, ctx) => {
@@ -81,6 +85,47 @@ export default function FormRequest(props: BaseForm) {
                     })
                 } else {
                     seen.set(key, index)
+                }
+                for (const [variantIndex, variant] of item.variant_detail.entries()) {
+                    const qty = variant.dozen_qty * 12 + variant.piece_qty;
+
+                    // Skip validasi jika qty = 0
+                    if (qty <= 0) {
+                        continue;
+                    }
+
+                    const stock = item.cloth_detail.find(
+                        d => d.size_id === variant.size_id
+                    );
+
+                    // Qty > 0 tetapi ukuran tidak tersedia
+                    if (!stock) {
+                        ctx.addIssue({
+                            code: z.ZodIssueCode.custom,
+                            path: [
+                                index,
+                                "variant_detail",
+                                variantIndex,
+                                "size_id",
+                            ],
+                            message: "Ukuran ini tidak tersedia pada kain yang dipilih.",
+                        });
+                        continue;
+                    }
+
+                    // Qty > 0 dan melebihi stok
+                    if (qty > stock.rec_qty) {
+                        ctx.addIssue({
+                            code: z.ZodIssueCode.custom,
+                            path: [
+                                index,
+                                "variant_detail",
+                                variantIndex,
+                                "piece_qty",
+                            ],
+                            message: `Jumlah melebihi stok. Maksimal ${stock.rec_qty} pcs.`,
+                        });
+                    }
                 }
             })
         })
