@@ -7,7 +7,7 @@ import {
   ArrowDownLeft,
   History,
   ArrowDownLeftFromSquare,
-  FileStack
+  FileStack,
 } from "lucide-react";
 
 // export const Menu = {
@@ -166,7 +166,7 @@ export const Menu = {
       name: "Gudang Kain",
       url: "/fabric",
       icon: FileStack,
-      role: ['preparist', 'checker', 'admin']
+      role: ["preparist", "checker", "admin"],
     },
     {
       name: "Gudang Kecil",
@@ -256,7 +256,7 @@ export const Menu = {
         {
           title: "Product",
           url: "/master-data/product",
-          role: ['admin']
+          role: ["admin"],
         },
         {
           title: "Ukuran",
@@ -281,7 +281,7 @@ export const Menu = {
         {
           title: "Ukuran Roll",
           url: "/master-data/roll-size",
-          role: ['admin']
+          role: ["admin"],
         },
         {
           title: "Toko online",

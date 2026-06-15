@@ -23,7 +23,12 @@ export default function RollSizeField({
     let mounted = true;
     const load = async () => {
       try {
-        const res = await Services.MasterRollSize.master(1, 9999, "", undefined as any);
+        const res = await Services.MasterRollSize.master(
+          1,
+          9999,
+          "",
+          undefined as any,
+        );
         if (res?.ok) {
           const json = await res.json();
           if (mounted) setOptions(json.data);
@@ -50,7 +55,14 @@ export default function RollSizeField({
     <div className="space-y-2">
       <FormLabel>Ukuran</FormLabel>
       <DynamicCombobox
-        source={(page, per_page, search) => Services.MasterRollSize.master(page, per_page, search, undefined as any)}
+        source={(page, per_page, search) =>
+          Services.MasterRollSize.master(
+            page,
+            per_page,
+            search,
+            undefined as any,
+          )
+        }
         id="id"
         label="size"
         placeholder="Pilih ukuran roll"
@@ -61,7 +73,7 @@ export default function RollSizeField({
           const sel = options.find((o) => o.id === v);
           if (sel) {
             setValue(nameRollSizeId, v);
-            setValue(nameUkuran, Number(sel.size));
+            setValue(nameUkuran, String(sel.size));
           } else {
             setValue(nameRollSizeId, undefined as any);
             setValue(nameUkuran, undefined as any);
@@ -72,7 +84,7 @@ export default function RollSizeField({
           "h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-none transition-[color,box-shadow] outline-none",
           "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
           "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-          "justify-between truncate hover:bg-transparent"
+          "justify-between truncate hover:bg-transparent",
         )}
       />
     </div>

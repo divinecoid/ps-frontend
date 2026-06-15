@@ -4,7 +4,7 @@ import {
   BaseApiCallIndexProps,
   BaseApiCallViewProps,
 } from "@/interfaces/base";
-import { DELETE, GET, POST } from "./api";
+import { DELETE, GET, PATCH, POST } from "./api";
 import { ENDPOINT } from "./endpoints";
 import { FabricPurchaseCreate } from "@/interfaces/fabric-purchase";
 
@@ -52,6 +52,10 @@ export const store: BaseApiCallCreateProps<FabricPurchaseCreate> = async (
 
 export const destroy: BaseApiCallDeleteProps = async (id) => {
   return await DELETE(`${ENDPOINT.FABRIC_PURCHASE}/${id}`);
+};
+
+export const complete: BaseApiCallDeleteProps = async (id) => {
+  return await PATCH(`${ENDPOINT.FABRIC_PURCHASE}/${id}/complete`);
 };
 
 export const series: BaseApiCallIndexProps = async (

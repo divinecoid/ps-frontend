@@ -32,7 +32,7 @@ export default function FormFabricPurchase(props: BaseForm) {
     gram: z.string().nonempty({ message: "Gram dibutuhkan." }),
     // prefer roll_size_id; ukuran kept for backwards compatibility
     roll_size_id: z.string().nonempty({ message: "Ukuran dibutuhkan." }),
-    ukuran: z.coerce.number().int().min(1, { message: "Ukuran dibutuhkan." }).optional(),
+    ukuran: z.string().nonempty({ message: "Ukuran dibutuhkan." }).optional(),
     details: z
       .array(detailSchema)
       .min(1, { message: "Minimal tambahkan 1 rincian pembelian." }),

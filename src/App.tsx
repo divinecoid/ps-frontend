@@ -32,7 +32,7 @@ import ViewFormRequest from "./main/transaction/request/view/form-request";
 import Order from "./main/transaction/order";
 import FormOrder from "./main/transaction/order/view/form-order";
 import Mutation from "./main/transaction/mutation";
-import MasterLargeInventories from './main/master-data/inventory-large';
+import MasterLargeInventories from "./main/master-data/inventory-large";
 import MasterSmallInventories from "./main/master-data/inventory-small";
 import FormSmallInventory from "./main/master-data/inventory-small/form-inventory";
 import FormLargeInventory from "./main/master-data/inventory-large/form-inventory";
@@ -40,13 +40,14 @@ import ViewFormReceiveLog from "./main/transaction/receive-logs/form-receive-log
 import FabricPurchase from "./main/transaction/fabric-purchase";
 import FormFabricPurchase from "./main/transaction/fabric-purchase/new/form-fabric-purchase";
 import ViewFormFabricPurchase from "./main/transaction/fabric-purchase/view/form-fabric-purchase";
-import MasterFabrics from './main/master-data/fabric';
-import MasterRollSizes from './main/master-data/roll-size';
-import MasterConfigurations from './main/master-data/configuration';
-import AcmPage from './main/master-data/acm';
+import MasterFabrics from "./main/master-data/fabric";
+import MasterRollSizes from "./main/master-data/roll-size";
+import MasterConfigurations from "./main/master-data/configuration";
+import AcmPage from "./main/master-data/acm";
 import MasterAuditLogs from "./main/master-data/audit-log";
 import FabricCutting from "./main/transaction/fabric-cutting";
 import FormFabricCuttingRequest from "./main/transaction/fabric-cutting/new/form-fabric-cutting-request";
+import FabricReceiving from "./main/transaction/fabric-receiving";
 
 function App() {
   const { token } = useAuth();
@@ -99,7 +100,10 @@ function App() {
                 element={<MasterProductModels />}
               />
               <Route path="/master-data/size" element={<MasterSizes />} />
-              <Route path="/master-data/roll-size" element={<MasterRollSizes />} />
+              <Route
+                path="/master-data/roll-size"
+                element={<MasterRollSizes />}
+              />
               <Route path="/master-data/color" element={<MasterColors />} />
               <Route
                 path="/master-data/factory"
@@ -113,9 +117,15 @@ function App() {
                 path="/master-data/marketplace"
                 element={<MasterMarketplaces />}
               />
-              <Route path="/master-data/configuration" element={<MasterConfigurations />} />
+              <Route
+                path="/master-data/configuration"
+                element={<MasterConfigurations />}
+              />
               <Route path="/master-data/acm" element={<AcmPage />} />
-              <Route path="/master-data/audit-log" element={<MasterAuditLogs />} />
+              <Route
+                path="/master-data/audit-log"
+                element={<MasterAuditLogs />}
+              />
             </>
           )}
 
@@ -158,14 +168,39 @@ function App() {
                 path="/transaction/fabric-purchase/:id"
                 element={<ViewFormFabricPurchase disabled={true} />}
               />
-              <Route path="/small-inventory" element={<MasterSmallInventories />} />
-              <Route path="/small-inventory/:id" element={<FormSmallInventory />} />
-              <Route path="/large-inventory" element={<MasterLargeInventories />} />
-              <Route path="/large-inventory/:id" element={<FormLargeInventory />} />
+              <Route
+                path="/small-inventory"
+                element={<MasterSmallInventories />}
+              />
+              <Route
+                path="/small-inventory/:id"
+                element={<FormSmallInventory />}
+              />
+              <Route
+                path="/large-inventory"
+                element={<MasterLargeInventories />}
+              />
+              <Route
+                path="/large-inventory/:id"
+                element={<FormLargeInventory />}
+              />
               <Route path="/fabric" element={<MasterFabrics />} />
-              <Route path="/transaction/fabric-cutting"  element={<FabricCutting />} />
-              <Route path="/transaction/fabric-cutting/new"  element={<FormFabricCuttingRequest />}/>
-              <Route path="/transaction/fabric-cutting/:id"  element={<FormFabricCuttingRequest disabled />}/>
+              <Route
+                path="/transaction/fabric-cutting"
+                element={<FabricCutting />}
+              />
+              <Route
+                path="/transaction/fabric-cutting/new"
+                element={<FormFabricCuttingRequest />}
+              />
+              <Route
+                path="/transaction/fabric-cutting/:id"
+                element={<FormFabricCuttingRequest disabled />}
+              />
+              <Route
+                path="/transaction/fabric-receiving"
+                element={<FabricReceiving />}
+              />
             </>
           )}
 
