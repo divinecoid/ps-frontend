@@ -11,7 +11,6 @@ import ConfirmDetail from "./form-request-detail-confirm";
 import { ModelSize } from "@/interfaces/model-size";
 import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
-import { FabricCutting } from "@/interfaces/fabric-cutting";
 
 interface DetailProductListProps<T> {
     form: UseFormReturn<FieldValues, T, FieldValues>
@@ -102,31 +101,9 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
             });
     }, [modelId]);
 
-    React.useEffect(() => {
-        if (!clothDetail || sizes.length === 0) {
-            return;
-        }
-
-        const next = sizes.map(size => {
-            const stock = clothDetail.find((d: { size_id: string; }) => d.size_id === size.id);
-
-            const recQty = stock?.rec_qty ?? 0;
-
-            return {
-                size_id: size.id,
-                dozen_qty: Math.floor(recQty / 12),
-                piece_qty: recQty % 12,
-            };
-        });
-
-        replace(next);
-    }, [clothDetail, sizes, replace]);
-
-
     const colorSource = React.useMemo((): BaseApiCallIndexProps | undefined => {
         if (!modelId) return undefined;
-        return (page, limit, search) =>
-            Services.MasterProductModel.fabric_color(modelId, page, limit, search);
+        return (page, limit, search) => Services.MasterProductModel.fabric_color(modelId, page, limit, search);
     }, [modelId]);
 
     return <>
@@ -181,6 +158,22 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                                         shouldDirty: false,
                                                     }
                                                 );
+                                                const next = sizes.map(size => {
+                                                    const stock = (
+                                                        fabric.detail as Array<{
+                                                            size_id: string;
+                                                            avl_qty: number;
+                                                        }>
+                                                    ).find(d => d.size_id === size.id);
+
+                                                    const qty = stock?.avl_qty ?? 0;
+                                                    return {
+                                                        size_id: size.id,
+                                                        dozen_qty: Math.floor(qty / 12),
+                                                        piece_qty: qty % 12,
+                                                    };
+                                                });
+                                                replace(next);
                                             }}
                                             disabled={disabled} />
                                     </FormControl>

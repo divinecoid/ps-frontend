@@ -32,15 +32,13 @@ export const columns: ColumnDef<FabricCutting>[] = [
     header: "Status",
     enableSorting: false,
     cell: ({ row }) => {
-      const isCompleted = row.original.request_detail.every(
-        detail =>
-          detail.req_dozen_qty === detail.rec_dozen_qty &&
-          detail.req_piece_qty === detail.rec_piece_qty
-      );
-
-      return isCompleted
-        ? <Badge variant="success">Selesai</Badge>
-        : <Badge variant="secondary">Sedang Berlangsung</Badge>
+      const data = row.original;
+      switch (data.status) {
+        case "OPEN":
+          return <Badge variant="secondary">Sedang Berlangsung</Badge>
+        case "CLOSED":
+          return <Badge variant="success">Selesai</Badge>
+      }
     }
   }
 ]

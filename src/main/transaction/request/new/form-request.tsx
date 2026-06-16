@@ -26,7 +26,7 @@ export default function FormRequest(props: BaseForm) {
         }),
         cloth_detail: z.array(z.object({
             size_id: z.string(),
-            rec_qty: z.number(),
+            avl_qty: z.number(),
         })).default([]),
         variant_detail: z.array(variantDetailSchema).min(1, {
             message: "Minimal tambahkan 1 varian yang akan dijahit."
@@ -114,7 +114,7 @@ export default function FormRequest(props: BaseForm) {
                     }
 
                     // Qty > 0 dan melebihi stok
-                    if (qty > stock.rec_qty) {
+                    if (qty > stock.avl_qty) {
                         ctx.addIssue({
                             code: z.ZodIssueCode.custom,
                             path: [
@@ -123,7 +123,7 @@ export default function FormRequest(props: BaseForm) {
                                 variantIndex,
                                 "piece_qty",
                             ],
-                            message: `Jumlah melebihi stok. Maksimal ${stock.rec_qty} pcs.`,
+                            message: `Jumlah melebihi stok. Maksimal ${stock.avl_qty} pcs.`,
                         });
                     }
                 }

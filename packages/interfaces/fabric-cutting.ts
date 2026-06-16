@@ -6,10 +6,8 @@ export interface FabricCuttingRequestDetail {
   id?: string
   request_id?: string
   product_id?: string
-  req_dozen_qty: number
-  rec_dozen_qty: number
-  req_piece_qty: number
-  rec_piece_qty: number
+  req_qty: number
+  rec_qty: number
   code?: string
   model_id?: string
   models?: { name: string; sku: string }
@@ -32,7 +30,7 @@ export interface FabricCutting {
   clothes?: { sequence: string }
   request_detail: FabricCuttingRequestDetail[]
   status?: CuttingStatus
-  created_at?: Date
+  created_at: Date
 }
 
 export interface FabricCuttingResponse extends IndexResponse {
