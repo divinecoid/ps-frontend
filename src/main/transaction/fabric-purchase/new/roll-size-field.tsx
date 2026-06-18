@@ -23,7 +23,7 @@ export default function RollSizeField({
     let mounted = true;
     const load = async () => {
       try {
-        const res = await Services.MasterRollSize.master(
+        const res = await Services.MasterRollSize.index(
           1,
           9999,
           "",
