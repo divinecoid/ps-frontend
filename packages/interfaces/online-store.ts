@@ -10,6 +10,7 @@ export interface OnlineStore extends MasterData {
   store_url: string
   is_active: boolean
   redirect_uri: string
+  shop_id: string
   marketplace: {
     name: string
   }

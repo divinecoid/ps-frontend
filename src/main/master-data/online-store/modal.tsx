@@ -46,6 +46,16 @@ export default function ModalOnlineStore(props: BaseModalForm) {
                 placeholder: "Nama toko online",
             },
             {
+                key: "shop_id",
+                type: "text",
+                schema: z.string().min(2, {
+                    message: "Id toko setidaknya memiliki 2 karakter."
+                }),
+                label: "Id toko",
+                description: "Masukkan Id toko online.",
+                placeholder: "1023184",
+            },
+            {
                 key: "api_key",
                 type: "text",
                 schema: z.string().min(2, {

@@ -29,6 +29,7 @@ export interface InputMeta {
     max?: number;                                           //slider
     step?: number;                                          //slider
     disabled?: boolean;
+    group?: string;
     source?: {
         id: string;
         label: string;

@@ -130,7 +130,7 @@ export default function ItemForm<T extends FieldValues>({
           {rows.map((row, rowIndex) => {
             const rowClass =
               row.length > 1
-                ? "grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-3"
+                ? "grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-3 px-7 py-2"
                 : undefined;
             return (
               <div key={`row-${rowIndex}`} className={rowClass}>
@@ -139,10 +139,11 @@ export default function ItemForm<T extends FieldValues>({
                   const fieldMeta = meta[key];
                   const fieldSource = api[key];
                   const custom = component[key];
+                  const group = fieldMeta.group;
 
                   if (fieldMeta.type === "custom") {
                     return (
-                      <div key={key} className="px-7 py-2">
+                      <div key={key} className={ group ? "py-2" : "px-7 py-2"}>
                         {typeof custom === "function" ? custom(0) : custom}
                         <p
                           data-slot="form-message"
@@ -164,7 +165,7 @@ export default function ItemForm<T extends FieldValues>({
                       name={key as Path<T>}
                       render={({ field, fieldState }) => (
                         <FormItem
-                          className={`${fieldMeta.type === "hidden" ? "h-0" : "px-7 py-2"}`}
+                          className={`${fieldMeta.type === "hidden" ? "h-0" : group ? "py-2" : "px-7 py-2"}`}
                         >
                           <FormLabel>{fieldMeta.label}</FormLabel>
                           <FormControl>

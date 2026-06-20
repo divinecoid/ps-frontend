@@ -19,6 +19,11 @@ export const columns: ColumnDef<OnlineStore>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "shop_id",
+    header: "Shop id",
+    enableSorting: true,
+  },
+  {
     accessorKey: "api_key",
     header: "API key",
     enableSorting: true,
