@@ -18,15 +18,6 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
         }),
         dozen_qty: z.coerce.number().min(0).default(0),
         piece_qty: z.coerce.number().min(0).default(0),
-    }).superRefine((data, ctx) => {
-        const totalPiece = data.dozen_qty * 12 + data.piece_qty
-        if (totalPiece < 1) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Jumlah total minimal 1 piece.",
-                path: ["piece_qty"],
-            })
-        }
     })
     const variantDetailSchema = z.object({
         size_id: z.string().nonempty({
@@ -91,6 +82,17 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
                 }
                 seen.add(item.size_id)
             })
+
+            const totalAllPiece = data.reduce((acc, item) => {
+                return acc + (item.dozen_qty * 12 + item.piece_qty)
+            }, 0)
+            if (totalAllPiece < 1) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Jumlah total minimal 1 piece.",
+                    path: [0, "piece_qty"],
+                })
+            }
         })
     }
 
