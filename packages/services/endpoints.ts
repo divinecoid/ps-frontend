@@ -31,5 +31,6 @@ export const ENDPOINT = {
     ACM: "acm",
     AUDIT_LOG: "audit-log",
     FABRIC_CUTTING: "fabric-cutting",
-    FABRIC_COLOR: "get-fabric-color"
+    FABRIC_COLOR: "get-fabric-color",
+    TIKTOK_SHOP: "tiktok-shop"
 };

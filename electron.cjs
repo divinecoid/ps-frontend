@@ -179,9 +179,20 @@ ipcMain.handle("open-oauth", async (event, url, successUrl) => {
 
   oauthWin.webContents.on("did-finish-load", () => {
     const currentUrl = oauthWin.webContents.getURL();
-    if (currentUrl.includes(successUrl)) {
-      win.webContents.send("oauth-done");
-      oauthWin.close();
+    try {
+      const currentObj = new URL(currentUrl);
+      const successObj = new URL(successUrl);
+      
+      if (currentObj.origin === successObj.origin && 
+          currentObj.pathname.replace(/\/$/, '') === successObj.pathname.replace(/\/$/, '')) {
+        win.webContents.send("oauth-done");
+        oauthWin.close();
+      }
+    } catch (e) {
+      if (currentUrl === successUrl) {
+        win.webContents.send("oauth-done");
+        oauthWin.close();
+      }
     }
   });
 });

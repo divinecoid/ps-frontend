@@ -8,6 +8,7 @@ import {
   History,
   ArrowDownLeftFromSquare,
   FileStack,
+  Search,
 } from "lucide-react";
 
 // export const Menu = {
@@ -200,6 +201,12 @@ export const Menu = {
       name: "Permintaan",
       url: "/transaction/request",
       icon: Repeat2,
+      role: ["preparist", "checker", "admin"],
+    },
+    {
+      name: "Lacak CMT",
+      url: "/transaction/track-cmt",
+      icon: Search,
       role: ["preparist", "checker", "admin"],
     },
     {

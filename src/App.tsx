@@ -23,6 +23,7 @@ import { hasRole } from "@/lib/jwt-decode";
 import FormExample from "./main/example/form";
 import WidgetPreviewPage from "./main/example/widget-preview";
 import Request from "./main/transaction/request";
+import TrackCMT from "./main/transaction/track-cmt";
 import FormRequest from "./main/transaction/request/new/form-request";
 import DocumentBarcodePreview from "./main/transaction/request/barcode/preview";
 import Print from "./main/print";
@@ -132,6 +133,7 @@ function App() {
           {(isAdmin || isChecker || isPreparist) && (
             <>
               <Route path="/transaction/request" element={<Request />} />
+              <Route path="/transaction/track-cmt" element={<TrackCMT />} />
               <Route
                 path="/transaction/request/new"
                 element={<FormRequest />}

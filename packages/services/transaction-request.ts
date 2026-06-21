@@ -47,3 +47,7 @@ export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
 export const barcode: BaseApiCallViewProps = async (id) => {
     return await GET(`${ENDPOINT.REQUEST}/barcode/${id}`);
 }
+
+export const searchCmt = async (model_id: string, color_id: string, size_id: string) => {
+    return await GET(`${ENDPOINT.REQUEST}/search-cmt`, { model_id, color_id, size_id });
+}
