@@ -48,6 +48,7 @@ import AcmPage from "./main/master-data/acm";
 import MasterAuditLogs from "./main/master-data/audit-log";
 import FabricCutting from "./main/transaction/fabric-cutting";
 import FormFabricCuttingRequest from "./main/transaction/fabric-cutting/new/form-fabric-cutting-request";
+import TrackCutting from "./main/transaction/track-cutting";
 import FabricReceiving from "./main/transaction/fabric-receiving";
 
 function App() {
@@ -199,6 +200,7 @@ function App() {
                 path="/transaction/fabric-cutting/:id"
                 element={<FormFabricCuttingRequest disabled />}
               />
+              <Route path="/transaction/track-cutting" element={<TrackCutting />} />
               <Route
                 path="/transaction/fabric-receiving"
                 element={<FabricReceiving />}

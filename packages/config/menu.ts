@@ -195,6 +195,12 @@ export const Menu = {
       icon: Repeat2,
       role: ["preparist", "checker", "admin"],
     },
+    {
+      name: "Lacak Hasil Potong",
+      url: "/transaction/track-cutting",
+      icon: Search,
+      role: ["preparist", "checker", "admin"],
+    },
   ],
   navCMTTransaction: [
     {

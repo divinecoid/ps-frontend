@@ -47,3 +47,7 @@ export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
 export const setReceived: BaseApiCallViewProps = async (id) => {
     return await PATCH(`${ENDPOINT.FABRIC_CUTTING}/${id}`);
 }
+
+export const searchCutting = async (model_id: string, color_id: string, size_id: string) => {
+    return await GET(`${ENDPOINT.FABRIC_CUTTING}/search-cutting`, { model_id, color_id, size_id });
+}
