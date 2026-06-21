@@ -38,6 +38,7 @@ export default function ItemForm<T extends FieldValues>({
   services,
   onError,
   formShape,
+  dummy
 }: ItemProps<T>) {
   const { schema, meta, defaultValues, api, component } =
     generateSchema<T>(formShape);
@@ -47,6 +48,10 @@ export default function ItemForm<T extends FieldValues>({
     resolver: zodResolver(schema),
     defaultValues,
   });
+
+  React.useEffect(() => {
+    form.reset(dummy)
+  }, [dummy])
   React.useEffect(() => {
     const viewData = async () => {
       try {

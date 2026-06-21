@@ -50,7 +50,7 @@ import FabricCutting from "./main/transaction/fabric-cutting";
 import TrackCutting from "./main/transaction/track-cutting";
 import FabricReceiving from "./main/transaction/fabric-receiving";
 import FormFabricCuttingRequest from "./main/transaction/fabric-cutting/cutting/form-fabric-cutting-request";
-import FormFabricCuttingReceive from "./main/transaction/fabric-cutting/receiving/form-fabric-cutting-receive";
+import FormFabricCuttingReceive from "./main/transaction/fabric-cutting/receiving/form-fabric-cutting-request";
 
 function App() {
   const { token } = useAuth();
