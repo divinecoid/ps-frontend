@@ -6,8 +6,8 @@ import { Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Services from "@/services";
 import React from "react";
-import VariantListItem from "./form-fabric-cutting-request-detail-variant-list-item";
-import ConfirmDetail from "./form-fabric-cutting-request-detail-confirm";
+import VariantListItem from "./form-fabric-cutting-receive-detail-variant-list-item";
+import ConfirmDetail from "./form-fabric-cutting-receive-detail-confirm";
 import { ModelSize } from "@/interfaces/model-size";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 

@@ -19,6 +19,7 @@ export default function FabricCutting() {
         actions={(props) => [
             <DatatableSelectAction {...props} action={Services.TransactionFabricCutting.multiDestroy} trigger="Hapus" variant="destructive" title={`Apakah anda yakin untuk menghapus ${props.selectedRows.length} pengajuan?`} description={`Aksi ini akan menghilangkan ${props.selectedRows.length} pengajuan terpilih dari daftar pilihan.`} />,
             <Button asChild variant="outline"><Link to={`./new`}><Plus />Pengajuan Baru</Link></Button>,
+            <Button asChild variant="outline"><Link to={`./new2`}><Plus />Pengajuan Baru2</Link></Button>,
             <ModalConfirm {...props} action={Services.TransactionFabricCutting.setReceived} id={receivedRow} setId={setReceivedRow} variant="default" title="Apakah anda yakin untuk menyelesaikan pengajuan ini?" description="Pengajuan ini akan diselesaikan." />,
             <ModalConfirm {...props} action={Services.TransactionFabricCutting.destroy} id={deleteRow} setId={setDeleteRow} variant="destructive" title="Apakah anda yakin untuk membatalkan pengajuan ini?" description="Pengajuan ini akan dibatalkan." />,
         ]}

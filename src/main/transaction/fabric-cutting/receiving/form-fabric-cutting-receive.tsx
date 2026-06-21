@@ -3,10 +3,10 @@ import { BaseForm } from "@/interfaces/base";
 import Services from "@/services";
 import { useParams } from "react-router-dom";
 import { z } from "zod/v3";
-import { Request } from "@/interfaces/request";
-import DetailList from "./form-request-detail-variant-list";
+import { FabricCutting } from "@/interfaces/fabric-cutting";
+import FabricCuttingReceiveDetailList from "./form-fabric-cutting-receive-detail-variant-list";
 
-export default function FormRequest(props: BaseForm) {
+export default function FormFabricCuttingReceive(props: BaseForm) {
     const { id } = useParams();
 
     const variantDetailSchema = z.object({
@@ -21,13 +21,6 @@ export default function FormRequest(props: BaseForm) {
         model_id: z.string().nonempty({
             message: "Model dibutuhkan.",
         }),
-        cloth_id: z.string().nonempty({
-            message: "Warna dibutuhkan.",
-        }),
-        cloth_detail: z.array(z.object({
-            size_id: z.string(),
-            avl_qty: z.coerce.number(),
-        })).default([]),
         variant_detail: z.array(variantDetailSchema).min(1, {
             message: "Minimal tambahkan 1 varian yang akan dijahit."
         }).superRefine((data, ctx) => {
@@ -56,13 +49,14 @@ export default function FormRequest(props: BaseForm) {
     }
 
     const schema = {
-        cmt_id: z.string().nonempty({
-            message: "CMT dibutuhkan",
+        fabric_id: z.string().nonempty({
+            message: "Kain dibutuhkan",
         }),
-        serial_number: z.string().nonempty({
-            message: "Nomor seri dibutuhkan",
+        quantity: z.coerce.number().gte(1, {
+            message: "Jumlah harus lebih dari 0"
         }),
-        cloth_id: z.string().nonempty({
+        serial_number: z.string(),
+        color_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
         request_detail: z.array(z.object(detailSchema)).min(1, {
@@ -70,99 +64,66 @@ export default function FormRequest(props: BaseForm) {
         }).superRefine((data, ctx) => {
             const seen = new Map<string, number>()
             data.forEach((item, index) => {
-                const key = `${item.model_id}::${item.cloth_id}`
+                const key = `${item.model_id}`
                 if (seen.has(key)) {
                     const firstIndex = seen.get(key)!
                     ctx.addIssue({
                         code: z.ZodIssueCode.custom,
                         message: "Model dan warna tidak boleh duplikat.",
-                        path: [index, "cloth_id"],
+                        path: [index],
                     })
                     ctx.addIssue({
                         code: z.ZodIssueCode.custom,
                         message: "Model dan warna tidak boleh duplikat.",
-                        path: [firstIndex, "cloth_id"],
+                        path: [firstIndex],
                     })
                 } else {
                     seen.set(key, index)
-                }
-                for (const [variantIndex, variant] of item.variant_detail.entries()) {
-                    const qty = variant.dozen_qty * 12 + variant.piece_qty;
-
-                    // Skip validasi jika qty = 0
-                    if (qty <= 0) {
-                        continue;
-                    }
-
-                    const stock = item.cloth_detail.find(
-                        d => d.size_id === variant.size_id
-                    );
-
-                    // Qty > 0 tetapi ukuran tidak tersedia
-                    if (!stock) {
-                        ctx.addIssue({
-                            code: z.ZodIssueCode.custom,
-                            path: [
-                                index,
-                                "variant_detail",
-                                variantIndex,
-                                "size_id",
-                            ],
-                            message: "Ukuran ini tidak tersedia pada kain yang dipilih.",
-                        });
-                        continue;
-                    }
-
-                    // Qty > 0 dan melebihi stok
-                    if (qty > stock.avl_qty) {
-                        ctx.addIssue({
-                            code: z.ZodIssueCode.custom,
-                            path: [
-                                index,
-                                "variant_detail",
-                                variantIndex,
-                                "piece_qty",
-                            ],
-                            message: `Jumlah melebihi stok. Maksimal ${stock.avl_qty} pcs.`,
-                        });
-                    }
                 }
             })
         })
     }
 
-    return <ItemForm<Request>
+    return <ItemForm<FabricCutting>
         id={id}
-        onError={console.log}
         {...props}
-        services={Services.TransactionRequest}
+        services={Services.TransactionFabricCutting}
         formShape={[
             {
-                key: "cmt_id",
+                key: "fabric_id",
                 type: "combobox",
-                schema: schema.cmt_id,
-                label: "CMT",
-                description: "CMT yang akan melakukan penjahitan.",
-                placeholder: "CMT",
+                schema: schema.fabric_id,
+                label: "Seri kain",
+                description: "Kain yang akan dipotong.",
+                placeholder: "FCT001-RED.001",
                 source: {
                     id: "id",
-                    label: "name",
-                    api: Services.MasterCMT.index
+                    label: "sequence",
+                    api: props.disabled ? Services.MasterFabric.index : Services.MasterFabric.uncut
                 }
+            },
+            {
+                key: "quantity",
+                type: "number",
+                schema: schema.quantity,
+                label: "Jumlah roll kain",
+                description: "Jumlah roll kain yang akan dipotong.",
+                placeholder: "Cth: 2",
+                defaultValue: 0,
             },
             {
                 key: "serial_number",
                 type: "text",
                 schema: schema.serial_number,
-                label: "Nomor Seri (Serial Number)",
-                description: "Nomor seri atau referensi untuk request CMT ini.",
+                label: "Series",
+                description: "Masukkan seri.",
                 placeholder: "Contoh: 0001",
             },
             {
                 key: "request_detail",
                 type: "custom",
                 schema: schema.request_detail,
-                custom: <DetailList rowKey="request_detail" disabled={props.disabled} />
+                custom: <FabricCuttingReceiveDetailList rowKey="request_detail" disabled={props.disabled} />
             }
         ]} >
 

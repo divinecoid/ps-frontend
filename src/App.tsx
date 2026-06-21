@@ -46,8 +46,9 @@ import MasterConfigurations from "./main/master-data/configuration";
 import AcmPage from "./main/master-data/acm";
 import MasterAuditLogs from "./main/master-data/audit-log";
 import FabricCutting from "./main/transaction/fabric-cutting";
-import FormFabricCuttingRequest from "./main/transaction/fabric-cutting/new/form-fabric-cutting-request";
 import FabricReceiving from "./main/transaction/fabric-receiving";
+import FormFabricCuttingRequest from "./main/transaction/fabric-cutting/cutting/form-fabric-cutting-request";
+import FormFabricCuttingReceive from "./main/transaction/fabric-cutting/receiving/form-fabric-cutting-receive";
 
 function App() {
   const { token } = useAuth();
@@ -191,6 +192,10 @@ function App() {
               />
               <Route
                 path="/transaction/fabric-cutting/new"
+                element={<FormFabricCuttingReceive />}
+              />
+              <Route
+                path="/transaction/fabric-cutting/new2"
                 element={<FormFabricCuttingRequest />}
               />
               <Route
