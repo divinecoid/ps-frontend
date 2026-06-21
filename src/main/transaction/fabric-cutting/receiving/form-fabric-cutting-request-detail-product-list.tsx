@@ -6,10 +6,9 @@ import { Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Services from "@/services";
 import React from "react";
-import VariantListItem from "./form-fabric-cutting-receive-detail-variant-list-item";
+import VariantListItem from "./form-fabric-cutting-request-detail-variant-list-item";
 import ConfirmDetail from "./form-fabric-cutting-request-detail-confirm";
 import { ModelSize } from "@/interfaces/model-size";
-import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 
 interface DetailProductListProps<T> {
@@ -40,8 +39,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
     const handleAddVariants = async () => {
         append({
             size_id: undefined,
-            dozen_qty: "",
-            piece_qty: "",
+            qty: "",
         })
     }
 
@@ -50,20 +48,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
         name: `${parentKey}.${index}.model_id`,
     });
 
-    const clothDetail = useWatch({
-        control: form.control,
-        name: `${parentKey}.${index}.cloth_detail`,
-    });
-
     React.useEffect(() => {
-        form.setValue(
-            `${parentKey}.${index}.cloth_id`,
-            undefined,
-            {
-                shouldValidate: false,
-                shouldDirty: false,
-            }
-        );
         if (!modelId) {
             setSizes([]);
             return;
@@ -74,8 +59,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
 
             const next = data.map(s => ({
                 size_id: s.id,
-                dozen_qty: "",
-                piece_qty: "",
+                qty: "",
             }));
 
             const current = form.getValues(fieldName) ?? [];
@@ -101,11 +85,6 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
             });
     }, [modelId]);
 
-    const colorSource = React.useMemo((): BaseApiCallIndexProps | undefined => {
-        if (!modelId) return undefined;
-        return (page, limit, search) => Services.MasterProductModel.fabric_color(modelId, page, limit, search);
-    }, [modelId]);
-
     return <>
         <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus ukuran terpilih secara permanen!" />
         <Card className="p-4 rounded-lg flex gap-0 h-min @container">
@@ -127,54 +106,6 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                             source={Services.MasterProductModel.index}
                                             value={field.value}
                                             onValueChange={field.onChange}
-                                            disabled={disabled} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name={`${parentKey}.${index}.cloth_id`}
-                            render={({ field }) => (
-                                <FormItem className="w-[40%]">
-                                    <FormLabel>Seri Kain</FormLabel>
-                                    <FormControl>
-                                        <DynamicCombobox
-                                            id="id"
-                                            label="name"
-                                            placeholder="Seri Kain"
-                                            type={"single"}
-                                            source={colorSource}
-                                            value={field.value}
-                                            onValueChange={field.onChange}
-                                            onItemChange={(item) => {
-                                                const fabric = item;
-                                                form.setValue(
-                                                    `${parentKey}.${index}.cloth_detail`,
-                                                    fabric.detail,
-                                                    {
-                                                        shouldValidate: false,
-                                                        shouldDirty: false,
-                                                    }
-                                                );
-                                                const next = sizes.map(size => {
-                                                    const stock = (
-                                                        fabric.detail as Array<{
-                                                            size_id: string;
-                                                            avl_qty: number;
-                                                        }>
-                                                    ).find(d => d.size_id === size.id);
-
-                                                    const qty = stock?.avl_qty ?? 0;
-                                                    return {
-                                                        size_id: size.id,
-                                                        dozen_qty: Math.floor(qty / 12),
-                                                        piece_qty: qty % 12,
-                                                    };
-                                                });
-                                                replace(next);
-                                            }}
                                             disabled={disabled} />
                                     </FormControl>
                                     <FormMessage />
