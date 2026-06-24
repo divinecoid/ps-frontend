@@ -12,9 +12,13 @@ export const master: BaseApiCallIndexProps = async (page, per_page, search, sort
 }
 
 export const store: BaseApiCallCreateProps<FabricCutting> = async (values) => {
+    return await POST(ENDPOINT.FABRIC_CUTTING, values);
+}
+
+export const update: BaseApiCallUpdateProps<FabricCutting> = async (id, values) => {
     const data: FabricCutting = {
         ...values,
-        request_detail: values.request_detail.map(detail => {
+        receive_detail: values.receive_detail.map(detail => {
             const filteredVariant = detail.variant_detail?.filter(variant => {
                 const total = (variant.dozen_qty * 12) + variant.piece_qty
                 return total > 0
@@ -25,10 +29,6 @@ export const store: BaseApiCallCreateProps<FabricCutting> = async (values) => {
             }
         }).filter(detail => (detail.variant_detail?.length ?? 0) > 0)
     }
-    return await POST(ENDPOINT.FABRIC_CUTTING, data);
-}
-
-export const update: BaseApiCallUpdateProps<FabricCutting> = async (id, values) => {
     return await PATCH(`${ENDPOINT.FABRIC_CUTTING}/${id}`, values);
 }
 

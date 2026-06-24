@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import React from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import ProductList from "./form-fabric-cutting-receive-detail-product-list";
 import ConfirmDetail from "./form-fabric-cutting-request-detail-confirm";
 import { FormDescription, FormField, FormLabel } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { ModelSize } from "@/interfaces/model-size";
+import { prefetchModelSizes } from "@/lib/master-data-cache";
 
 interface DetailProps {
     rowKey: string
@@ -16,7 +16,6 @@ interface DetailProps {
 
 export default function DetailList({ rowKey, disabled }: DetailProps) {
     const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
-    const sizeCache = React.useRef<Record<string, ModelSize[]>>({});
 
     const form = useFormContext()
     const { append, fields, remove } = useFieldArray({
@@ -24,16 +23,21 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
         name: rowKey
     })
 
-    const handleAdd = () => {
-        append({
-            model_id: undefined,
-            color_id: undefined,
-        })
-    }
+    const fabricDetail = useWatch({ control: form.control, name: "fabric_detail" });
+    const requestDetail = useWatch({ control: form.control, name: "request_detail" });
+    const receiveDetail = useWatch({ control: form.control, name: rowKey });
+
     React.useEffect(() => {
-        const fabricDetail = form.watch("fabric_detail") || [];
-        const requestDetail = form.watch("request_detail") || [];
-        if (!fabricDetail.length || !requestDetail.length) return;
+        const modelIds = [
+            ...(requestDetail ?? []).map((d: { model_id?: string }) => d.model_id),
+            ...(receiveDetail ?? []).map((d: { model_id?: string }) => d.model_id),
+        ].filter(Boolean) as string[];
+        prefetchModelSizes(modelIds);
+    }, [requestDetail, receiveDetail]);
+
+    React.useEffect(() => {
+        if (!fabricDetail?.length || !requestDetail?.length) return;
+
         const result = [];
         for (const fabric of fabricDetail) {
             for (const request of requestDetail) {
@@ -42,7 +46,7 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
                     model_id: request.model_id,
                     color_id: form.getValues("color_id"),
                     cloth_detail: request.variant_detail,
-                    variant_detail: request.variant_detail.map((v: any) => ({
+                    variant_detail: request.variant_detail.map((v: { size_id: string }) => ({
                         size_id: v.size_id,
                         dozen_qty: 0,
                         piece_qty: 0,
@@ -55,10 +59,14 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
             shouldDirty: false,
             shouldValidate: false,
         });
-    }, [
-        form.watch("fabric_detail"),
-        form.watch("request_detail")
-    ]);
+    }, [fabricDetail, requestDetail]);
+
+    const handleAdd = () => {
+        append({
+            model_id: undefined,
+            color_id: undefined,
+        })
+    }
 
     return <div className="mb-2">
         <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus produk terpilih secara permanen!" />
@@ -76,7 +84,7 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
                     <Card className={cn("shadow-none bg-secondary p-2 gap-2 grid lg:grid-cols-2 sm:grid-cols-1", (form.formState.errors[rowKey]?.message || form.formState.errors?.[rowKey]?.root?.message) && "border-destructive bg-destructive/10")}>
                         {fields.length == 0 && <CardDescription className="text-center col-span-2 h-full m-4">Daftar permintaan Anda masih kosong, silahkan tekan tambah produk yang akan dijahit!</CardDescription>}
                         {fields.map((row, index) => (
-                            <ProductList key={row.id} form={form} index={index} parentKey={rowKey} handleDelete={setDeleteIndex} disabled={disabled} sizeCache={sizeCache} />
+                            <ProductList key={row.id} form={form} index={index} parentKey={rowKey} handleDelete={setDeleteIndex} disabled={disabled} />
                         ))}
                     </Card>
                 </div>

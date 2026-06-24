@@ -6,7 +6,7 @@ import FabricListItem from './form-fabric-cutting-request-fabric-list-item';
 import React from "react";
 import { Fabric } from "@/interfaces/fabric";
 import ConfirmDetail from "./form-fabric-cutting-request-detail-confirm";
-import Services from "@/services";
+import { fetchUncutFabrics } from "@/lib/master-data-cache";
 import { Card, CardDescription } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -41,13 +41,9 @@ export default function FabricCuttingRequestFabricList({
     };
 
     React.useEffect(() => {
-        const loadFabrics = async () => {
-            const res = await Services.MasterFabric.uncut();
-            const json = await res.json();
-            setFabrics(json.data);
-        };
-
-        loadFabrics();
+        fetchUncutFabrics()
+            .then(setFabrics)
+            .catch(() => setFabrics([]));
     }, []);
 
     return (

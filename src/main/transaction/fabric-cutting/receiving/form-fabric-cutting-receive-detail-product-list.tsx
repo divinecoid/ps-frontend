@@ -8,9 +8,9 @@ import Services from "@/services";
 import React from "react";
 import VariantListItem from "./form-fabric-cutting-receive-detail-variant-list-item";
 import ConfirmDetail from "./form-fabric-cutting-request-detail-confirm";
-import { ModelSize } from "@/interfaces/model-size";
 import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
+import { useModelSizes } from "@/hooks/use-model-sizes";
 
 interface DetailProductListProps<T> {
     form: UseFormReturn<FieldValues, T, FieldValues>
@@ -18,26 +18,29 @@ interface DetailProductListProps<T> {
     parentKey: string
     handleDelete: React.Dispatch<React.SetStateAction<number | undefined>>
     disabled?: boolean
-    sizeCache: React.RefObject<Record<string, ModelSize[]>>
 }
-export default function ProductList<T>({ form, index, parentKey, handleDelete, disabled, sizeCache }: DetailProductListProps<T>) {
+export default function ProductList<T>({ form, index, parentKey, handleDelete, disabled }: DetailProductListProps<T>) {
     const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
     const fieldName = `${parentKey}.${index}.variant_detail`;
 
-    const [sizes, setSizes] = React.useState<ModelSize[]>([]);
+    const modelId = useWatch({
+        control: form.control,
+        name: `${parentKey}.${index}.model_id`,
+    });
+
+    const sizes = useModelSizes(modelId, Boolean(modelId));
 
     const sizeOptions = React.useMemo(
         () => sizes.map(s => ({ id: s.id, name: s.name })),
         [sizes]
     );
 
-
     const { fields, append, remove, replace } = useFieldArray({
         control: form.control,
         name: fieldName
     })
 
-    const handleAddVariants = async () => {
+    const handleAddVariants = () => {
         append({
             size_id: undefined,
             dozen_qty: "",
@@ -45,17 +48,27 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
         })
     }
 
-    const modelId = useWatch({
-        control: form.control,
-        name: `${parentKey}.${index}.model_id`,
-    });
+    React.useEffect(() => {
+        if (!modelId || disabled) return;
 
-    const clothDetail = useWatch({
-        control: form.control,
-        name: `${parentKey}.${index}.cloth_detail`,
-    });
+        const next = sizes.map(s => ({
+            size_id: s.id,
+            dozen_qty: "",
+            piece_qty: "",
+        }));
+
+        const current = form.getValues(fieldName) ?? [];
+        const same =
+            current.length === next.length &&
+            current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
+
+        if (!same && sizes.length > 0) {
+            replace(next);
+        }
+    }, [modelId, sizes, disabled]);
 
     React.useEffect(() => {
+        if (!modelId) return;
         form.setValue(
             `${parentKey}.${index}.cloth_id`,
             undefined,
@@ -64,41 +77,6 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                 shouldDirty: false,
             }
         );
-        if (!modelId) {
-            setSizes([]);
-            return;
-        }
-
-        const applySizes = (data: ModelSize[]) => {
-            setSizes(data);
-
-            const next = data.map(s => ({
-                size_id: s.id,
-                dozen_qty: "",
-                piece_qty: "",
-            }));
-
-            const current = form.getValues(fieldName) ?? [];
-            const same =
-                current.length === next.length &&
-                current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
-
-            if (!same) {
-                replace(next);
-            }
-        };
-
-        if (sizeCache.current[modelId]) {
-            applySizes(sizeCache.current[modelId]);
-            return;
-        }
-
-        Services.MasterProductModel.model_size(modelId)
-            .then(res => res.json())
-            .then(json => {
-                sizeCache.current[modelId] = json.data;
-                applySizes(json.data);
-            });
     }, [modelId]);
 
     const colorSource = React.useMemo((): BaseApiCallIndexProps | undefined => {

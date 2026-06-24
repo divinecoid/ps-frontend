@@ -2,7 +2,26 @@ import { BaseResponse, IndexResponse } from "./base"
 
 export type CuttingStatus = "OPEN" | "CLOSED"
 
+export interface FabricCuttingFabricDetail {
+  id?: string
+  request_id?: string
+  fabric_id?: string
+  quantity: number
+}
+
 export interface FabricCuttingRequestDetail {
+  id?: string
+  request_id?: string
+  product_id?: string
+  qty: number
+  code?: string
+  model_id?: string
+  model?: { name: string; sku: string }
+  size?: { name: string; code: string }
+  variant_detail?: VariantDetail[]
+}
+
+export interface FabricCuttingReceiveDetail {
   id?: string
   request_id?: string
   product_id?: string
@@ -10,7 +29,6 @@ export interface FabricCuttingRequestDetail {
   rec_qty: number
   code?: string
   model_id?: string
-  models?: { name: string; sku: string }
   model?: { name: string; sku: string }
   size?: { name: string; code: string }
   variant_detail?: VariantDetail[]
@@ -28,7 +46,9 @@ export interface FabricCutting {
   serial_number: string
   fabric?: { sequence: string }
   clothes?: { sequence: string }
+  fabric_detail: FabricCuttingFabricDetail[]
   request_detail: FabricCuttingRequestDetail[]
+  receive_detail: FabricCuttingReceiveDetail[]
   status?: CuttingStatus
   created_at: Date
 }

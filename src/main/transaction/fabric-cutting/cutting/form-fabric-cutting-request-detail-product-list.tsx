@@ -8,8 +8,8 @@ import Services from "@/services";
 import React from "react";
 import VariantListItem from "./form-fabric-cutting-request-detail-variant-list-item";
 import ConfirmDetail from "./form-fabric-cutting-request-detail-confirm";
-import { ModelSize } from "@/interfaces/model-size";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
+import { useModelSizes } from "@/hooks/use-model-sizes";
 
 interface DetailProductListProps<T> {
     form: UseFormReturn<FieldValues, T, FieldValues>
@@ -17,73 +17,52 @@ interface DetailProductListProps<T> {
     parentKey: string
     handleDelete: React.Dispatch<React.SetStateAction<number | undefined>>
     disabled?: boolean
-    sizeCache: React.RefObject<Record<string, ModelSize[]>>
 }
-export default function ProductList<T>({ form, index, parentKey, handleDelete, disabled, sizeCache }: DetailProductListProps<T>) {
+export default function ProductList<T>({ form, index, parentKey, handleDelete, disabled }: DetailProductListProps<T>) {
     const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
     const fieldName = `${parentKey}.${index}.variant_detail`;
-
-    const [sizes, setSizes] = React.useState<ModelSize[]>([]);
-
-    const sizeOptions = React.useMemo(
-        () => sizes.map(s => ({ id: s.id, name: s.name })),
-        [sizes]
-    );
-
-
-    const { fields, append, remove, replace } = useFieldArray({
-        control: form.control,
-        name: fieldName
-    })
-
-    const handleAddVariants = async () => {
-        append({
-            size_id: undefined,
-            qty: "",
-        })
-    }
 
     const modelId = useWatch({
         control: form.control,
         name: `${parentKey}.${index}.model_id`,
     });
 
+    const sizes = useModelSizes(modelId, !disabled || Boolean(modelId));
+
+    const sizeOptions = React.useMemo(
+        () => sizes.map(s => ({ id: s.id, name: s.name })),
+        [sizes]
+    );
+
+    const { fields, append, remove, replace } = useFieldArray({
+        control: form.control,
+        name: fieldName
+    })
+
+    const handleAddVariants = () => {
+        append({
+            size_id: undefined,
+            qty: "",
+        })
+    }
+
     React.useEffect(() => {
-        if (!modelId) {
-            setSizes([]);
-            return;
+        if (!modelId || disabled) return;
+
+        const next = sizes.map(s => ({
+            size_id: s.id,
+            qty: "",
+        }));
+
+        const current = form.getValues(fieldName) ?? [];
+        const same =
+            current.length === next.length &&
+            current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
+
+        if (!same && sizes.length > 0) {
+            replace(next);
         }
-
-        const applySizes = (data: ModelSize[]) => {
-            setSizes(data);
-
-            const next = data.map(s => ({
-                size_id: s.id,
-                qty: "",
-            }));
-
-            const current = form.getValues(fieldName) ?? [];
-            const same =
-                current.length === next.length &&
-                current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
-
-            if (!same) {
-                replace(next);
-            }
-        };
-
-        if (sizeCache.current[modelId]) {
-            applySizes(sizeCache.current[modelId]);
-            return;
-        }
-
-        Services.MasterProductModel.model_size(modelId)
-            .then(res => res.json())
-            .then(json => {
-                sizeCache.current[modelId] = json.data;
-                applySizes(json.data);
-            });
-    }, [modelId]);
+    }, [modelId, sizes, disabled]);
 
     return <>
         <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus ukuran terpilih secara permanen!" />
