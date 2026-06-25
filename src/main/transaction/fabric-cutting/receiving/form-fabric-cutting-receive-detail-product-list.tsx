@@ -8,9 +8,9 @@ import Services from "@/services";
 import React from "react";
 import VariantListItem from "./form-fabric-cutting-receive-detail-variant-list-item";
 import ConfirmDetail from "./form-fabric-cutting-request-detail-confirm";
-import { BaseApiCallIndexProps } from "@/interfaces/base";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 import { useModelSizes } from "@/hooks/use-model-sizes";
+import { Combobox } from "@/components/custom/combobox";
 
 interface DetailProductListProps<T> {
     form: UseFormReturn<FieldValues, T, FieldValues>
@@ -79,10 +79,17 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
         );
     }, [modelId]);
 
-    const colorSource = React.useMemo((): BaseApiCallIndexProps | undefined => {
-        if (!modelId) return undefined;
-        return (page, limit, search) => Services.MasterProductModel.fabric_color(modelId, page, limit, search);
-    }, [modelId]);
+    const fabrics = useWatch({
+        control: form.control,
+        name: "fabric_detail",
+    }) ?? [];
+
+    const fabricOptions = React.useMemo(() => {
+        return fabrics.map((item: any) => ({
+            id: item.fabric_id,
+            name: item.sequence,
+        }));
+    }, [fabrics]);
 
     return <>
         <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus ukuran terpilih secara permanen!" />
@@ -118,42 +125,15 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                 <FormItem className="w-[40%]">
                                     <FormLabel>Seri Kain</FormLabel>
                                     <FormControl>
-                                        <DynamicCombobox
+                                        <Combobox
+                                            data={fabricOptions}
                                             id="id"
                                             label="name"
                                             placeholder="Seri Kain"
-                                            type={"single"}
-                                            source={colorSource}
                                             value={field.value}
+                                            disabled={disabled}
                                             onValueChange={field.onChange}
-                                            onItemChange={(item) => {
-                                                const fabric = item;
-                                                form.setValue(
-                                                    `${parentKey}.${index}.cloth_detail`,
-                                                    fabric.detail,
-                                                    {
-                                                        shouldValidate: false,
-                                                        shouldDirty: false,
-                                                    }
-                                                );
-                                                const next = sizes.map(size => {
-                                                    const stock = (
-                                                        fabric.detail as Array<{
-                                                            size_id: string;
-                                                            avl_qty: number;
-                                                        }>
-                                                    ).find(d => d.size_id === size.id);
-
-                                                    const qty = stock?.avl_qty ?? 0;
-                                                    return {
-                                                        size_id: size.id,
-                                                        dozen_qty: Math.floor(qty / 12),
-                                                        piece_qty: qty % 12,
-                                                    };
-                                                });
-                                                replace(next);
-                                            }}
-                                            disabled={disabled} />
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

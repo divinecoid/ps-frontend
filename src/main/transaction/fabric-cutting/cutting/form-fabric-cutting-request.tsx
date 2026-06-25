@@ -113,7 +113,6 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
         id={id}
         {...props}
         services={Services.TransactionFabricCutting}
-        // services={{ store: (data) => console.log(JSON.stringify(data)) }}
         onError={console.log}
         formShape={[
             {
