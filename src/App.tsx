@@ -195,10 +195,6 @@ function App() {
               />
               <Route
                 path="/transaction/fabric-cutting/new"
-                element={<FormFabricCuttingReceive />}
-              />
-              <Route
-                path="/transaction/fabric-cutting/new2"
                 element={<FormFabricCuttingRequest />}
               />
               <Route

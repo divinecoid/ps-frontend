@@ -45,10 +45,23 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
 
+  const selectedValue = React.useMemo(() => {
+    if (Array.isArray(value)) return null;
+    return value ? String(value) : null;
+  }, [value]);
+
+  const needsInitialLabel = Boolean(
+    selectedValue && !options.some(o => o.value === selectedValue)
+  );
+
   React.useEffect(() => {
-    const getData = async () => {
+    if (!source) return;
+    if (!open && !needsInitialLabel) return;
+
+    const delay = filter ? 300 : 0;
+    const timer = setTimeout(async () => {
       try {
-        const result = await source?.(1, 10, filter);
+        const result = await source(1, 10, filter);
         if (result?.ok) {
           const json = (await result.json());
           const mapped = json.data.map((item: Record<string, unknown>) => ({
@@ -63,9 +76,10 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
           toast.error(error.message, { richColors: true })
         }
       }
-    }
-    getData();
-  }, [source, filter]);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [source, filter, open, needsInitialLabel, id, label]);
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal>

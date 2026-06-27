@@ -23,7 +23,6 @@ import * as TransactionMutation from "./transaction-mutation";
 import * as TransactionOrder from "./transaction-order";
 import * as TransactionFabricPurchase from "./transaction-fabric-purchase";
 import * as TransactionFabricCutting from "./transaction-fabric-cutting";
-import * as TransactionFabricCuttingRequest from "./transaction-fabric-cutting-request";
 import * as TransactionShopeeOrder from "./transaction-shopee-order";
 import * as TransactionTiktokOrder from "./transaction-tiktok-order";
 import * as Dashboard from "./dashboard";
@@ -51,7 +50,6 @@ const Services = {
   TransactionOrder,
   TransactionFabricPurchase,
   TransactionFabricCutting,
-  TransactionFabricCuttingRequest,
   TransactionShopeeOrder,
   TransactionTiktokOrder,
   MasterSmallInventory,
