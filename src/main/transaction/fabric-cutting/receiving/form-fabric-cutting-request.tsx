@@ -20,41 +20,13 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
         piece_qty: z.coerce.number().min(0).default(0),
     })
     const variantDetailSchema = z.object({
-        size_id: z.string().nonempty({
-            message: "Ukuran dibutuhkan.",
-        }),
+        size_id: z.string(),
         qty: z.coerce.number().min(0).default(0),
     })
 
     const detailSchema = {
-        model_id: z.string().nonempty({
-            message: "Model dibutuhkan.",
-        }),
-        variant_detail: z.array(variantDetailSchema).min(1, {
-            message: "Minimal tambahkan 1 varian yang akan dipotong."
-        }).superRefine((data, ctx) => {
-            const seen = new Set<string>()
-            data.forEach((item, index) => {
-                if (seen.has(item.size_id)) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: "Ukuran tidak boleh duplikat.",
-                        path: [index, "size_id"],
-                    })
-                }
-                seen.add(item.size_id)
-            })
-            const totalAllPiece = data.reduce((acc, item) => {
-                return acc + item.qty
-            }, 0)
-            if (totalAllPiece < 1) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Total semua varian minimal 1.",
-                    path: [0, "qty"],
-                })
-            }
-        })
+        model_id: z.string(),
+        variant_detail: z.array(variantDetailSchema)
     }
 
     const receiveSchema = {
@@ -97,63 +69,15 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
     }
 
     const fabricSchema = {
-        fabric_id: z.string().nonempty({
-            message: "Kain dibutuhkan.",
-        }),
-        quantity: z.coerce.number().min(1, { message: "Minimal 1 roll kain" }).default(0),
+        fabric_id: z.string(),
+        quantity: z.coerce.number(),
     }
 
     const schema = {
         serial_number: z.string(),
-        color_id: z.string().nonempty({
-            message: "Warna dibutuhkan.",
-        }),
-        fabric_detail: z.array(z.object(fabricSchema)).min(1, {
-            message: "Minimal tambahkan 1 produk yang akan dipotong."
-        }).superRefine((data, ctx) => {
-            const seen = new Map<string, number>();
-            data.forEach((item, index) => {
-                if (!item.fabric_id) return;
-                const firstIndex = seen.get(item.fabric_id);
-                if (firstIndex !== undefined) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: "Kain tidak boleh duplikat.",
-                        path: [index, "fabric_id"],
-                    });
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: "Kain tidak boleh duplikat.",
-                        path: [firstIndex, "fabric_id"],
-                    });
-                    return;
-                }
-                seen.set(item.fabric_id, index);
-            });
-        }),
-        request_detail: z.array(z.object(detailSchema)).min(1, {
-            message: "Minimal tambahkan 1 produk yang akan dijahit.",
-        }).superRefine((data, ctx) => {
-            const seen = new Map<string, number>()
-            data.forEach((item, index) => {
-                const key = `${item.model_id}`
-                if (seen.has(key)) {
-                    const firstIndex = seen.get(key)!
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: "Model tidak boleh duplikat.",
-                        path: [index, "model_id"],
-                    })
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: "Model tidak boleh duplikat.",
-                        path: [firstIndex, "model_id"],
-                    })
-                } else {
-                    seen.set(key, index)
-                }
-            })
-        }),
+        color_id: z.string(),
+        fabric_detail: z.array(z.object(fabricSchema)),
+        request_detail: z.array(z.object(detailSchema)),
         receive_detail: z.array(z.object(receiveSchema)).min(1, {
             message: "Minimal tambahkan 1 produk yang akan dijahit.",
         }).superRefine((data, ctx) => {
@@ -175,47 +99,7 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
                 } else {
                     seen.set(key, index)
                 }
-                for (const [variantIndex, variant] of item.variant_detail.entries()) {
-                    const qty = variant.dozen_qty * 12 + variant.piece_qty;
 
-                    // Skip validasi jika qty = 0
-                    if (qty <= 0) {
-                        continue;
-                    }
-
-                    const stock = item.cloth_detail.find(
-                        d => d.size_id === variant.size_id
-                    );
-
-                    // Qty > 0 tetapi ukuran tidak tersedia
-                    if (!stock) {
-                        ctx.addIssue({
-                            code: z.ZodIssueCode.custom,
-                            path: [
-                                index,
-                                "variant_detail",
-                                variantIndex,
-                                "size_id",
-                            ],
-                            message: "Ukuran ini tidak tersedia pada kain yang dipilih.",
-                        });
-                        continue;
-                    }
-
-                    // Qty > 0 dan melebihi stok
-                    if (qty > stock.avl_qty) {
-                        ctx.addIssue({
-                            code: z.ZodIssueCode.custom,
-                            path: [
-                                index,
-                                "variant_detail",
-                                variantIndex,
-                                "piece_qty",
-                            ],
-                            message: `Jumlah melebihi stok. Maksimal ${stock.avl_qty} pcs.`,
-                        });
-                    }
-                }
             })
         })
     }
@@ -223,9 +107,7 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
     return <ItemForm<FabricCutting>
         id={id}
         {...props}
-        // services={Services.TransactionFabricCuttingRequest}
-        services={{ store: (data) => console.log(JSON.stringify(data)), update: (data) => console.log(JSON.stringify(data)) }}
-        dummy={{ "serial_number": "0000", "fabric_detail": [{ "fabric_id": "019ee943-fc59-73a3-b88e-63aeded984d9", "quantity": 12 }, { "fabric_id": "019ee944-a881-737b-a256-e3cd1e33e68b", "quantity": 12 }], "request_detail": [{ "model_id": "019e8320-b9bb-737a-809d-5cdfc779768e", "variant_detail": [{ "size_id": "019ee93e-02d7-70fc-b7ff-3b96e4163172", "qty": 0 }, { "size_id": "019ee93e-155e-71dd-9b3d-d8cda66645b5", "qty": 5 }, { "size_id": "019ee93e-299c-70e7-a136-4e7e8574b366", "qty": 5 }, { "size_id": "019ee93e-5ba3-7011-a064-34c60876fd6a", "qty": 0 }] }, { "model_id": "019e8320-b9bc-708b-9829-2d16e8ad6c16", "variant_detail": [{ "size_id": "019ee93e-02d7-70fc-b7ff-3b96e4163172", "qty": 0 }, { "size_id": "019ee93e-155e-71dd-9b3d-d8cda66645b5", "qty": 5 }, { "size_id": "019ee93e-299c-70e7-a136-4e7e8574b366", "qty": 5 }, { "size_id": "019ee93e-5ba3-7011-a064-34c60876fd6a", "qty": 0 }, { "size_id": "019ee93e-7e8c-73d2-be1b-582e49d7a912", "qty": 0 }] }] }}
+        services={{ ...Services.TransactionFabricCutting, update: Services.TransactionFabricCutting.setReceived }}
         onError={console.log}
         formShape={[
             {

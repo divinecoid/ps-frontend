@@ -56,40 +56,13 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
     });
 
     React.useEffect(() => {
-        form.setValue(
-            `${parentKey}.${index}.cloth_id`,
-            undefined,
-            {
-                shouldValidate: false,
-                shouldDirty: false,
-            }
-        );
         if (!modelId) {
             setSizes([]);
             return;
         }
 
-        const applySizes = (data: ModelSize[]) => {
-            setSizes(data);
-
-            const next = data.map(s => ({
-                size_id: s.id,
-                dozen_qty: "",
-                piece_qty: "",
-            }));
-
-            const current = form.getValues(fieldName) ?? [];
-            const same =
-                current.length === next.length &&
-                current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
-
-            if (!same) {
-                replace(next);
-            }
-        };
-
         if (sizeCache.current[modelId]) {
-            applySizes(sizeCache.current[modelId]);
+            setSizes(sizeCache.current[modelId]);
             return;
         }
 
@@ -97,14 +70,15 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
             .then(res => res.json())
             .then(json => {
                 sizeCache.current[modelId] = json.data;
-                applySizes(json.data);
+                setSizes(json.data);
             });
     }, [modelId]);
 
+    const requestId = form.getValues("id") || window.location.pathname.split("/").pop();
     const colorSource = React.useMemo((): BaseApiCallIndexProps | undefined => {
-        if (!modelId) return undefined;
-        return (page, limit, search) => Services.MasterProductModel.fabric_color(modelId, page, limit, search);
-    }, [modelId]);
+        if (!requestId || requestId === "new") return undefined;
+        return (page, limit, search) => Services.TransactionFabricCutting.fabric_cutting_fabrics(requestId, page, limit, search);
+    }, [requestId]);
 
     return <>
         <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus ukuran terpilih secara permanen!" />
@@ -148,33 +122,6 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                             source={colorSource}
                                             value={field.value}
                                             onValueChange={field.onChange}
-                                            onItemChange={(item) => {
-                                                const fabric = item;
-                                                form.setValue(
-                                                    `${parentKey}.${index}.cloth_detail`,
-                                                    fabric.detail,
-                                                    {
-                                                        shouldValidate: false,
-                                                        shouldDirty: false,
-                                                    }
-                                                );
-                                                const next = sizes.map(size => {
-                                                    const stock = (
-                                                        fabric.detail as Array<{
-                                                            size_id: string;
-                                                            avl_qty: number;
-                                                        }>
-                                                    ).find(d => d.size_id === size.id);
-
-                                                    const qty = stock?.avl_qty ?? 0;
-                                                    return {
-                                                        size_id: size.id,
-                                                        dozen_qty: Math.floor(qty / 12),
-                                                        piece_qty: qty % 12,
-                                                    };
-                                                });
-                                                replace(next);
-                                            }}
                                             disabled={disabled} />
                                     </FormControl>
                                     <FormMessage />

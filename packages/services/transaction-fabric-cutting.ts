@@ -16,8 +16,7 @@ export const store: BaseApiCallCreateProps<FabricCutting> = async (values) => {
         ...values,
         request_detail: values.request_detail.map(detail => {
             const filteredVariant = detail.variant_detail?.filter(variant => {
-                const total = (variant.dozen_qty * 12) + variant.piece_qty
-                return total > 0
+                return (variant.qty || 0) > 0
             })
             return {
                 ...detail,
@@ -44,10 +43,14 @@ export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
     return await DELETE(`${ENDPOINT.FABRIC_CUTTING}`, ids)
 }
 
-export const setReceived: BaseApiCallViewProps = async (id) => {
-    return await PATCH(`${ENDPOINT.FABRIC_CUTTING}/${id}`);
+export const setReceived = async (id: string, values: any) => {
+    return await PATCH(`${ENDPOINT.FABRIC_CUTTING}/${id}`, values);
 }
 
 export const searchCutting = async (model_id: string, color_id: string, size_id: string) => {
     return await GET(`${ENDPOINT.FABRIC_CUTTING}/search-cutting`, { model_id, color_id, size_id });
+}
+
+export const fabric_cutting_fabrics = async (id: string, page?: number, per_page?: number, search?: string, sort?: string) => {
+    return await GET(`${ENDPOINT.FABRIC_CUTTING_FABRICS}/${id}/fabrics`, { page, per_page, search, sort });
 }

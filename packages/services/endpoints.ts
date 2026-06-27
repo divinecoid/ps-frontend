@@ -33,5 +33,6 @@ export const ENDPOINT = {
     FABRIC_CUTTING: "fabric-cutting",
     FABRIC_COLOR: "get-fabric-color",
     TIKTOK_SHOP: "tiktok-shop",
-    FABRIC_CUTTING_REQUEST: "fabric-cutting-request"
+    FABRIC_CUTTING_REQUEST: "fabric-cutting-request",
+    FABRIC_CUTTING_FABRICS: "fabric-cutting"
 };

@@ -203,7 +203,7 @@ function App() {
               />
               <Route
                 path="/transaction/fabric-cutting/:id"
-                element={<FormFabricCuttingRequest disabled />}
+                element={<FormFabricCuttingReceive />}
               />
               <Route path="/transaction/track-cutting" element={<TrackCutting />} />
               <Route

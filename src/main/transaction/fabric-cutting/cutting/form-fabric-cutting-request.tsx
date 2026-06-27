@@ -112,8 +112,7 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
     return <ItemForm<FabricCutting>
         id={id}
         {...props}
-        // services={Services.TransactionFabricCuttingRequest}
-        services={{ store: (data) => console.log(JSON.stringify(data)) }}
+        services={Services.TransactionFabricCutting}
         onError={console.log}
         formShape={[
             {
