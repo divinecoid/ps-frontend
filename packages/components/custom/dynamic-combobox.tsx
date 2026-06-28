@@ -40,6 +40,64 @@ interface Options {
   raw: Record<string, unknown>;
 }
 
+const optionsCache = new WeakMap<BaseApiCallIndexProps, Map<string, Options[]>>();
+const optionsInflight = new WeakMap<BaseApiCallIndexProps, Map<string, Promise<Options[]>>>();
+
+function getSourceCache(source: BaseApiCallIndexProps) {
+  let cache = optionsCache.get(source);
+  if (!cache) {
+    cache = new Map();
+    optionsCache.set(source, cache);
+  }
+
+  return cache;
+}
+
+function getSourceInflight(source: BaseApiCallIndexProps) {
+  let inflight = optionsInflight.get(source);
+  if (!inflight) {
+    inflight = new Map();
+    optionsInflight.set(source, inflight);
+  }
+
+  return inflight;
+}
+
+function fetchOptions(source: BaseApiCallIndexProps, id: string, label: string, filter: string) {
+  const key = `${id}:${label}:1:10:${filter}`;
+  const cache = getSourceCache(source);
+  const cached = cache.get(key);
+  if (cached) return Promise.resolve(cached);
+
+  const inflight = getSourceInflight(source);
+  const current = inflight.get(key);
+  if (current) return current;
+
+  const promise = source(1, 10, filter)
+    .then(async result => {
+      if (!result?.ok) return [];
+
+      const json = await result.json();
+      return json.data.map((item: Record<string, unknown>) => ({
+        value: String(item[id]),
+        label: String(item[label]),
+        raw: item,
+      }));
+    })
+    .then(options => {
+      cache.set(key, options);
+      inflight.delete(key);
+      return options;
+    })
+    .catch(error => {
+      inflight.delete(key);
+      throw error;
+    });
+
+  inflight.set(key, promise);
+  return promise;
+}
+
 export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, disabled, value, onValueChange, onItemChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
@@ -58,27 +116,23 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
     if (!source) return;
     if (!open && !needsInitialLabel) return;
 
+    let cancelled = false;
     const delay = filter ? 300 : 0;
     const timer = setTimeout(async () => {
       try {
-        const result = await source(1, 10, filter);
-        if (result?.ok) {
-          const json = (await result.json());
-          const mapped = json.data.map((item: Record<string, unknown>) => ({
-            value: String(item[id]),
-            label: String(item[label]),
-            raw: item,
-          }));
-          setOptions(mapped);
-        }
+        const mapped = await fetchOptions(source, id, label, filter);
+        if (!cancelled) setOptions(mapped);
       } catch (error) {
-        if (error instanceof Error) {
+        if (!cancelled && error instanceof Error) {
           toast.error(error.message, { richColors: true })
         }
       }
     }, delay);
 
-    return () => clearTimeout(timer);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [source, filter, open, needsInitialLabel, id, label]);
 
   return (
