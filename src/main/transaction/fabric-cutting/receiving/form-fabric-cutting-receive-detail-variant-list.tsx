@@ -104,7 +104,7 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
                 render={() => (
                     <div className="mb-3">
                         <div className="flex my-2">
-                            <FormLabel className="flex-1 py-3">Produk</FormLabel>
+                            <FormLabel className="flex-1 py-3">Hasil Potong</FormLabel>
                         </div>
 
                         <Card
