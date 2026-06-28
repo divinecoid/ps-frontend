@@ -16,10 +16,9 @@ interface DetailProductListProps<T> {
     form: UseFormReturn<FieldValues, T, FieldValues>
     index: number
     parentKey: string
-    handleDelete: React.Dispatch<React.SetStateAction<number | undefined>>
     disabled?: boolean
 }
-export default function ProductList<T>({ form, index, parentKey, handleDelete, disabled }: DetailProductListProps<T>) {
+export default function ProductList<T>({ form, index, parentKey, disabled }: DetailProductListProps<T>) {
     const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
     const fieldName = `${parentKey}.${index}.variant_detail`;
 
@@ -140,12 +139,6 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                             )}
                         />
                     </div>
-                    {!disabled && (
-                        <TooltipHover
-                            tooltip="Hapus">
-                            <Button tabIndex={-1} variant="destructive" type="button" onClick={() => handleDelete(index)}><Trash /></Button>
-                        </TooltipHover>
-                    )}
                 </div>
             </CardHeader>
             <FormLabel className="mt-2">Varian</FormLabel>

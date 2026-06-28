@@ -1,10 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardDescription } from "@/components/ui/card";
-import { Plus } from "lucide-react";
 import React from "react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import ProductList from "./form-fabric-cutting-receive-detail-product-list";
-import ConfirmDetail from "./form-fabric-cutting-request-detail-confirm";
 import { FormDescription, FormField, FormLabel } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { prefetchModelSizes } from "@/lib/master-data-cache";
@@ -15,80 +12,133 @@ interface DetailProps {
 }
 
 export default function DetailList({ rowKey, disabled }: DetailProps) {
-    const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
+    const form = useFormContext();
 
-    const form = useFormContext()
-    const { append, fields, remove } = useFieldArray({
+    const { fields, replace } = useFieldArray({
         control: form.control,
-        name: rowKey
-    })
+        name: rowKey,
+    });
 
-    const fabricDetail = useWatch({ control: form.control, name: "fabric_detail" });
-    const requestDetail = useWatch({ control: form.control, name: "request_detail" });
-    const receiveDetail = useWatch({ control: form.control, name: rowKey });
+    const fabricDetail = useWatch({
+        control: form.control,
+        name: "fabric_detail",
+    });
+
+    const requestDetail = useWatch({
+        control: form.control,
+        name: "request_detail",
+    });
 
     React.useEffect(() => {
+        const currentReceive = form.getValues(rowKey) ?? [];
+
         const modelIds = [
             ...(requestDetail ?? []).map((d: { model_id?: string }) => d.model_id),
-            ...(receiveDetail ?? []).map((d: { model_id?: string }) => d.model_id),
+            ...currentReceive.map((d: { model_id?: string }) => d.model_id),
         ].filter(Boolean) as string[];
+
         prefetchModelSizes(modelIds);
-    }, [requestDetail, receiveDetail]);
+    }, [requestDetail, rowKey, form]);
 
     React.useEffect(() => {
         if (!fabricDetail?.length || !requestDetail?.length) return;
 
+        const currentReceive = form.getValues(rowKey) ?? [];
+
+        const existing = new Map(
+            currentReceive.map((item: any) => [
+                `${item.cloth_id}-${item.model_id}`,
+                item,
+            ])
+        );
+
         const result = [];
+
         for (const fabric of fabricDetail) {
             for (const request of requestDetail) {
-                result.push({
-                    fabric_id: fabric.fabric_id,
-                    model_id: request.model_id,
-                    color_id: form.getValues("color_id"),
-                    cloth_detail: request.variant_detail,
-                    variant_detail: request.variant_detail.map((v: { size_id: string }) => ({
-                        size_id: v.size_id,
-                        dozen_qty: 0,
-                        piece_qty: 0,
-                    }))
-                });
+                const key = `${fabric.fabric_id}-${request.model_id}`;
+
+                const old = existing.get(key);
+
+                result.push(
+                    old ?? {
+                        model_id: request.model_id,
+                        cloth_id: fabric.fabric_id,
+                        cloth_detail: request.variant_detail.map((v: any) => ({
+                            ...v,
+                        })),
+                        variant_detail: request.variant_detail.map((v: { size_id: string }) => ({
+                            size_id: v.size_id,
+                            dozen_qty: "",
+                            piece_qty: "",
+                        })),
+                    }
+                );
             }
         }
 
-        form.setValue("receive_detail", result, {
-            shouldDirty: false,
-            shouldValidate: false,
-        });
-    }, [fabricDetail, requestDetail]);
+        const currentKeys = currentReceive.map(
+            (x: any) => `${x.fabric_id}-${x.model_id}`
+        );
 
-    const handleAdd = () => {
-        append({
-            model_id: undefined,
-            color_id: undefined,
-        })
-    }
+        const nextKeys = result.map(
+            (x: any) => `${x.fabric_id}-${x.model_id}`
+        );
 
-    return <div className="mb-2">
-        <ConfirmDetail index={deleteIndex} setIndex={setDeleteIndex} action={remove} variant="destructive" title="Apakah anda yakin untuk menghapus ini?" description="Aksi ini akan menghapus produk terpilih secara permanen!" />
-        <FormField
-            control={form.control}
-            name="request_detail"
-            render={() => (
-                <div className="mb-3">
-                    <div className="flex my-2">
-                        <FormLabel className="flex-1 py-3">Produk</FormLabel>
-                        {!disabled && (
-                            <Button type="button" variant="default" onClick={() => handleAdd()}><Plus />Tambah produk</Button>
-                        )}
+        const same =
+            currentKeys.length === nextKeys.length &&
+            currentKeys.every((key: string, index: number) => key === nextKeys[index]);
+
+        if (!same) {
+            replace(result);
+        }
+    }, [fabricDetail, requestDetail, rowKey, form]);
+
+
+    return (
+        <div className="mb-2">
+
+            <FormField
+                control={form.control}
+                name="request_detail"
+                render={() => (
+                    <div className="mb-3">
+                        <div className="flex my-2">
+                            <FormLabel className="flex-1 py-3">Produk</FormLabel>
+                        </div>
+
+                        <Card
+                            className={cn(
+                                "shadow-none bg-secondary p-2 gap-2 grid lg:grid-cols-2 sm:grid-cols-1",
+                                (form.formState.errors[rowKey]?.message ||
+                                    form.formState.errors?.[rowKey]?.root?.message) &&
+                                "border-destructive bg-destructive/10"
+                            )}
+                        >
+                            {fields.length === 0 && (
+                                <CardDescription className="text-center col-span-2 h-full m-4">
+                                    Daftar permintaan Anda masih kosong, silahkan tekan tambah
+                                    produk yang akan dijahit!
+                                </CardDescription>
+                            )}
+
+                            {fields.map((row, index) => (
+                                <ProductList
+                                    key={row.id}
+                                    form={form}
+                                    index={index}
+                                    parentKey={rowKey}
+                                    disabled={disabled}
+                                />
+                            ))}
+                        </Card>
                     </div>
-                    <Card className={cn("shadow-none bg-secondary p-2 gap-2 grid lg:grid-cols-2 sm:grid-cols-1", (form.formState.errors[rowKey]?.message || form.formState.errors?.[rowKey]?.root?.message) && "border-destructive bg-destructive/10")}>
-                        {fields.length == 0 && <CardDescription className="text-center col-span-2 h-full m-4">Daftar permintaan Anda masih kosong, silahkan tekan tambah produk yang akan dijahit!</CardDescription>}
-                        {fields.map((row, index) => (
-                            <ProductList key={row.id} form={form} index={index} parentKey={rowKey} handleDelete={setDeleteIndex} disabled={disabled} />
-                        ))}
-                    </Card>
-                </div>
-            )} />
-        <FormDescription>Daftar produk yang akan dijahit.</FormDescription>
-    </div>
+                )}
+            />
+
+            <FormDescription>
+                Daftar produk yang akan dijahit.
+            </FormDescription>
+        </div>
+    );
 }
