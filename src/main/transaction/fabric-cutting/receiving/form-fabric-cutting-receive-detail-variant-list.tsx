@@ -78,11 +78,11 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
         }
 
         const currentKeys = currentReceive.map(
-            (x: any) => `${x.fabric_id}-${x.model_id}`
+            (x: any) => `${x.cloth_id}-${x.model_id}`
         );
 
         const nextKeys = result.map(
-            (x: any) => `${x.fabric_id}-${x.model_id}`
+            (x: any) => `${x.cloth_id}-${x.model_id}`
         );
 
         const same =

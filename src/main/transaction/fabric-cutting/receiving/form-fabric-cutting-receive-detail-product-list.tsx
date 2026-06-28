@@ -26,6 +26,7 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
         control: form.control,
         name: `${parentKey}.${index}.model_id`,
     });
+    const previousModelId = React.useRef(modelId);
 
     const sizes = useModelSizes(modelId, Boolean(modelId));
 
@@ -67,7 +68,9 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
     }, [modelId, sizes, disabled]);
 
     React.useEffect(() => {
-        if (!modelId) return;
+        if (!modelId || previousModelId.current === modelId) return;
+
+        previousModelId.current = modelId;
         form.setValue(
             `${parentKey}.${index}.cloth_id`,
             undefined,
@@ -76,7 +79,7 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
                 shouldDirty: false,
             }
         );
-    }, [modelId]);
+    }, [modelId, form, parentKey, index]);
 
     const fabrics = useWatch({
         control: form.control,
@@ -111,7 +114,7 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
                                             source={Services.MasterProductModel.index}
                                             value={field.value}
                                             onValueChange={field.onChange}
-                                            disabled={disabled} />
+                                            disabled={true} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -130,7 +133,7 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
                                             label="name"
                                             placeholder="Seri Kain"
                                             value={field.value}
-                                            disabled={disabled}
+                                            disabled={true}
                                             onValueChange={field.onChange}
                                         />
                                     </FormControl>
@@ -152,9 +155,9 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
                                 <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
                             ))}
                             <div className="flex items-end">
-                                {!disabled && (
+                                {/* {!disabled && (
                                     <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants()}><Plus /> Tambah varian</Button>
-                                )}
+                                )} */}
                             </div>
                             <FormMessage />
                         </>
