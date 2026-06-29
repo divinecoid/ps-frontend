@@ -16,10 +16,9 @@ interface DetailProductListProps<T> {
     form: UseFormReturn<FieldValues, T, FieldValues>
     index: number
     parentKey: string
-    handleDelete: React.Dispatch<React.SetStateAction<number | undefined>>
     disabled?: boolean
 }
-export default function ProductList<T>({ form, index, parentKey, handleDelete, disabled }: DetailProductListProps<T>) {
+export default function ProductList<T>({ form, index, parentKey, disabled }: DetailProductListProps<T>) {
     const [deleteIndex, setDeleteIndex] = React.useState<number | undefined>();
     const fieldName = `${parentKey}.${index}.variant_detail`;
 
@@ -27,6 +26,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
         control: form.control,
         name: `${parentKey}.${index}.model_id`,
     });
+    const previousModelId = React.useRef(modelId);
 
     const sizes = useModelSizes(modelId, Boolean(modelId));
 
@@ -68,7 +68,9 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
     }, [modelId, sizes, disabled]);
 
     React.useEffect(() => {
-        if (!modelId) return;
+        if (!modelId || previousModelId.current === modelId) return;
+
+        previousModelId.current = modelId;
         form.setValue(
             `${parentKey}.${index}.cloth_id`,
             undefined,
@@ -77,7 +79,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                 shouldDirty: false,
             }
         );
-    }, [modelId]);
+    }, [modelId, form, parentKey, index]);
 
     const fabrics = useWatch({
         control: form.control,
@@ -112,7 +114,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                             source={Services.MasterProductModel.index}
                                             value={field.value}
                                             onValueChange={field.onChange}
-                                            disabled={disabled} />
+                                            disabled={true} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -131,7 +133,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                             label="name"
                                             placeholder="Seri Kain"
                                             value={field.value}
-                                            disabled={disabled}
+                                            disabled={true}
                                             onValueChange={field.onChange}
                                         />
                                     </FormControl>
@@ -140,12 +142,6 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                             )}
                         />
                     </div>
-                    {!disabled && (
-                        <TooltipHover
-                            tooltip="Hapus">
-                            <Button tabIndex={-1} variant="destructive" type="button" onClick={() => handleDelete(index)}><Trash /></Button>
-                        </TooltipHover>
-                    )}
                 </div>
             </CardHeader>
             <FormLabel className="mt-2">Varian</FormLabel>
@@ -159,9 +155,9 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                 <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
                             ))}
                             <div className="flex items-end">
-                                {!disabled && (
+                                {/* {!disabled && (
                                     <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants()}><Plus /> Tambah varian</Button>
-                                )}
+                                )} */}
                             </div>
                             <FormMessage />
                         </>

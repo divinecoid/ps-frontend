@@ -38,7 +38,7 @@ function VariantListItem({ control, index, rowKey, handleRemove, disabled, sizes
                                     className={cn("w-full rounded-none rounded-l-md border border-r-0 shadow-none", fieldState.error && "border-destructive")}
                                     value={field.value}
                                     onValueChange={field.onChange}
-                                    disabled={disabled} />
+                                    disabled={true} />
                             </span>
                         </FormControl>
                     </TooltipHover>
@@ -82,9 +82,7 @@ function VariantListItem({ control, index, rowKey, handleRemove, disabled, sizes
                                 <Input
                                     placeholder="Potongan"
                                     type="number"
-                                    className={cn(`w-full border rounded-l-none shadow-none`,
-                                        !disabled && 'border-r-0 rounded-none'
-                                    )}
+                                    className={cn(`w-full border rounded-l-none shadow-none rounded-r-md`)}
                                     value={field.value}
                                     onChange={field.onChange}
                                     disabled={disabled} />
@@ -97,12 +95,12 @@ function VariantListItem({ control, index, rowKey, handleRemove, disabled, sizes
             }
         />
         < div className="h-full" >
-            {!disabled && (
+            {/* {!disabled && (
                 <TooltipHover
                     tooltip="Hapus">
                     <Button tabIndex={-1} variant="outline" className="border rounded-none rounded-r-md" type="button" onClick={() => handleRemove(index)}><X color="red" /></Button>
                 </TooltipHover>
-            )}
+            )} */}
         </div >
     </div >
 }
