@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { z } from "zod/v3";
 import { Request } from "@/interfaces/request";
 import DetailList from "./form-request-detail-variant-list";
+import SerialNumberPicker from "./form-request-serial-number-picker";
 
 export default function FormRequest(props: BaseForm) {
     const { id } = useParams();
@@ -152,11 +153,9 @@ export default function FormRequest(props: BaseForm) {
             },
             {
                 key: "serial_number",
-                type: "text",
+                type: "custom",
                 schema: schema.serial_number,
-                label: "Nomor Seri (Serial Number)",
-                description: "Nomor seri atau referensi untuk request CMT ini.",
-                placeholder: "Contoh: 0001",
+                custom: <SerialNumberPicker disabled={props.disabled} />,
             },
             {
                 key: "request_detail",

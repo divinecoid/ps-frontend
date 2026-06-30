@@ -11,6 +11,10 @@ export const master: BaseApiCallIndexProps = async (page, per_page, search, sort
     return await GET(`${ENDPOINT.FABRIC_CUTTING}`, { page, per_page, search, sort });
 }
 
+export const closedIndex: BaseApiCallIndexProps = async (page, per_page, search, sort) => {
+    return await GET(`${ENDPOINT.FABRIC_CUTTING}/closed`, { page, per_page, search, sort });
+}
+
 export const store: BaseApiCallCreateProps<FabricCutting> = async (values) => {
     return await POST(ENDPOINT.FABRIC_CUTTING, values);
 }
