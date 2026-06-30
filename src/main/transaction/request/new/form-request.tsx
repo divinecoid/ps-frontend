@@ -145,6 +145,7 @@ export default function FormRequest(props: BaseForm) {
                 label: "CMT",
                 description: "CMT yang akan melakukan penjahitan.",
                 placeholder: "CMT",
+                group: "header",
                 source: {
                     id: "id",
                     label: "name",
@@ -155,6 +156,7 @@ export default function FormRequest(props: BaseForm) {
                 key: "serial_number",
                 type: "custom",
                 schema: schema.serial_number,
+                group: "header",
                 custom: <SerialNumberPicker disabled={props.disabled} />,
             },
             {

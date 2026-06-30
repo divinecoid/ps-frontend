@@ -33,7 +33,7 @@ export default function SerialNumberPicker({ disabled }: SerialNumberPickerProps
             control={form.control}
             name="serial_number"
             render={({ field }) => (
-                <FormItem className="px-7 py-2">
+                <FormItem className="py-2">
                     <FormLabel>Nomor Seri (Serial Number)</FormLabel>
                     <FormControl>
                         <DynamicCombobox
