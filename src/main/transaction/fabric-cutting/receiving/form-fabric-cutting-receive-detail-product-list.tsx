@@ -51,13 +51,16 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
     React.useEffect(() => {
         if (!modelId || disabled) return;
 
-        const next = sizes.map(s => ({
-            size_id: s.id,
-            dozen_qty: "",
-            piece_qty: "",
-        }));
-
         const current = form.getValues(fieldName) ?? [];
+
+        const next = sizes.map(s => {
+            const existing = current.find((c: any) => c.size_id === s.id);
+            return {
+                size_id: s.id,
+                dozen_qty: existing?.dozen_qty ?? "",
+                piece_qty: existing?.piece_qty ?? "",
+            };
+        });
         const same =
             current.length === next.length &&
             current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
