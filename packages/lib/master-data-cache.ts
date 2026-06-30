@@ -46,7 +46,10 @@ export function prefetchModelSizes(modelIds: string[]): void {
     });
 }
 
-export function fetchUncutFabrics(): Promise<Fabric[]> {
+export function fetchUncutFabrics(force = false): Promise<Fabric[]> {
+    if (force) {
+        uncutFabricsResolved = null;
+    }
     if (uncutFabricsResolved) return Promise.resolve(uncutFabricsResolved);
     if (uncutFabricsInflight) return uncutFabricsInflight;
 

@@ -22,7 +22,14 @@ export default function FabricCuttingRequestFabricList({
     const [fabrics, setFabrics] = React.useState<Fabric[]>([]);
 
     const fabricOptions = React.useMemo(
-        () => fabrics.map(s => ({ id: s.id, name: s.sequence })),
+        () => fabrics.map(s => {
+            const hasFactory = s.sequence.includes(s.factory?.code ?? '');
+            const hasColor = s.sequence.includes(s.color?.code ?? '');
+            const name = hasFactory && hasColor 
+                ? s.sequence 
+                : `${s.factory?.code ?? ''}.${s.color?.code ?? ''}.${s.sequence}`;
+            return { id: s.id, name };
+        }),
         [fabrics]
     );
 
@@ -41,7 +48,7 @@ export default function FabricCuttingRequestFabricList({
     };
 
     React.useEffect(() => {
-        fetchUncutFabrics()
+        fetchUncutFabrics(true)
             .then(setFabrics)
             .catch(() => setFabrics([]));
     }, []);
