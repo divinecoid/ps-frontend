@@ -28,7 +28,7 @@ export const update: BaseApiCallUpdateProps<FabricCutting> = async (id, values) 
             }
         }).filter(detail => (detail.variant_detail?.length ?? 0) > 0)
     }
-    return await PATCH(`${ENDPOINT.FABRIC_CUTTING}/${id}`, values);
+    return await PATCH(`${ENDPOINT.FABRIC_CUTTING}/${id}/receive`, values);
 }
 
 export const show: BaseApiCallViewProps = async (id) => {
