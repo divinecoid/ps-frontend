@@ -55,30 +55,43 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
         name: `${parentKey}.${index}.cloth_detail`,
     });
 
+    const previousModelId = React.useRef<string | undefined>(modelId);
+
     React.useEffect(() => {
-        form.setValue(
-            `${parentKey}.${index}.cloth_id`,
-            undefined,
-            {
-                shouldValidate: false,
-                shouldDirty: false,
-            }
-        );
+        const prev = previousModelId.current;
+        previousModelId.current = modelId;
+
         if (!modelId) {
             setSizes([]);
             return;
         }
 
+        // Only clear cloth_id when the user explicitly changes from one model to another.
+        // Do NOT clear when autofill sets model_id for the first time (prev === undefined).
+        if (prev !== undefined && prev !== modelId) {
+            form.setValue(
+                `${parentKey}.${index}.cloth_id`,
+                undefined,
+                { shouldValidate: false, shouldDirty: false }
+            );
+        }
+
         const applySizes = (data: ModelSize[]) => {
             setSizes(data);
 
-            const next = data.map(s => ({
-                size_id: s.id,
-                dozen_qty: "",
-                piece_qty: "",
-            }));
-
+            // Preserve any quantities already in the form (e.g. from autofill)
             const current = form.getValues(fieldName) ?? [];
+            const next = data.map(s => {
+                const existing = current.find(
+                    (c: { size_id: string }) => c.size_id === s.id
+                );
+                return {
+                    size_id: s.id,
+                    dozen_qty: existing?.dozen_qty ?? "",
+                    piece_qty: existing?.piece_qty ?? "",
+                };
+            });
+
             const same =
                 current.length === next.length &&
                 current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
