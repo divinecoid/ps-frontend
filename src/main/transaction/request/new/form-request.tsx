@@ -87,47 +87,6 @@ export default function FormRequest(props: BaseForm) {
                 } else {
                     seen.set(key, index)
                 }
-                for (const [variantIndex, variant] of item.variant_detail.entries()) {
-                    const qty = variant.dozen_qty * 12 + variant.piece_qty;
-
-                    // Skip validasi jika qty = 0
-                    if (qty <= 0) {
-                        continue;
-                    }
-
-                    const stock = item.cloth_detail.find(
-                        d => d.size_id === variant.size_id
-                    );
-
-                    // Qty > 0 tetapi ukuran tidak tersedia
-                    if (!stock) {
-                        ctx.addIssue({
-                            code: z.ZodIssueCode.custom,
-                            path: [
-                                index,
-                                "variant_detail",
-                                variantIndex,
-                                "size_id",
-                            ],
-                            message: "Ukuran ini tidak tersedia pada kain yang dipilih.",
-                        });
-                        continue;
-                    }
-
-                    // Qty > 0 dan melebihi stok
-                    if (qty > stock.avl_qty) {
-                        ctx.addIssue({
-                            code: z.ZodIssueCode.custom,
-                            path: [
-                                index,
-                                "variant_detail",
-                                variantIndex,
-                                "piece_qty",
-                            ],
-                            message: `Jumlah melebihi stok. Maksimal ${stock.avl_qty} pcs.`,
-                        });
-                    }
-                }
             })
         })
     }
