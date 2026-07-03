@@ -19,30 +19,30 @@ export const columns: ColumnDef<Order>[] = [
     header: "Nomor resi",
     enableSorting: true,
   },
-  {
-    accessorKey: "read_at",
-    header: "Waktu baca",
-    enableSorting: true,
-    cell: (({ row }) => {
-      return row.original.read_at ? formatDateTime(row.original.read_at) : "-";
-    })
-  },
-  {
-    accessorKey: "prepared_at",
-    header: "Waktu penyiapan",
-    enableSorting: true,
-    cell: (({ row }) => {
-      return row.original.prepared_at ? formatDateTime(row.original.prepared_at) : "-";
-    })
-  },
-  {
-    accessorKey: "readytoship_at",
-    header: "Tanggal siap dikirim",
-    enableSorting: true,
-    cell: (({ row }) => {
-      return row.original.readytoship_at ? formatDateTime(row.original.readytoship_at) : "-";
-    })
-  },
+  // {
+  //   accessorKey: "read_at",
+  //   header: "Waktu baca",
+  //   enableSorting: true,
+  //   cell: (({ row }) => {
+  //     return row.original.read_at ? formatDateTime(row.original.read_at) : "-";
+  //   })
+  // },
+  // {
+  //   accessorKey: "prepared_at",
+  //   header: "Waktu penyiapan",
+  //   enableSorting: true,
+  //   cell: (({ row }) => {
+  //     return row.original.prepared_at ? formatDateTime(row.original.prepared_at) : "-";
+  //   })
+  // },
+  // {
+  //   accessorKey: "readytoship_at",
+  //   header: "Tanggal siap dikirim",
+  //   enableSorting: true,
+  //   cell: (({ row }) => {
+  //     return row.original.readytoship_at ? formatDateTime(row.original.readytoship_at) : "-";
+  //   })
+  // },
   {
     accessorKey: "item_count",
     header: "Jumlah barang",
