@@ -1,5 +1,5 @@
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Control, FieldValues } from "react-hook-form";
+import { Control, FieldValues, useFormContext } from "react-hook-form";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,10 @@ interface DetailFabricListProps {
     fabrics: { id: string, name: string }[];
 }
 function FabricListItem({ control, index, rowKey, handleRemove, disabled, fabrics }: DetailFabricListProps) {
+    const form = useFormContext();
+    const sequence = form.watch(`${rowKey}.${index}.sequence`);
+    const fabricId = form.watch(`${rowKey}.${index}.fabric_id`);
+    const displayName = sequence || fabrics.find(f => f.id === fabricId)?.name || "";
 
     return <div className="flex flex-1 gap-0">
         <FormField
@@ -28,17 +32,25 @@ function FabricListItem({ control, index, rowKey, handleRemove, disabled, fabric
                         tooltip="Kain">
                         <FormControl>
                             <span className="block w-full">
-                                <Combobox
-                                    id="id"
-                                    label="name"
-                                    placeholder="Kain"
-                                    type="single"
-                                    variant="ghost"
-                                    data={fabrics}
-                                    className={cn("w-full rounded-none rounded-l-md border border-r-0 shadow-none", fieldState.error && "border-destructive")}
-                                    value={field.value}
-                                    onValueChange={field.onChange}
-                                    disabled={disabled} />
+                                {disabled ? (
+                                    <Input
+                                        value={displayName}
+                                        disabled
+                                        className={cn("w-full rounded-none rounded-l-md border border-r-0 shadow-none bg-background", fieldState.error && "border-destructive")}
+                                    />
+                                ) : (
+                                    <Combobox
+                                        id="id"
+                                        label="name"
+                                        placeholder="Kain"
+                                        type="single"
+                                        variant="ghost"
+                                        data={fabrics}
+                                        className={cn("w-full rounded-none rounded-l-md border border-r-0 shadow-none", fieldState.error && "border-destructive")}
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                        disabled={disabled} />
+                                )}
                             </span>
                         </FormControl>
                     </TooltipHover>
