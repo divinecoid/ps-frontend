@@ -71,3 +71,30 @@ export function fetchUncutFabrics(force = false): Promise<Fabric[]> {
 
     return uncutFabricsInflight;
 }
+
+
+export function fetchAllFabrics(force = false): Promise<Fabric[]> {
+    if (force) {
+        uncutFabricsResolved = null;
+    }
+    if (uncutFabricsResolved) return Promise.resolve(uncutFabricsResolved);
+    if (uncutFabricsInflight) return uncutFabricsInflight;
+
+    uncutFabricsInflight = Services.MasterFabric.master()
+        .then(res => {
+            if (!res.ok) throw new Error("Gagal memuat daftar kain.");
+            return res.json();
+        })
+        .then(json => json.data as Fabric[])
+        .then(data => {
+            uncutFabricsResolved = data;
+            uncutFabricsInflight = null;
+            return data;
+        })
+        .catch(err => {
+            uncutFabricsInflight = null;
+            throw err;
+        });
+
+    return uncutFabricsInflight;
+}
