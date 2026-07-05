@@ -140,7 +140,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                             source={Services.MasterProductModel.index}
                                             value={field.value}
                                             onValueChange={field.onChange}
-                                            disabled={disabled} />
+                                            disabled={true} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -188,7 +188,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                                 });
                                                 replace(next);
                                             }}
-                                            disabled={disabled} />
+                                            disabled={true} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
