@@ -210,9 +210,17 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                     name={`${parentKey}.${index}.variant_detail`}
                     render={() => (
                         <>
-                            {fields.map((row, index) => (
-                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
-                            ))}
+                            {fields.map((row: any, index) => {
+                                const dozenQty = form.getValues(`${fieldName}.${index}.dozen_qty`) ?? row.dozen_qty;
+                                const pieceQty = form.getValues(`${fieldName}.${index}.piece_qty`) ?? row.piece_qty;
+                                const hasValue = (dozenQty && Number(dozenQty) > 0) || (pieceQty && Number(pieceQty) > 0);
+                                if (!hasValue) {
+                                    return null;
+                                }
+                                return (
+                                    <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
+                                );
+                            })}
                             <div className="flex items-end">
                                 {/* {!disabled && (
                                     <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants()}><Plus /> Tambah varian</Button>
