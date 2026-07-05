@@ -195,12 +195,12 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                             )}
                         />
                     </div>
-                    {!disabled && (
+                    {/* {!disabled && (
                         <TooltipHover
                             tooltip="Hapus">
                             <Button tabIndex={-1} variant="destructive" type="button" onClick={() => handleDelete(index)}><Trash /></Button>
                         </TooltipHover>
-                    )}
+                    )} */}
                 </div>
             </CardHeader>
             <FormLabel className="mt-2">Varian</FormLabel>
@@ -214,9 +214,9 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                 <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
                             ))}
                             <div className="flex items-end">
-                                {!disabled && (
+                                {/* {!disabled && (
                                     <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants()}><Plus /> Tambah varian</Button>
-                                )}
+                                )} */}
                             </div>
                             <FormMessage />
                         </>

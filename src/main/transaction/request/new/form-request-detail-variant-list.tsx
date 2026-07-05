@@ -40,9 +40,9 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
                 <div className="mb-3">
                     <div className="flex my-2">
                         <FormLabel className="flex-1 py-3">Produk</FormLabel>
-                        {!disabled && (
+                        {/* {!disabled && (
                             <Button type="button" variant="default" onClick={() => handleAdd()}><Plus />Tambah produk</Button>
-                        )}
+                        )} */}
                     </div>
                     <Card className={cn("shadow-none bg-secondary p-2 gap-2 grid lg:grid-cols-2 sm:grid-cols-1", (form.formState.errors[rowKey]?.message || form.formState.errors?.[rowKey]?.root?.message) && "border-destructive bg-destructive/10")}>
                         {fields.length == 0 && <CardDescription className="text-center col-span-2 h-full m-4">Daftar permintaan Anda masih kosong, silahkan tekan tambah produk yang akan dijahit!</CardDescription>}
