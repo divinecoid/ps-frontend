@@ -58,3 +58,7 @@ export const searchCutting = async (model_id: string, color_id: string, size_id:
 export const fabric_cutting_fabrics = async (id: string, page?: number, per_page?: number, search?: string, sort?: string) => {
     return await GET(`${ENDPOINT.FABRIC_CUTTING_FABRICS}/${id}/fabrics`, { page, per_page, search, sort });
 }
+
+export const getNextSeries = async () => {
+    return await GET(`${ENDPOINT.FABRIC_CUTTING}/get-next-series`);
+}

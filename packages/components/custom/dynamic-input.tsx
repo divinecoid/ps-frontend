@@ -29,6 +29,7 @@ export interface InputMeta {
     max?: number;                                           //slider
     step?: number;                                          //slider
     disabled?: boolean;
+    readOnly?: boolean;
     group?: string;
     source?: {
         id: string;
@@ -50,7 +51,7 @@ export default function DynamicInput<T extends FieldValues>({
     api,
     "aria-invalid": ariaInvalid
 }: DynamicInputProps<T>) {
-    const { type, placeholder, options, defaultValue, max, step, source, passwordEdit, mode, numberOfMonths } = meta;
+    const { type, placeholder, options, defaultValue, max, step, source, passwordEdit, mode, numberOfMonths, readOnly } = meta;
     const [edit, setEdit] = useState(false);
     switch (type) {
         case 'text':
@@ -70,6 +71,7 @@ export default function DynamicInput<T extends FieldValues>({
                 name={field.name}
                 ref={field.ref}
                 disabled={disabled}
+                readOnly={readOnly}
             />
         case "tel":
             return <Input
@@ -81,6 +83,7 @@ export default function DynamicInput<T extends FieldValues>({
                 name={field.name}
                 ref={field.ref}
                 disabled={disabled}
+                readOnly={readOnly}
             />
         case 'password':
             return <div className="flex gap-3">

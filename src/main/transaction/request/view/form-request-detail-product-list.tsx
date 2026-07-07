@@ -48,31 +48,46 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
         control: form.control,
         name: `${parentKey}.${index}.model_id`,
     });
+    const previousModelId = React.useRef<string | undefined>(modelId);
 
     React.useEffect(() => {
-        form.setValue(
-            `${parentKey}.${index}.cloth_id`,
-            undefined,
-            {
-                shouldValidate: false,
-                shouldDirty: false,
-            }
-        );
+        const prev = previousModelId.current;
+        previousModelId.current = modelId;
+
         if (!modelId) {
             setSizes([]);
             return;
         }
 
+        // Only clear cloth_id when the user explicitly changes from one model to another.
+        // Do NOT clear when autofill sets model_id for the first time (prev === undefined).
+        // Only run when not disabled (editing/new mode).
+        if (!disabled && prev !== undefined && prev !== modelId) {
+            form.setValue(
+                `${parentKey}.${index}.cloth_id`,
+                undefined,
+                { shouldValidate: false, shouldDirty: false }
+            );
+        }
+
         const applySizes = (data: ModelSize[]) => {
             setSizes(data);
 
-            const next = data.map(s => ({
-                size_id: s.id,
-                dozen_qty: "",
-                piece_qty: "",
-            }));
+            if (disabled) return;
 
+            // Preserve any quantities already in the form (e.g. from autofill)
             const current = form.getValues(fieldName) ?? [];
+            const next = data.map(s => {
+                const existing = current.find(
+                    (c: { size_id: string }) => c.size_id === s.id
+                );
+                return {
+                    size_id: s.id,
+                    dozen_qty: existing?.dozen_qty ?? "",
+                    piece_qty: existing?.piece_qty ?? "",
+                };
+            });
+
             const same =
                 current.length === next.length &&
                 current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
@@ -93,7 +108,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                 sizeCache.current[modelId] = json.data;
                 applySizes(json.data);
             });
-    }, [modelId]);
+    }, [modelId, disabled]);
 
 
     const colorSource = React.useMemo((): BaseApiCallIndexProps | undefined => {
@@ -166,9 +181,17 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                     name={`${parentKey}.${index}.variant_detail`}
                     render={() => (
                         <>
-                            {fields.map((row, index) => (
-                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
-                            ))}
+                            {fields.map((row: any, index) => {
+                                const dozenQty = form.getValues(`${fieldName}.${index}.dozen_qty`) ?? row.dozen_qty;
+                                const pieceQty = form.getValues(`${fieldName}.${index}.piece_qty`) ?? row.piece_qty;
+                                const hasValue = (dozenQty && Number(dozenQty) > 0) || (pieceQty && Number(pieceQty) > 0);
+                                if (!hasValue) {
+                                    return null;
+                                }
+                                return (
+                                    <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
+                                );
+                            })}
                             <div className="flex items-end">
                                 {!disabled && (
                                     <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants()}><Plus /> Tambah varian</Button>

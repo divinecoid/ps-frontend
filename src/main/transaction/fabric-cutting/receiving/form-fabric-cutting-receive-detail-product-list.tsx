@@ -136,7 +136,7 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
                                             label="name"
                                             placeholder="Seri Kain"
                                             value={field.value}
-                                            disabled={disabled}
+                                            disabled={true}
                                             onValueChange={field.onChange}
                                         />
                                     </FormControl>
