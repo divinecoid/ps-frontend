@@ -29,6 +29,13 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
         name: "request_detail",
     });
 
+    const status = useWatch({
+        control: form.control,
+        name: "status",
+    });
+
+    const isDisabled = disabled || status === "CLOSED";
+
     React.useEffect(() => {
         const currentReceive = form.getValues(rowKey) ?? [];
 
@@ -128,7 +135,7 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
                                     form={form}
                                     index={index}
                                     parentKey={rowKey}
-                                    disabled={disabled}
+                                    disabled={isDisabled}
                                 />
                             ))}
                         </Card>

@@ -8,6 +8,7 @@ import DetailList from "./form-request-detail-variant-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReceivedLogList from "./form-received-log-list";
 import React from "react";
+import SerialNumberPicker from "../new/form-request-serial-number-picker";
 
 
 export default function ViewFormRequest(props: BaseForm) {
@@ -105,6 +106,7 @@ export default function ViewFormRequest(props: BaseForm) {
                 label: "CMT",
                 description: "CMT yang akan melakukan penjahitan.",
                 placeholder: "CMT",
+                group: "header",
                 source: {
                     id: "id",
                     label: "name",
@@ -113,11 +115,10 @@ export default function ViewFormRequest(props: BaseForm) {
             },
             {
                 key: "serial_number",
-                type: "text",
+                type: "custom",
                 schema: schema.serial_number,
-                label: "Nomor Seri (Serial Number)",
-                description: "Nomor seri atau referensi untuk request CMT ini.",
-                placeholder: "Contoh: 0001",
+                group: "header",
+                custom: <SerialNumberPicker disabled={props.disabled} />,
             },
             {
                 key: "request_detail",
