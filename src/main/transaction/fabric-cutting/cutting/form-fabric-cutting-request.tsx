@@ -6,10 +6,23 @@ import { FabricCutting } from "@/interfaces/fabric-cutting";
 import { useParams } from "react-router-dom";
 import FabricCuttingRequestDetailList from "./form-fabric-cutting-request-detail-variant-list";
 import FabricCuttingRequestFabricList from "./form-fabric-cutting-request-fabric-list";
+import React from "react";
 
 export default function FormFabricCuttingRequest(props: BaseForm) {
 
     const { id } = useParams();
+    const [nextSeries, setNextSeries] = React.useState<string>("");
+
+    React.useEffect(() => {
+        if (!id) {
+            Services.TransactionFabricCutting.getNextSeries().then(async (res) => {
+                const json = await res.json();
+                if (res.ok && json.data?.next_series) {
+                    setNextSeries(json.data.next_series);
+                }
+            }).catch(console.error);
+        }
+    }, [id]);
 
     const variantDetailSchema = z.object({
         size_id: z.string().nonempty({
@@ -53,11 +66,11 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
         fabric_id: z.string().nonempty({
             message: "Kain dibutuhkan.",
         }),
-        quantity: z.coerce.number().min(1, {message: "Minimal 1 roll kain"}).default(0),
+        quantity: z.coerce.number().min(1, { message: "Minimal 1 roll kain" }).default(0),
     }
 
     const schema = {
-        serial_number: z.string(),
+        serial_number: z.string().optional().nullable(),
         color_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
@@ -114,14 +127,16 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
         {...props}
         services={Services.TransactionFabricCutting}
         onError={console.log}
+        dummy={!id && nextSeries ? { serial_number: nextSeries } : undefined}
         formShape={[
             {
                 key: "serial_number",
                 type: "text",
                 schema: schema.serial_number,
                 label: "Series",
-                description: "Masukkan seri.",
-                placeholder: "Contoh: 0001",
+                description: "Seri akan terisi otomatis.",
+                placeholder: "Memuat...",
+                readOnly: true,
             },
             {
                 key: "fabric_detail",

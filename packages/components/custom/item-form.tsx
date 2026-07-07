@@ -29,6 +29,7 @@ interface ItemProps<T extends FieldValues> {
   services?: BaseApiCallProps<T>;
   onError?: SubmitErrorHandler<FieldValues>;
   formShape: FormShape<T>[];
+  dummy?: any;
 }
 
 export default function ItemForm<T extends FieldValues>({
