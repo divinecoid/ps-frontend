@@ -136,7 +136,7 @@ export default function FormFabricCuttingRequest(props: BaseForm) {
                 label: "Series",
                 description: "Seri akan terisi otomatis.",
                 placeholder: "Memuat...",
-                readOnly: true,
+                disabled: true,
             },
             {
                 key: "fabric_detail",
