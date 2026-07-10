@@ -38,7 +38,7 @@ function VariantListItem({ control, index, rowKey, handleRemove, disabled, sizes
                                     className={cn("w-full rounded-none rounded-l-md border border-r-0 shadow-none", fieldState.error && "border-destructive")}
                                     value={field.value}
                                     onValueChange={field.onChange}
-                                    disabled={disabled} />
+                                    disabled={true} />
                             </span>
                         </FormControl>
                     </TooltipHover>
