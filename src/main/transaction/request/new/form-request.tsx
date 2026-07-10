@@ -10,6 +10,10 @@ import SerialNumberPicker from "./form-request-serial-number-picker";
 export default function FormRequest(props: BaseForm) {
     const { id } = useParams();
 
+    const toPieceQty = (item: { dozen_qty: number; piece_qty: number }) => {
+        return (item.dozen_qty * 12) + item.piece_qty;
+    }
+
     const variantDetailSchema = z.object({
         size_id: z.string().nonempty({
             message: "Ukuran dibutuhkan.",
@@ -18,7 +22,7 @@ export default function FormRequest(props: BaseForm) {
         piece_qty: z.coerce.number().min(0).default(0),
     })
 
-    const detailSchema = {
+    const detailSchema = z.object({
         model_id: z.string().nonempty({
             message: "Model dibutuhkan.",
         }),
@@ -44,7 +48,7 @@ export default function FormRequest(props: BaseForm) {
                 seen.add(item.size_id)
             })
             const totalAllPiece = data.reduce((acc, item) => {
-                return acc + (item.dozen_qty * 12) + item.piece_qty
+                return acc + toPieceQty(item)
             }, 0)
             if (totalAllPiece < 1) {
                 ctx.addIssue({
@@ -54,7 +58,24 @@ export default function FormRequest(props: BaseForm) {
                 })
             }
         })
-    }
+    }).superRefine((data, ctx) => {
+        const clothQtyBySize = new Map(
+            data.cloth_detail.map((item) => [item.size_id, item.avl_qty])
+        )
+
+        data.variant_detail.forEach((item, index) => {
+            const requestQty = toPieceQty(item)
+            const availableQty = clothQtyBySize.get(item.size_id) ?? 0
+
+            if (requestQty > availableQty) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: `Qty melebihi kain tersedia (${availableQty} piece).`,
+                    path: ["variant_detail", index, "piece_qty"],
+                })
+            }
+        })
+    })
 
     const schema = {
         cmt_id: z.string().nonempty({
@@ -66,7 +87,7 @@ export default function FormRequest(props: BaseForm) {
         cloth_id: z.string().nonempty({
             message: "Warna dibutuhkan.",
         }),
-        request_detail: z.array(z.object(detailSchema)).min(1, {
+        request_detail: z.array(detailSchema).min(1, {
             message: "Minimal tambahkan 1 produk yang akan dijahit.",
         }).superRefine((data, ctx) => {
             const seen = new Map<string, number>()

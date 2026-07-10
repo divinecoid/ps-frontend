@@ -187,6 +187,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                                     };
                                                 });
                                                 replace(next);
+                                                form.trigger(`${parentKey}.${index}.variant_detail`);
                                             }}
                                             disabled={true} />
                                     </FormControl>
