@@ -41,6 +41,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   "receive-logs": "Riwayat Penerimaan",
   mutation: "Mutasi",
   order: "Pesanan",
+  "outbound-manual": "Outbound Manual",
   "small-inventory": "Gudang Kecil",
   "large-inventory": "Gudang Besar",
 };
