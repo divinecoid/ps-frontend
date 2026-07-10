@@ -50,8 +50,8 @@ import {
 } from "lucide-react";
 
 const schema = z.object({
-  address_id: z.string(),
-  pickup_time_id: z.string(),
+  address_id: z.string().optional(),
+  pickup_time_id: z.string().optional(),
 });
 
 const StatusBadge = ({ status }: { status?: string }) => {
@@ -148,6 +148,11 @@ export default function FormOrder(_props: BaseForm) {
 
   const [disabled, setDisabled] = useState<boolean>(true);
 
+  // States for barcode pickup
+  const [barcodeRecommendations, setBarcodeRecommendations] = useState<Record<string, string[]>>({});
+  const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(false);
+  const [scannedBarcodes, setScannedBarcodes] = useState<Record<string, string>>({});
+
   const form = useForm({
     resolver: zodResolver(schema),
   });
@@ -156,6 +161,70 @@ export default function FormOrder(_props: BaseForm) {
     control: form.control,
     name: "address_id",
   });
+
+  const fetchProductsForSkus = async (skus: string[]) => {
+    setLoadingRecommendations(true);
+    try {
+      const recommendations: Record<string, string[]> = {};
+      for (const sku of skus) {
+        const res = await Services.MasterProduct?.index?.(1, 100, sku);
+        const json = await res?.json();
+        if (res?.ok && json?.success && json?.data) {
+          // Filter matching SKU exactly since search uses LIKE and might return partial matches
+          const matchedProducts = json.data.filter((product: any) => {
+            const parts = product.barcode.split('|');
+            return parts[2] === sku;
+          });
+          recommendations[sku] = matchedProducts.map((p: any) => p.barcode);
+        } else {
+          recommendations[sku] = [];
+        }
+      }
+      setBarcodeRecommendations(recommendations);
+    } catch (error) {
+      console.error("Failed to fetch barcode recommendations:", error);
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  };
+
+  const handleUseRecommendation = (key: string, barcode: string) => {
+    setScannedBarcodes((prev) => ({
+      ...prev,
+      [key]: barcode,
+    }));
+  };
+
+  const handleUseAllRecommendations = () => {
+    const newBarcodes: Record<string, string> = {};
+    items.forEach((item, index) => {
+      const indexInGroup = items.slice(0, index).filter((i) => i.sku === item.sku).length;
+      const recs = barcodeRecommendations[item.sku] || [];
+      const recommended = recs[indexInGroup] || "";
+      if (recommended) {
+        newBarcodes[`${item.id}-${item.item_index}`] = recommended;
+      }
+    });
+    setScannedBarcodes((prev) => ({
+      ...prev,
+      ...newBarcodes,
+    }));
+  };
+
+  const getSkuSummary = () => {
+    const summary: Record<string, number> = {};
+    items.forEach((item) => {
+      summary[item.sku] = (summary[item.sku] || 0) + 1;
+    });
+    return Object.entries(summary).map(([sku, quantity]) => ({ sku, quantity }));
+  };
+
+  React.useEffect(() => {
+    if (items.length > 0 && data?.status === "ready_to_pickup") {
+      const uniqueSkus = Array.from(new Set(items.map((item) => item.sku)));
+      fetchProductsForSkus(uniqueSkus);
+    }
+  }, [items, data?.status]);
 
   React.useEffect(() => {
     const getShopeeShippingParameter = async (orderSn: string) => {
@@ -282,22 +351,86 @@ export default function FormOrder(_props: BaseForm) {
     }
   };
 
-  const submitForm = async (values: z.infer<typeof schema>) => {
+  const submitForm = async (values: any) => {
     setLoading(true);
     try {
-      if (data?.order_sn) {
-        const res = await submitShipping({
-          order_sn: data.order_sn,
-          ...values,
+      if (data?.status === "ready_to_pickup") {
+        if (!data?.id) {
+          toast.error("ID Order tidak ditemukan");
+          return;
+        }
+
+        const missingBarcodes = items.some(
+          (item) => !scannedBarcodes[`${item.id}-${item.item_index}`]
+        );
+        if (missingBarcodes) {
+          toast.error("Harap isi semua barcode barang!");
+          setLoading(false);
+          return;
+        }
+
+        const barcodeValues = items.map(
+          (item) => scannedBarcodes[`${item.id}-${item.item_index}`]
+        );
+        const uniqueBarcodes = new Set(barcodeValues);
+        if (uniqueBarcodes.size !== barcodeValues.length) {
+          toast.error("Terdapat barcode duplikat!");
+          setLoading(false);
+          return;
+        }
+
+        const orderItemsMap: Record<string, string[]> = {};
+        items.forEach((item) => {
+          const barcode = scannedBarcodes[`${item.id}-${item.item_index}`];
+          if (!orderItemsMap[item.id]) {
+            orderItemsMap[item.id] = [];
+          }
+          orderItemsMap[item.id].push(barcode);
         });
+
+        const orderItemsPayload = Object.entries(orderItemsMap).map(
+          ([id, barcodes]) => ({
+            id,
+            scanned_barcodes: barcodes,
+          })
+        );
+
+        const formatToLaravelDatetime = (date: Date) => {
+          const pad = (n: number) => String(n).padStart(2, "0");
+          return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+        };
+
+        const payload = {
+          order_id: data.id,
+          prepared_at: formatToLaravelDatetime(new Date()),
+          order_items: orderItemsPayload,
+        };
+
+        const res = await Services.TransactionOrder.submitPreparation(payload);
         const json = await res?.json();
         if (res?.ok) {
-          toast.message(json.message);
+          toast.success(json.message || "Berhasil memproses pickup barang!");
           navigate(-1);
         } else {
-          toast.error(String(json.message.replaceAll("_", " ")), {
+          toast.error(String(json.message?.replaceAll("_", " ") || "Gagal memproses pickup barang!"), {
             richColors: true,
           });
+        }
+      } else {
+        if (data?.order_sn) {
+          const res = await submitShipping({
+            order_sn: data.order_sn,
+            ...values,
+          });
+          const json = await res?.json();
+          if (res?.ok) {
+            toast.message(json.message);
+            navigate(-1);
+          } else {
+            toast.error(String(json.message.replaceAll("_", " ")), {
+              richColors: true,
+            });
+          }
         }
       }
     } catch (error) {
@@ -716,9 +849,117 @@ export default function FormOrder(_props: BaseForm) {
               </div>
             </div>
           )}
+        {data?.status === "ready_to_pickup" && (
+          <div className="px-6 md:px-8 py-5 bg-card border-y space-y-6">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Package className="h-4 w-4 text-muted-foreground" />
+                <h3 className="font-bold text-base">Pickup Barang (Ringkasan Order)</h3>
+              </div>
+              <div className="rounded-lg border overflow-hidden bg-background">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-muted text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
+                    <tr>
+                      <th className="px-4 py-3">SKU</th>
+                      <th className="px-4 py-3 text-right">Kuantitas</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {getSkuSummary().map(({ sku, quantity }) => (
+                      <tr key={sku} className="hover:bg-muted/30">
+                        <td className="px-4 py-3 font-medium">{sku}</td>
+                        <td className="px-4 py-3 text-right font-semibold">{quantity}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Hash className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="font-bold text-base">Rekomendasi Barcode & Pickup</h3>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleUseAllRecommendations}
+                  disabled={loadingRecommendations || items.length === 0}
+                  className="text-xs h-8"
+                >
+                  Gunakan Semua Rekomendasi
+                </Button>
+              </div>
+
+              <div className="rounded-lg border overflow-hidden bg-background">
+                <table className="w-full text-sm text-left animate-in fade-in duration-300">
+                  <thead className="bg-muted text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
+                    <tr>
+                      <th className="px-4 py-3 w-1/4">SKU</th>
+                      <th className="px-4 py-3 w-1/2">Rekomendasi Barcode (Gudang Kecil)</th>
+                      <th className="px-4 py-3 w-1/4">Barcode Scan/Input</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {items.map((item, index) => {
+                      const indexInGroup = items.slice(0, index).filter((i) => i.sku === item.sku).length;
+                      const recs = barcodeRecommendations[item.sku] || [];
+                      const recommended = recs[indexInGroup] || "";
+                      const key = `${item.id}-${item.item_index}`;
+                      const scannedValue = scannedBarcodes[key] || "";
+
+                      return (
+                        <tr key={key} className="hover:bg-muted/30 align-middle">
+                          <td className="px-4 py-3 font-medium">{item.sku}</td>
+                          <td className="px-4 py-3">
+                            {loadingRecommendations ? (
+                              <span className="text-muted-foreground text-xs italic animate-pulse">Memuat rekomendasi...</span>
+                            ) : recommended ? (
+                              <div className="flex items-center gap-2">
+                                <code className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs text-primary">{recommended}</code>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleUseRecommendation(key, recommended)}
+                                  className="h-6 px-1.5 text-[10px] text-primary hover:bg-primary/10"
+                                >
+                                  Gunakan
+                                </Button>
+                              </div>
+                            ) : (
+                              <span className="text-destructive text-xs italic font-medium">Tidak ada stok di Gudang Kecil</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <input
+                              type="text"
+                              value={scannedValue}
+                              placeholder="Scan / Ketik Barcode"
+                              onChange={(e) => {
+                                setScannedBarcodes((prev) => ({
+                                  ...prev,
+                                  [key]: e.target.value,
+                                }));
+                              }}
+                              className="w-full px-3 py-1.5 rounded-md border bg-background text-sm font-mono placeholder:font-sans focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary border-input"
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="sticky bottom-0 border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-6 md:px-8 py-3">
-          {disabled || data?.status !== "ready_to_ship" ? (
+          {(disabled && data?.status !== "ready_to_pickup") || (data?.status !== "ready_to_ship" && data?.status !== "ready_to_pickup") ? (
             <Button
               type="button"
               onClick={(e) => {
