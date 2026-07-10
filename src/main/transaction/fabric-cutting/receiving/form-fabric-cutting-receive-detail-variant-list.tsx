@@ -67,14 +67,16 @@ export default function DetailList({ rowKey, disabled }: DetailProps) {
 
                 const old = existing.get(key);
 
+                const requestedVariants = (request.variant_detail ?? []).filter((v: { qty?: number | string }) => Number(v.qty) > 0);
+
                 result.push(
                     old ?? {
                         model_id: request.model_id,
                         cloth_id: fabric.fabric_id,
-                        cloth_detail: request.variant_detail.map((v: any) => ({
+                        cloth_detail: requestedVariants.map((v: any) => ({
                             ...v,
                         })),
-                        variant_detail: request.variant_detail.map((v: { size_id: string }) => ({
+                        variant_detail: requestedVariants.map((v: { size_id: string }) => ({
                             size_id: v.size_id,
                             dozen_qty: "",
                             piece_qty: "",

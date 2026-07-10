@@ -41,6 +41,7 @@ export default function SerialNumberPicker({ disabled }: SerialNumberPickerProps
                             label="serial_number"
                             placeholder="Pilih nomor seri pemotongan kain"
                             type="single"
+                            noCache
                             source={Services.TransactionFabricCutting.closedIndex}
                             value={field.value}
                             onValueChange={field.onChange}

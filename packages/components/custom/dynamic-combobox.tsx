@@ -25,6 +25,7 @@ interface DynamicComboboxProps {
   label: string;
   placeholder?: string;
   disabled?: boolean;
+  noCache?: boolean;
   variant?: "outline" | "link" | "default" | "destructive" | "secondary" | "ghost" | null | undefined;
   type?: 'single' | 'multi';
   value: string | number | (string | number)[];
@@ -63,11 +64,14 @@ function getSourceInflight(source: BaseApiCallIndexProps) {
   return inflight;
 }
 
-function fetchOptions(source: BaseApiCallIndexProps, id: string, label: string, filter: string) {
+function fetchOptions(source: BaseApiCallIndexProps, id: string, label: string, filter: string, noCache = false) {
   const key = `${id}:${label}:1:10:${filter}`;
   const cache = getSourceCache(source);
-  const cached = cache.get(key);
-  if (cached) return Promise.resolve(cached);
+
+  if (!noCache) {
+    const cached = cache.get(key);
+    if (cached) return Promise.resolve(cached);
+  }
 
   const inflight = getSourceInflight(source);
   const current = inflight.get(key);
@@ -85,7 +89,9 @@ function fetchOptions(source: BaseApiCallIndexProps, id: string, label: string, 
       }));
     })
     .then(options => {
-      cache.set(key, options);
+      if (!noCache) {
+        cache.set(key, options);
+      }
       inflight.delete(key);
       return options;
     })
@@ -98,7 +104,7 @@ function fetchOptions(source: BaseApiCallIndexProps, id: string, label: string, 
   return promise;
 }
 
-export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, disabled, value, onValueChange, onItemChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
+export function DynamicCombobox({ source, id, label, type = 'single', variant = 'outline', placeholder, disabled, noCache = false, value, onValueChange, onItemChange, className, "aria-invalid": ariaInvalid }: DynamicComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const [filter, setFilter] = React.useState<string>("");
   const [options, setOptions] = React.useState<Options[]>([]);
@@ -120,7 +126,7 @@ export function DynamicCombobox({ source, id, label, type = 'single', variant = 
     const delay = filter ? 300 : 0;
     const timer = setTimeout(async () => {
       try {
-        const mapped = await fetchOptions(source, id, label, filter);
+        const mapped = await fetchOptions(source, id, label, filter, noCache);
         if (!cancelled) setOptions(mapped);
       } catch (error) {
         if (!cancelled && error instanceof Error) {

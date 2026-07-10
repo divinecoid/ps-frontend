@@ -55,3 +55,17 @@ export const barcode: BaseApiCallViewProps = async (id) => {
 export const getOrderItems: BaseApiCallViewProps = async (orderId) => {
   return await GET(`${ENDPOINT.OUTBOUND}/order-items/${orderId}`);
 };
+
+export const submitPreparation = async (values: {
+  order_id: string;
+  prepared_at: string;
+  order_items: { id: string; scanned_barcodes: string[] }[];
+}) => {
+  return await POST(`${ENDPOINT.OUTBOUND}/submit-preparation`, values);
+};
+
+export const validateProductBarcode = async (barcode: string) => {
+  return await POST(`${ENDPOINT.OUTBOUND}/validate-product-barcode`, { barcode });
+};
+
+

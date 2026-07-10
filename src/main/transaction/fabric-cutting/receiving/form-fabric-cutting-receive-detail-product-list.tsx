@@ -30,9 +30,28 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
 
     const sizes = useModelSizes(modelId, Boolean(modelId));
 
+    const requestDetail = useWatch({
+        control: form.control,
+        name: "request_detail",
+    }) ?? [];
+
+    const requestedSizeIds = React.useMemo(() => {
+        const request = requestDetail.find((item: any) => item.model_id === modelId);
+        return new Set(
+            (request?.variant_detail ?? [])
+                .filter((variant: any) => Number(variant.qty) > 0)
+                .map((variant: any) => variant.size_id)
+        );
+    }, [requestDetail, modelId]);
+
+    const requestedSizes = React.useMemo(
+        () => sizes.filter(size => requestedSizeIds.has(size.id)),
+        [sizes, requestedSizeIds]
+    );
+
     const sizeOptions = React.useMemo(
-        () => sizes.map(s => ({ id: s.id, name: s.name })),
-        [sizes]
+        () => requestedSizes.map(s => ({ id: s.id, name: s.name })),
+        [requestedSizes]
     );
 
     const { fields, append, remove, replace } = useFieldArray({
@@ -53,7 +72,7 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
 
         const current = form.getValues(fieldName) ?? [];
 
-        const next = sizes.map(s => {
+        const next = requestedSizes.map(s => {
             const existing = current.find((c: any) => c.size_id === s.id);
             return {
                 size_id: s.id,
@@ -65,10 +84,10 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
             current.length === next.length &&
             current.every((c: { size_id: string }, i: number) => c.size_id === next[i].size_id);
 
-        if (!same && sizes.length > 0) {
+        if (!same) {
             replace(next);
         }
-    }, [modelId, sizes, disabled]);
+    }, [modelId, requestedSizes, disabled]);
 
     React.useEffect(() => {
         if (!modelId || previousModelId.current === modelId) return;
@@ -154,9 +173,16 @@ export default function ProductList<T>({ form, index, parentKey, disabled }: Det
                     name={`${parentKey}.${index}.variant_detail`}
                     render={() => (
                         <>
-                            {fields.map((row, index) => (
-                                <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
-                            ))}
+                            {fields.map((row, index) => {
+                                const sizeId = form.getValues(`${fieldName}.${index}.size_id`) ?? (row as any).size_id;
+                                if (!requestedSizeIds.has(sizeId)) {
+                                    return null;
+                                }
+
+                                return (
+                                    <VariantListItem control={form.control} key={row.id} index={index} handleRemove={setDeleteIndex} rowKey={fieldName} disabled={disabled} sizes={sizeOptions} />
+                                );
+                            })}
                             <div className="flex items-end">
                                 {/* {!disabled && (
                                     <Button type="button" className="w-full" variant="default" onClick={() => handleAddVariants()}><Plus /> Tambah varian</Button>
