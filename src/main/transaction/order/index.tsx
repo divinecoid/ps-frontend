@@ -63,7 +63,7 @@ export default function OrderPage() {
       case "shopee":
         return Services.TransactionShopeeOrder.downloadShippingDocument;
       case "tiktok":
-        return;
+        return Services.TransactionTiktokOrder.downloadShippingDocument;
       case "lazada":
         return;
       default:

@@ -50,7 +50,7 @@ import {
 } from "lucide-react";
 
 const schema = z.object({
-  address_id: z.string(),
+  address_id: z.string().optional(),
   pickup_time_id: z.string(),
 });
 
@@ -141,6 +141,7 @@ export default function FormOrder(_props: BaseForm) {
   const [items, setItems] = useState<OrderItem[]>([]);
   const [shippingParameter, setShippingParameter] = useState<AddressList[]>();
   const [pickupTime, setPickupTime] = useState<TimeSlot[]>();
+  const [tiktokPackageId, setTiktokPackageId] = useState<string>();
   const [totalAmount, setTotalAmount] = useState<number | undefined>(
     location.state?.total_amount,
   );
@@ -186,6 +187,78 @@ export default function FormOrder(_props: BaseForm) {
       }
     };
 
+    const getTiktokShippingParameter = async (orderSn: string) => {
+      try {
+        const orderResponse = await Services.TransactionTiktokOrder?.getOrderDetail?.(
+          orderSn,
+        );
+        const orderJson = await orderResponse?.json();
+
+        if (!orderResponse?.ok || !orderJson?.data) {
+          throw new Error(
+            orderJson?.message || "Gagal mengambil detail order TikTok",
+          );
+        }
+
+        const packageId =
+          orderJson.data.orders?.[0]?.packages?.[0]?.id ??
+          orderJson.data.orders?.[0]?.line_items?.[0]?.package_id;
+        if (!packageId) {
+          throw new Error("Tidak dapat menemukan TikTok package ID untuk order ini");
+        }
+
+        setTiktokPackageId(packageId);
+
+        const slotResponse =
+          await Services.TransactionTiktokOrder?.getPackageHandoverTimeSlots?.(
+            packageId,
+          );
+        const slotJson = await slotResponse?.json();
+
+        if (!slotResponse?.ok || !slotJson?.data) {
+          throw new Error(
+            slotJson?.message || "Gagal mengambil timeslot pengambilan TikTok",
+          );
+        }
+
+        const rawSlots = slotJson.data.pickup_slots ?? [];
+        const slots = rawSlots
+          .map((slot: any) => {
+            const available =
+              Boolean(slot.available ?? slot.avaliable ?? false);
+            const startTime = Number(slot.start_time ?? 0);
+            const endTime = Number(slot.end_time ?? 0);
+            return {
+              ...slot,
+              pickup_time_id: `${startTime}-${endTime}`,
+              start_time: startTime,
+              end_time: endTime,
+              available,
+              flags: [available ? "recommended" : "unavailable"],
+              time_text:
+                startTime && endTime
+                  ? `${formatDateTime(new Date(startTime * 1000))} - ${formatDateTime(
+                      new Date(endTime * 1000),
+                    )}`
+                  : "",
+            } as TimeSlot;
+          })
+          .filter((slot: TimeSlot) => slot.available);
+
+        if (slots.length === 0) {
+          throw new Error("Tidak ada timeslot pengambilan TikTok yang tersedia");
+        }
+
+        setPickupTime(slots);
+        setDisabled(false);
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message, { richColors: true });
+        }
+        setDisabled(true);
+      }
+    };
+
     const fetchOrderItems = async (orderId: string) => {
       try {
         const res = await Services.TransactionOrder?.getOrderItems?.(orderId);
@@ -216,6 +289,7 @@ export default function FormOrder(_props: BaseForm) {
                   getShopeeShippingParameter(json.data.order_sn);
                   break;
                 case "tiktok":
+                  getTiktokShippingParameter(json.data.order_sn);
                   break;
                 case "lazada":
                   break;
@@ -260,21 +334,51 @@ export default function FormOrder(_props: BaseForm) {
   }, [shippingParameter]);
 
   React.useEffect(() => {
-    form.setValue(
-      "pickup_time_id",
-      String(
-        pickupTime?.find((item) => item.flags.includes("recommended"))
-          ?.pickup_time_id,
-      ),
-    );
+    const defaultSlot =
+      pickupTime?.find((item) => item.flags.includes("recommended")) ??
+      pickupTime?.[0];
+
+    if (defaultSlot) {
+      form.setValue("pickup_time_id", String(defaultSlot.pickup_time_id));
+    }
   }, [pickupTime]);
 
-  const submitShipping = async (values: ShopeeShipOrder) => {
+  const submitShipping = async (
+    values: ShopeeShipOrder | {
+      order_sn: string;
+      pickup_time_id: string;
+      address_id?: string;
+    },
+  ) => {
     switch (data?.marketplace.code) {
       case "shopee":
-        return await Services.TransactionShopeeOrder.shipOrderShopee(values);
-      case "tiktok":
-      //TODO:
+        return await Services.TransactionShopeeOrder.shipOrderShopee(
+          values as ShopeeShipOrder,
+        );
+      case "tiktok": {
+        if (!tiktokPackageId) {
+          throw new Error("Tidak ada package TikTok yang tersedia untuk dikirim");
+        }
+
+        const selectedSlot = pickupTime?.find(
+          (item) => item.pickup_time_id === values.pickup_time_id,
+        );
+
+        if (!selectedSlot?.start_time || !selectedSlot?.end_time) {
+          throw new Error("Pilih waktu pengambilan TikTok terlebih dahulu");
+        }
+
+        return await Services.TransactionTiktokOrder.shipPackage(
+          tiktokPackageId,
+          {
+            handover_method: "PICKUP",
+            pickup_slot: {
+              start_time: selectedSlot.start_time,
+              end_time: selectedSlot.end_time,
+            },
+          },
+        );
+      }
       case "lazada":
 
       default:
@@ -290,12 +394,17 @@ export default function FormOrder(_props: BaseForm) {
           order_sn: data.order_sn,
           ...values,
         });
-        const json = await res?.json();
-        if (res?.ok) {
+
+        if (!res) {
+          throw new Error("Gagal memproses pengiriman");
+        }
+
+        const json = await res.json();
+        if (res.ok) {
           toast.message(json.message);
           navigate(-1);
         } else {
-          toast.error(String(json.message.replaceAll("_", " ")), {
+          toast.error(String(json.message?.replaceAll("_", " ") ?? ""), {
             richColors: true,
           });
         }
@@ -710,6 +819,103 @@ export default function FormOrder(_props: BaseForm) {
                     <PackageX className="h-4 w-4 shrink-0" />
                     <p className="text-sm">
                       Tidak dapat memproses pengiriman untuk order ini
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+        {data?.marketplace.code === "tiktok" &&
+          data.status === "ready_to_ship" && (
+            <div className="px-6 md:px-8 py-5 bg-card border-y">
+              <div className="flex items-center gap-2 mb-4">
+                <Truck className="h-4 w-4 text-muted-foreground" />
+                <h3 className="font-bold text-base">Pengiriman TikTok</h3>
+              </div>
+              <div className="space-y-4">
+                {!disabled && pickupTime?.length ? (
+                  <FormField
+                    control={form.control}
+                    name="pickup_time_id"
+                    render={({ field, fieldState }) => (
+                      <FormItem className="py-2">
+                        <FormLabel className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5" />
+                          Waktu Pengambilan
+                        </FormLabel>
+                        <FormControl>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            name={field.name}
+                            disabled={!pickupTime || disabled}
+                          >
+                            <SelectTrigger
+                              aria-invalid={fieldState.invalid}
+                              className="w-full"
+                            >
+                              <div className="flex w-full text-left">
+                                {(() => {
+                                  const value = pickupTime?.find(
+                                    (item) =>
+                                      item.pickup_time_id == field.value,
+                                  );
+                                  return value ? (
+                                    <div className="flex gap-2">
+                                      <p>{value.time_text}</p>
+                                    </div>
+                                  ) : (
+                                    <p className="text-muted-foreground">
+                                      Waktu pengambilan
+                                    </p>
+                                  );
+                                })()}
+                              </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {pickupTime?.map((item, index) => (
+                                <SelectItem
+                                  key={index}
+                                  value={item.pickup_time_id}
+                                  className="[&>span]:flex-1"
+                                >
+                                  <div className="flex-1 flex">
+                                    <div className="flex flex-col flex-1">
+                                      <div>
+                                        {item.time_text != ""
+                                          ? item.time_text
+                                          : "-"}
+                                      </div>
+                                    </div>
+                                    <div className="flex flex-0 flex-col gap-1.5">
+                                      {item.flags.map((flag, index) => (
+                                        <Badge
+                                          variant="success"
+                                          key={index}
+                                        >
+                                          {flag.replaceAll("_", " ")}
+                                        </Badge>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormDescription>
+                          Pilih jadwal pengambilan untuk TikTok Shipping.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <div className="flex items-center gap-2 rounded-md border border-dashed p-4 text-muted-foreground">
+                    <PackageX className="h-4 w-4 shrink-0" />
+                    <p className="text-sm">
+                      Tidak dapat memproses pengiriman TikTok untuk order ini
                     </p>
                   </div>
                 )}

@@ -118,6 +118,9 @@ export interface TimeSlot {
   time_text: string;
   pickup_time_id: string;
   flags: string[];
+  start_time?: number;
+  end_time?: number;
+  available?: boolean;
 }
 
 export interface AddressList {
@@ -131,6 +134,19 @@ export interface AddressList {
   zipcode: string;
   address_flag: string[];
   time_slot_list: TimeSlot[];
+}
+
+export interface TiktokShipPackage {
+  package_id: string;
+  handover_method: "PICKUP" | "DROP_OFF";
+  pickup_slot?: {
+    start_time: number;
+    end_time: number;
+  };
+  self_shipment?: {
+    tracking_number: string;
+    shipping_provider_id: string;
+  };
 }
 
 export interface ShopeeOrderShippingParameter extends BaseResponse {
