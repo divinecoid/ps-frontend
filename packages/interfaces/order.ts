@@ -65,6 +65,7 @@ export interface OrderItemsResponse extends BaseResponse {
 }
 
 export interface ViewOrderDetail {
+  id: string
   //store detail
   online_store_id: string;
   online_store: OnlineStore;
@@ -83,6 +84,7 @@ export interface ViewOrderDetail {
     | "read"
     | "prepared"
     | "ready_to_ship"
+    | "ready_to_pickup"
     | "shipped"
     | "delivered"
     | "cancelled"

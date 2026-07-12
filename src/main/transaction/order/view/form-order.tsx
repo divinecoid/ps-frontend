@@ -54,6 +54,80 @@ const schema = z.object({
   pickup_time_id: z.string().optional(),
 });
 
+// ─── SKU Parser ──────────────────────────────────────────────────────────────
+
+interface ParsedSkuItem {
+  /** SKU produk (e.g. PANJANGPOLOS, OBLONGHITAM) */
+  sku: string;
+  /** Logo jika ada (e.g. LOGO48) */
+  logo: string | null;
+  /** Warna produk */
+  warna: string | null;
+  /** Ukuran produk */
+  ukuran: string | null;
+  /** ID order item asal (untuk mapping ke payload API) */
+  sourceOrderItemId: string;
+  /** Indeks item dalam order (untuk unique key) */
+  sourceItemIndex: number;
+  /** Indeks urut dalam hasil parse satu order item (0-based) */
+  parsedIndex: number;
+}
+
+/**
+ * Mengurai SKU teks menjadi daftar item individual.
+ *
+ * Format: [PAKET{N}-][LOGO{n}*]<SKU>[+<SKU_extra>]
+ *
+ * Contoh:
+ *   PAKET3-LOGO48*PANJANGPOLOS+OBLONGHITAM  → 3× PANJANGPOLOS (pakai logo) + 1× OBLONGHITAM
+ *   LOGO48*PANJANGPOLOS                     → 1× PANJANGPOLOS (pakai logo)
+ *   PAKET3-PANJANGPOLOS                     → 3× PANJANGPOLOS
+ *
+ * @param skuText     - Teks SKU dari order
+ * @param warnaString - Warna dipisah "|" (e.g. "Merah|Biru|Hitam"), urut sesuai jumlah paket
+ * @param ukuran      - Ukuran item (e.g. "M", "L", "XL")
+ */
+function parseSku(
+  skuText: string,
+  warnaString: string = "",
+  ukuran: string | null = null,
+): Omit<ParsedSkuItem, "sourceOrderItemId" | "sourceItemIndex" | "parsedIndex">[] {
+  const regex = /^(?:(PAKET(\d+))-)?(?:(.+?)\*)?([^+]+)(?:\+(.+))?$/;
+  const match = skuText.match(regex);
+
+  if (!match) return [];
+
+  const jumlah = Number(match[2] ?? 1);
+  const logo = match[3] ?? null;
+  const sku = match[4];
+  const extra = match[5] ?? null;
+
+  const warna = warnaString ? warnaString.split("|") : [];
+  const result: Omit<ParsedSkuItem, "sourceOrderItemId" | "sourceItemIndex" | "parsedIndex">[] = [];
+
+  for (let i = 0; i < jumlah; i++) {
+    result.push({
+      sku,
+      logo,
+      warna: warna[i] ?? "Hitam",
+      ukuran,
+    });
+  }
+
+  if (extra) {
+    result.push({
+      sku: extra,
+      logo: null,
+      warna: null,
+      ukuran,
+    });
+  }
+
+  return result;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 const StatusBadge = ({ status }: { status?: string }) => {
   switch (status?.toLowerCase()) {
     case "delivered":
@@ -153,6 +227,34 @@ export default function FormOrder(_props: BaseForm) {
   const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(false);
   const [scannedBarcodes, setScannedBarcodes] = useState<Record<string, string>>({});
 
+  /**
+   * expandedItems: hasil parse SKU dari setiap OrderItem.
+   * Setiap OrderItem bisa menghasilkan beberapa ParsedSkuItem (paket / extra).
+   * Jika qty > 1, seluruh hasil parse dikalikan qty.
+   */
+  const expandedItems = React.useMemo<ParsedSkuItem[]>(() => {
+    const result: ParsedSkuItem[] = [];
+    items.forEach((item) => {
+      const qty = item.total_quantity || item.quantity_purchased || 1;
+      const parsed = parseSku(
+        item.sku,
+        item.color ?? "",
+        item.size ?? null,
+      );
+      for (let q = 0; q < qty; q++) {
+        parsed.forEach((p) => {
+          result.push({
+            ...p,
+            sourceOrderItemId: String(item.id),
+            sourceItemIndex: item.item_index,
+            parsedIndex: result.length,
+          });
+        });
+      }
+    });
+    return result;
+  }, [items]);
+
   const form = useForm({
     resolver: zodResolver(schema),
   });
@@ -197,12 +299,13 @@ export default function FormOrder(_props: BaseForm) {
 
   const handleUseAllRecommendations = () => {
     const newBarcodes: Record<string, string> = {};
-    items.forEach((item, index) => {
-      const indexInGroup = items.slice(0, index).filter((i) => i.sku === item.sku).length;
+    expandedItems.forEach((item, index) => {
+      const indexInGroup = expandedItems.slice(0, index).filter((i) => i.sku === item.sku).length;
       const recs = barcodeRecommendations[item.sku] || [];
       const recommended = recs[indexInGroup] || "";
+      const key = `${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`;
       if (recommended) {
-        newBarcodes[`${item.id}-${item.item_index}`] = recommended;
+        newBarcodes[key] = recommended;
       }
     });
     setScannedBarcodes((prev) => ({
@@ -213,18 +316,18 @@ export default function FormOrder(_props: BaseForm) {
 
   const getSkuSummary = () => {
     const summary: Record<string, number> = {};
-    items.forEach((item) => {
+    expandedItems.forEach((item) => {
       summary[item.sku] = (summary[item.sku] || 0) + 1;
     });
     return Object.entries(summary).map(([sku, quantity]) => ({ sku, quantity }));
   };
 
   React.useEffect(() => {
-    if (items.length > 0 && data?.status === "ready_to_pickup") {
-      const uniqueSkus = Array.from(new Set(items.map((item) => item.sku)));
+    if (expandedItems.length > 0 && data?.status === "ready_to_pickup") {
+      const uniqueSkus = Array.from(new Set(expandedItems.map((item) => item.sku)));
       fetchProductsForSkus(uniqueSkus);
     }
-  }, [items, data?.status]);
+  }, [expandedItems, data?.status]);
 
   React.useEffect(() => {
     const getShopeeShippingParameter = async (orderSn: string) => {
@@ -360,8 +463,8 @@ export default function FormOrder(_props: BaseForm) {
           return;
         }
 
-        const missingBarcodes = items.some(
-          (item) => !scannedBarcodes[`${item.id}-${item.item_index}`]
+        const missingBarcodes = expandedItems.some(
+          (item) => !scannedBarcodes[`${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`]
         );
         if (missingBarcodes) {
           toast.error("Harap isi semua barcode barang!");
@@ -369,8 +472,8 @@ export default function FormOrder(_props: BaseForm) {
           return;
         }
 
-        const barcodeValues = items.map(
-          (item) => scannedBarcodes[`${item.id}-${item.item_index}`]
+        const barcodeValues = expandedItems.map(
+          (item) => scannedBarcodes[`${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`]
         );
         const uniqueBarcodes = new Set(barcodeValues);
         if (uniqueBarcodes.size !== barcodeValues.length) {
@@ -380,12 +483,12 @@ export default function FormOrder(_props: BaseForm) {
         }
 
         const orderItemsMap: Record<string, string[]> = {};
-        items.forEach((item) => {
-          const barcode = scannedBarcodes[`${item.id}-${item.item_index}`];
-          if (!orderItemsMap[item.id]) {
-            orderItemsMap[item.id] = [];
+        expandedItems.forEach((item) => {
+          const barcode = scannedBarcodes[`${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`];
+          if (!orderItemsMap[item.sourceOrderItemId]) {
+            orderItemsMap[item.sourceOrderItemId] = [];
           }
-          orderItemsMap[item.id].push(barcode);
+          orderItemsMap[item.sourceOrderItemId].push(barcode);
         });
 
         const orderItemsPayload = Object.entries(orderItemsMap).map(
@@ -887,7 +990,7 @@ export default function FormOrder(_props: BaseForm) {
                   variant="outline"
                   size="sm"
                   onClick={handleUseAllRecommendations}
-                  disabled={loadingRecommendations || items.length === 0}
+                  disabled={loadingRecommendations || expandedItems.length === 0}
                   className="text-xs h-8"
                 >
                   Gunakan Semua Rekomendasi
@@ -898,22 +1001,26 @@ export default function FormOrder(_props: BaseForm) {
                 <table className="w-full text-sm text-left animate-in fade-in duration-300">
                   <thead className="bg-muted text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
                     <tr>
-                      <th className="px-4 py-3 w-1/4">SKU</th>
-                      <th className="px-4 py-3 w-1/2">Rekomendasi Barcode (Gudang Kecil)</th>
-                      <th className="px-4 py-3 w-1/4">Barcode Scan/Input</th>
+                      <th className="px-4 py-3 w-1/5">SKU</th>
+                      <th className="px-4 py-3 w-1/5">Warna</th>
+                      <th className="px-4 py-3 w-1/5">Ukuran</th>
+                      <th className="px-4 py-3 w-1/5">Rekomendasi Barcode (Gudang Kecil)</th>
+                      <th className="px-4 py-3 w-1/5">Barcode Scan/Input</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {items.map((item, index) => {
-                      const indexInGroup = items.slice(0, index).filter((i) => i.sku === item.sku).length;
+                    {expandedItems.map((item, index) => {
+                      const indexInGroup = expandedItems.slice(0, index).filter((i) => i.sku === item.sku).length;
                       const recs = barcodeRecommendations[item.sku] || [];
                       const recommended = recs[indexInGroup] || "";
-                      const key = `${item.id}-${item.item_index}`;
+                      const key = `${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`;
                       const scannedValue = scannedBarcodes[key] || "";
 
                       return (
                         <tr key={key} className="hover:bg-muted/30 align-middle">
                           <td className="px-4 py-3 font-medium">{item.sku}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{item.warna ?? "-"}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{item.ukuran ?? "-"}</td>
                           <td className="px-4 py-3">
                             {loadingRecommendations ? (
                               <span className="text-muted-foreground text-xs italic animate-pulse">Memuat rekomendasi...</span>
