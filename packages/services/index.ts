@@ -25,6 +25,7 @@ import * as TransactionFabricPurchase from "./transaction-fabric-purchase";
 import * as TransactionFabricCutting from "./transaction-fabric-cutting";
 import * as TransactionShopeeOrder from "./transaction-shopee-order";
 import * as TransactionTiktokOrder from "./transaction-tiktok-order";
+import * as TransactionManualOutbound from "./transaction-manual-outbound";
 import * as Dashboard from "./dashboard";
 import * as Acm from "./acm";
 import * as AuditLog from "./audit-log";
@@ -52,6 +53,7 @@ const Services = {
   TransactionFabricCutting,
   TransactionShopeeOrder,
   TransactionTiktokOrder,
+  TransactionManualOutbound,
   MasterSmallInventory,
   MasterLargeInventory,
   MasterFabric,

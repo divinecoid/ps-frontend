@@ -51,6 +51,7 @@ import TrackCutting from "./main/transaction/track-cutting";
 import FabricReceiving from "./main/transaction/fabric-receiving";
 import FormFabricCuttingRequest from "./main/transaction/fabric-cutting/cutting/form-fabric-cutting-request";
 import FormFabricCuttingReceive from "./main/transaction/fabric-cutting/receiving/form-fabric-cutting-request";
+import OutboundManual from "./main/transaction/outbound-manual";
 
 function App() {
   const { token } = useAuth();
@@ -205,6 +206,10 @@ function App() {
               <Route
                 path="/transaction/fabric-receiving"
                 element={<FabricReceiving />}
+              />
+              <Route
+                path="/transaction/outbound-manual"
+                element={<OutboundManual />}
               />
             </>
           )}

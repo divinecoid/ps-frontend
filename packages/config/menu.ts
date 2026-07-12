@@ -9,6 +9,7 @@ import {
   ArrowDownLeftFromSquare,
   FileStack,
   Search,
+  ArrowUpRight,
 } from "lucide-react";
 
 // export const Menu = {
@@ -242,6 +243,12 @@ export const Menu = {
       url: "/transaction/order",
       icon: Repeat2,
       role: ["preparist", "checker"],
+    },
+    {
+      name: "Outbound Manual",
+      url: "/transaction/outbound-manual",
+      icon: ArrowUpRight,
+      role: ["preparist", "admin"],
     },
   ],
   navMaster: [
