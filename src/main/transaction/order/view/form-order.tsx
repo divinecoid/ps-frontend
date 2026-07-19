@@ -535,15 +535,6 @@ export default function FormOrder(_props: BaseForm) {
         onSubmit={form.handleSubmit(submitForm, console.log)}
         className={`flex flex-col flex-1 h-0 select-none gap-3 bg-muted/20 ${loading ? "cursor-progress" : undefined}`}
       >
-        {/* DEBUG: Show current order state */}
-        {data && (
-          <div className="px-6 md:px-8 py-3 bg-yellow-50 dark:bg-yellow-950/20 border-b border-yellow-200 dark:border-yellow-800">
-            <p className="text-xs font-mono text-yellow-800 dark:text-yellow-200">
-              DEBUG: status={data.status} | marketplace={data.marketplace?.code ?? 'null'} | marketplace_id={data.marketplace_id ?? 'null'}
-            </p>
-          </div>
-        )}
-        
         <div className="px-6 md:px-8 py-5 bg-card border-b">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
