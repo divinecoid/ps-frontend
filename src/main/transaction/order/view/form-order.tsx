@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import z from "zod/v3";
 import { formatDateTime } from "@/lib/format-date";
+import { downloadFile } from "@/lib/file";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -47,11 +48,12 @@ import {
   MapPinned,
   Clock,
   PackageX,
+  Download,
 } from "lucide-react";
 
 const schema = z.object({
   address_id: z.string().optional(),
-  pickup_time_id: z.string(),
+  pickup_time_id: z.string().optional(),
 });
 
 const StatusBadge = ({ status }: { status?: string }) => {
@@ -142,6 +144,8 @@ export default function FormOrder(_props: BaseForm) {
   const [shippingParameter, setShippingParameter] = useState<AddressList[]>();
   const [pickupTime, setPickupTime] = useState<TimeSlot[]>();
   const [tiktokPackageId, setTiktokPackageId] = useState<string>();
+  const [tiktokShipError, setTiktokShipError] = useState<string>();
+  const [downloadingDoc, setDownloadingDoc] = useState(false);
   const [totalAmount, setTotalAmount] = useState<number | undefined>(
     location.state?.total_amount,
   );
@@ -188,10 +192,10 @@ export default function FormOrder(_props: BaseForm) {
     };
 
     const getTiktokShippingParameter = async (orderSn: string) => {
+      setTiktokShipError(undefined);
       try {
-        const orderResponse = await Services.TransactionTiktokOrder?.getOrderDetail?.(
-          orderSn,
-        );
+        const orderResponse =
+          await Services.TransactionTiktokOrder?.getOrderDetail?.(orderSn);
         const orderJson = await orderResponse?.json();
 
         if (!orderResponse?.ok || !orderJson?.data) {
@@ -200,11 +204,17 @@ export default function FormOrder(_props: BaseForm) {
           );
         }
 
+        // Robust packageId: packages[0].id → any line_item.package_id
+        const order = orderJson.data.orders?.[0];
         const packageId =
-          orderJson.data.orders?.[0]?.packages?.[0]?.id ??
-          orderJson.data.orders?.[0]?.line_items?.[0]?.package_id;
+          order?.packages?.[0]?.id ??
+          order?.line_items?.find((li: any) => li?.package_id)?.package_id ??
+          null;
+
         if (!packageId) {
-          throw new Error("Tidak dapat menemukan TikTok package ID untuk order ini");
+          throw new Error(
+            "Tidak dapat menemukan TikTok package ID untuk order ini. Coba fetch ulang order.",
+          );
         }
 
         setTiktokPackageId(packageId);
@@ -215,17 +225,23 @@ export default function FormOrder(_props: BaseForm) {
           );
         const slotJson = await slotResponse?.json();
 
-        if (!slotResponse?.ok || !slotJson?.data) {
-          throw new Error(
-            slotJson?.message || "Gagal mengambil timeslot pengambilan TikTok",
-          );
+        // If the API itself errored, surface the message but don't block — some
+        // packages use DROP_OFF and don't need a time slot.
+        if (!slotResponse?.ok) {
+          const errMsg = slotJson?.error ?? slotJson?.message ?? "Gagal mengambil timeslot pengambilan";
+          // Still allow shipping without a slot (DROP_OFF / no-slot flow)
+          setPickupTime([]);
+          setDisabled(false);
+          setTiktokShipError(`Timeslot tidak tersedia: ${errMsg}. Pengiriman mungkin tetap bisa diproses tanpa memilih slot.`);
+          return;
         }
 
-        const rawSlots = slotJson.data.pickup_slots ?? [];
+        const rawSlots = slotJson?.data?.pickup_slots ?? [];
         const slots = rawSlots
           .map((slot: any) => {
-            const available =
-              Boolean(slot.available ?? slot.avaliable ?? false);
+            const available = Boolean(
+              slot.available ?? slot.avaliable ?? false,
+            );
             const startTime = Number(slot.start_time ?? 0);
             const endTime = Number(slot.end_time ?? 0);
             return {
@@ -246,14 +262,18 @@ export default function FormOrder(_props: BaseForm) {
           .filter((slot: TimeSlot) => slot.available);
 
         if (slots.length === 0) {
-          throw new Error("Tidak ada timeslot pengambilan TikTok yang tersedia");
+          // No pickup slots — could be DROP_OFF handover method; still allow submit
+          setPickupTime([]);
+          setDisabled(false);
+          setTiktokShipError("Tidak ada timeslot pengambilan tersedia. Pengiriman akan diproses tanpa memilih jadwal pickup.");
+          return;
         }
 
         setPickupTime(slots);
         setDisabled(false);
       } catch (error) {
         if (error instanceof Error) {
-          toast.error(error.message, { richColors: true });
+          setTiktokShipError(error.message);
         }
         setDisabled(true);
       }
@@ -283,12 +303,19 @@ export default function FormOrder(_props: BaseForm) {
             );
             setTotalShipping(json.data.total_shipping);
             fetchOrderItems(id);
-            if (json.data.status == "ready_to_ship") {
+
+            // Debug: log status and marketplace so we can diagnose shipping section visibility
+            console.log('[OrderDetail] status:', json.data.status, '| marketplace:', json.data.marketplace?.code, '| marketplace_id:', json.data.marketplace_id);
+
+            if (json.data.status == "ready_to_ship" || json.data.status == "ready_to_pickup") {
               switch (json.data.marketplace.code) {
                 case "shopee":
-                  getShopeeShippingParameter(json.data.order_sn);
+                  if (json.data.status == "ready_to_ship") {
+                    getShopeeShippingParameter(json.data.order_sn);
+                  }
                   break;
                 case "tiktok":
+                case "tiktok_shop":
                   getTiktokShippingParameter(json.data.order_sn);
                   break;
                 case "lazada":
@@ -298,7 +325,9 @@ export default function FormOrder(_props: BaseForm) {
               }
             }
           } else {
-            toast.error(json.message, { richColors: true });
+            toast.error(json?.message ?? "Gagal memuat data order", {
+              richColors: true,
+            });
           }
         }
       } catch (error) {
@@ -343,41 +372,98 @@ export default function FormOrder(_props: BaseForm) {
     }
   }, [pickupTime]);
 
+  const downloadTiktokDocument = async () => {
+    if (!data?.order_sn) return;
+    setDownloadingDoc(true);
+    try {
+      const res = await Services.TransactionTiktokOrder.downloadShippingDocument(
+        { order_sn: data.order_sn },
+      );
+      if (res?.ok) {
+        const filePath = await downloadFile(res);
+        if (filePath) {
+          toast.success(`Download selesai: ${filePath}`, {
+            action: {
+              label: "Buka",
+              onClick: () => window.electronAPI.openFile(filePath),
+            },
+            richColors: true,
+          });
+        } else {
+          toast.error("File path tidak valid", { richColors: true });
+        }
+      } else {
+        const json = await res?.json().catch(() => null);
+        let message = "Gagal mengunduh dokumen pengiriman";
+        if (json?.error) {
+          message = String(json.error);
+          if (json?.code) message += ` (Kode: ${json.code})`;
+        } else if (json?.message) {
+          message = String(json.message);
+        }
+        toast.error(message, { richColors: true });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message, { richColors: true });
+      }
+    } finally {
+      setDownloadingDoc(false);
+    }
+  };
+
   const submitShipping = async (
-    values: ShopeeShipOrder | {
-      order_sn: string;
-      pickup_time_id: string;
-      address_id?: string;
-    },
+    values:
+      | ShopeeShipOrder
+      | {
+          order_sn: string;
+          pickup_time_id?: string;
+          address_id?: string;
+        },
   ) => {
     switch (data?.marketplace.code) {
       case "shopee":
         return await Services.TransactionShopeeOrder.shipOrderShopee(
           values as ShopeeShipOrder,
         );
-      case "tiktok": {
+      case "tiktok":
+      case "tiktok_shop": {
         if (!tiktokPackageId) {
-          throw new Error("Tidak ada package TikTok yang tersedia untuk dikirim");
+          throw new Error(
+            "Tidak ada package TikTok yang tersedia untuk dikirim",
+          );
         }
 
-        const selectedSlot = pickupTime?.find(
-          (item) => item.pickup_time_id === values.pickup_time_id,
-        );
+        // If pickup slots are available, use PICKUP handover with selected slot.
+        // If no slots (DROP_OFF / no-slot flow), ship without a pickup_slot.
+        if (pickupTime && pickupTime.length > 0) {
+          const selectedSlot = pickupTime?.find(
+            (item) => item.pickup_time_id === values.pickup_time_id,
+          );
 
-        if (!selectedSlot?.start_time || !selectedSlot?.end_time) {
-          throw new Error("Pilih waktu pengambilan TikTok terlebih dahulu");
-        }
+          if (!selectedSlot?.start_time || !selectedSlot?.end_time) {
+            throw new Error("Pilih waktu pengambilan TikTok terlebih dahulu");
+          }
 
-        return await Services.TransactionTiktokOrder.shipPackage(
-          tiktokPackageId,
-          {
-            handover_method: "PICKUP",
-            pickup_slot: {
-              start_time: selectedSlot.start_time,
-              end_time: selectedSlot.end_time,
+          return await Services.TransactionTiktokOrder.shipPackage(
+            tiktokPackageId,
+            {
+              handover_method: "PICKUP",
+              pickup_slot: {
+                start_time: selectedSlot.start_time,
+                end_time: selectedSlot.end_time,
+              },
             },
-          },
-        );
+          );
+        } else {
+          // No pickup slots available — attempt ship without slot (e.g. DROP_OFF)
+          return await Services.TransactionTiktokOrder.shipPackage(
+            tiktokPackageId,
+            {
+              handover_method: "DROP_OFF",
+            },
+          );
+        }
       }
       case "lazada":
 
@@ -399,14 +485,39 @@ export default function FormOrder(_props: BaseForm) {
           throw new Error("Gagal memproses pengiriman");
         }
 
-        const json = await res.json();
+        const json = await res.json().catch(() => null);
         if (res.ok) {
-          toast.message(json.message);
-          navigate(-1);
+          // TikTok can return HTTP 200 with a non-zero code indicating failure
+          const tiktokCode = json?.code ?? 0;
+          if (tiktokCode !== 0) {
+            const errMsg = String(json?.message ?? "Gagal memproses pengiriman");
+            // Check if it's a scope error
+            if (errMsg.includes("denied") || errMsg.includes("scope") || errMsg.includes("authorized")) {
+              toast.error(
+                `${errMsg} | SOLUSI: Re-authorize TikTok app dengan scope "order.fulfillment"`,
+                { richColors: true, duration: 8000 },
+              );
+            } else {
+              toast.error(`${errMsg} (Kode: ${tiktokCode})`, { richColors: true });
+            }
+          } else {
+            toast.success(json?.message ?? "Berhasil memproses pengiriman", {
+              richColors: true,
+            });
+            navigate(-1);
+          }
         } else {
-          toast.error(String(json.message?.replaceAll("_", " ") ?? ""), {
-            richColors: true,
-          });
+          const errMsg = json?.error ?? json?.message;
+          const fullMsg = String(errMsg?.replaceAll?.("_", " ") ?? "Gagal memproses pengiriman");
+          // Check if it's a scope error
+          if (fullMsg.includes("denied") || fullMsg.includes("scope") || fullMsg.includes("authorized")) {
+            toast.error(
+              `${fullMsg} | SOLUSI: Re-authorize TikTok app dengan scope "order.fulfillment"`,
+              { richColors: true, duration: 8000 },
+            );
+          } else {
+            toast.error(fullMsg, { richColors: true });
+          }
         }
       }
     } catch (error) {
@@ -424,6 +535,15 @@ export default function FormOrder(_props: BaseForm) {
         onSubmit={form.handleSubmit(submitForm, console.log)}
         className={`flex flex-col flex-1 h-0 select-none gap-3 bg-muted/20 ${loading ? "cursor-progress" : undefined}`}
       >
+        {/* DEBUG: Show current order state */}
+        {data && (
+          <div className="px-6 md:px-8 py-3 bg-yellow-50 dark:bg-yellow-950/20 border-b border-yellow-200 dark:border-yellow-800">
+            <p className="text-xs font-mono text-yellow-800 dark:text-yellow-200">
+              DEBUG: status={data.status} | marketplace={data.marketplace?.code ?? 'null'} | marketplace_id={data.marketplace_id ?? 'null'}
+            </p>
+          </div>
+        )}
+        
         <div className="px-6 md:px-8 py-5 bg-card border-b">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -826,105 +946,153 @@ export default function FormOrder(_props: BaseForm) {
             </div>
           )}
 
-        {data?.marketplace.code === "tiktok" &&
-          data.status === "ready_to_ship" && (
+        {(data?.marketplace.code === "tiktok" ||
+          data?.marketplace.code === "tiktok_shop") &&
+          (data.status === "ready_to_ship" ||
+            data.status === "ready_to_pickup") && (
             <div className="px-6 md:px-8 py-5 bg-card border-y">
-              <div className="flex items-center gap-2 mb-4">
-                <Truck className="h-4 w-4 text-muted-foreground" />
-                <h3 className="font-bold text-base">Pengiriman TikTok</h3>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Truck className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="font-bold text-base">Pengiriman TikTok</h3>
+                </div>
+                {/* Cetak Resi: only show once the package is ready for pickup (already arranged) */}
+                {data.status === "ready_to_pickup" && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={downloadingDoc}
+                    onClick={downloadTiktokDocument}
+                  >
+                    <Download className="h-3.5 w-3.5 mr-1.5" />
+                    {downloadingDoc ? "Mengunduh..." : "Cetak Resi"}
+                  </Button>
+                )}
               </div>
               <div className="space-y-4">
-                {!disabled && pickupTime?.length ? (
-                  <FormField
-                    control={form.control}
-                    name="pickup_time_id"
-                    render={({ field, fieldState }) => (
-                      <FormItem className="py-2">
-                        <FormLabel className="flex items-center gap-1.5">
-                          <Clock className="h-3.5 w-3.5" />
-                          Waktu Pengambilan
-                        </FormLabel>
-                        <FormControl>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            name={field.name}
-                            disabled={!pickupTime || disabled}
-                          >
-                            <SelectTrigger
-                              aria-invalid={fieldState.invalid}
-                              className="w-full"
-                            >
-                              <div className="flex w-full text-left">
-                                {(() => {
-                                  const value = pickupTime?.find(
-                                    (item) =>
-                                      item.pickup_time_id == field.value,
-                                  );
-                                  return value ? (
-                                    <div className="flex gap-2">
-                                      <p>{value.time_text}</p>
-                                    </div>
-                                  ) : (
-                                    <p className="text-muted-foreground">
-                                      Waktu pengambilan
-                                    </p>
-                                  );
-                                })()}
-                              </div>
-                            </SelectTrigger>
-                            <SelectContent>
-                              {pickupTime?.map((item, index) => (
-                                <SelectItem
-                                  key={index}
-                                  value={item.pickup_time_id}
-                                  className="[&>span]:flex-1"
-                                >
-                                  <div className="flex-1 flex">
-                                    <div className="flex flex-col flex-1">
-                                      <div>
-                                        {item.time_text != ""
-                                          ? item.time_text
-                                          : "-"}
-                                      </div>
-                                    </div>
-                                    <div className="flex flex-0 flex-col gap-1.5">
-                                      {item.flags.map((flag, index) => (
-                                        <Badge
-                                          variant="success"
-                                          key={index}
-                                        >
-                                          {flag.replaceAll("_", " ")}
-                                        </Badge>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormDescription>
-                          Pilih jadwal pengambilan untuk TikTok Shipping.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ) : (
+                {disabled ? (
                   <div className="flex items-center gap-2 rounded-md border border-dashed p-4 text-muted-foreground">
                     <PackageX className="h-4 w-4 shrink-0" />
                     <p className="text-sm">
-                      Tidak dapat memproses pengiriman TikTok untuk order ini
+                      {tiktokShipError ?? "Tidak dapat memproses pengiriman TikTok untuk order ini"}
                     </p>
                   </div>
+                ) : (
+                  <>
+                    {tiktokShipError && (
+                      <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30 p-3 text-amber-700 dark:text-amber-400">
+                        <PackageX className="h-4 w-4 shrink-0 mt-0.5" />
+                        <p className="text-sm">{tiktokShipError}</p>
+                      </div>
+                    )}
+                    {pickupTime && pickupTime.length > 0 && (
+                      <FormField
+                        control={form.control}
+                        name="pickup_time_id"
+                        render={({ field, fieldState }) => (
+                          <FormItem className="py-2">
+                            <FormLabel className="flex items-center gap-1.5">
+                              <Clock className="h-3.5 w-3.5" />
+                              Waktu Pengambilan
+                            </FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                name={field.name}
+                              >
+                                <SelectTrigger
+                                  aria-invalid={fieldState.invalid}
+                                  className="w-full"
+                                >
+                                  <div className="flex w-full text-left">
+                                    {(() => {
+                                      const value = pickupTime?.find(
+                                        (item) =>
+                                          item.pickup_time_id == field.value,
+                                      );
+                                      return value ? (
+                                        <div className="flex gap-2">
+                                          <p>{value.time_text}</p>
+                                        </div>
+                                      ) : (
+                                        <p className="text-muted-foreground">
+                                          Waktu pengambilan
+                                        </p>
+                                      );
+                                    })()}
+                                  </div>
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {pickupTime?.map((item, index) => (
+                                    <SelectItem
+                                      key={index}
+                                      value={item.pickup_time_id}
+                                      className="[&>span]:flex-1"
+                                    >
+                                      <div className="flex-1 flex">
+                                        <div className="flex flex-col flex-1">
+                                          <div>
+                                            {item.time_text !== ""
+                                              ? item.time_text
+                                              : "-"}
+                                          </div>
+                                        </div>
+                                        <div className="flex flex-0 flex-col gap-1.5">
+                                          {item.flags.map((flag, idx) => (
+                                            <Badge variant="success" key={idx}>
+                                              {flag.replaceAll("_", " ")}
+                                            </Badge>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormDescription>
+                              Pilih jadwal pengambilan untuk TikTok Shipping.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </>
                 )}
               </div>
             </div>
           )}
 
         <div className="sticky bottom-0 border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-6 md:px-8 py-3">
-          {disabled || data?.status !== "ready_to_ship" ? (
+          {/* TikTok ready_to_pickup: package already arranged, only offer download */}
+          {(data?.marketplace.code === "tiktok" ||
+            data?.marketplace.code === "tiktok_shop") &&
+          data.status === "ready_to_pickup" ? (
+            <>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(-1);
+                }}
+              >
+                Tutup
+              </Button>
+              <Button
+                type="button"
+                variant="default"
+                disabled={downloadingDoc}
+                onClick={downloadTiktokDocument}
+              >
+                <Download className="h-3.5 w-3.5 mr-1.5" />
+                {downloadingDoc ? "Mengunduh..." : "Cetak Resi"}
+              </Button>
+            </>
+          ) : disabled || data?.status !== "ready_to_ship" ? (
             <Button
               type="button"
               onClick={(e) => {
