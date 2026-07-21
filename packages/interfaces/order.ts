@@ -15,16 +15,16 @@ export interface Order extends MasterData {
   item_count: number;
   unique_item_count: number;
   status:
-    | "pending"
-    | "read"
-    | "prepared"
-    | "ready_to_ship"
-    | "ready_to_pickup"
-    | "retry_ship"
-    | "shipped"
-    | "delivered"
-    | "cancelled"
-    | "returned";
+  | "pending"
+  | "read"
+  | "prepared"
+  | "ready_to_ship"
+  | "ready_to_pickup"
+  | "retry_ship"
+  | "shipped"
+  | "delivered"
+  | "cancelled"
+  | "returned";
   total_weight: number;
   total_price: number;
   total_amount: number;
@@ -80,16 +80,16 @@ export interface ViewOrderDetail {
   readytoship_at: Date;
   readytoship_marketplace: string;
   status:
-    | "pending"
-    | "read"
-    | "prepared"
-    | "ready_to_ship"
-    | "ready_to_pickup"
-    | "retry_ship"
-    | "shipped"
-    | "delivered"
-    | "cancelled"
-    | "returned";
+  | "pending"
+  | "read"
+  | "prepared"
+  | "ready_to_ship"
+  | "ready_to_pickup"
+  | "retry_ship"
+  | "shipped"
+  | "delivered"
+  | "cancelled"
+  | "returned";
   //product details
   item_count: number;
   unique_item_count: number;
@@ -161,18 +161,21 @@ export interface ShopeeOrderShippingParameter extends BaseResponse {
     response: {
       info_needed: {
         pickup: string[];
+        dropoff: object;
       };
       pickup: {
         address_list: AddressList[];
       };
+      dropoff: object;
     };
   };
 }
 
 export interface ShopeeShipOrder {
   order_sn: string;
-  address_id: string;
-  pickup_time_id: string;
+  address_id?: string;
+  pickup_time_id?: string;
+  dropoff?: object
 }
 
 export interface ShopeeDocument {
