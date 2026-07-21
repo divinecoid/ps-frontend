@@ -11,8 +11,9 @@ export const index: BaseApiCallIndexProps = async (
   per_page,
   search,
   sort,
+  params
 ) => {
-  return await GET(ENDPOINT.RETURN_RECEIPT, { page, per_page, search, sort });
+  return await GET(ENDPOINT.RETURN_RECEIPT, { page, per_page, search, sort, ...params });
 };
 
 export const master: BaseApiCallIndexProps = async (
@@ -20,8 +21,9 @@ export const master: BaseApiCallIndexProps = async (
   per_page,
   search,
   sort,
+  params
 ) => {
-  return await GET(ENDPOINT.RETURN_RECEIPT, { page, per_page, search, sort });
+  return await GET(ENDPOINT.RETURN_RECEIPT, { page, per_page, search, sort, ...params });
 };
 
 export const show: BaseApiCallViewProps = async (id) => {

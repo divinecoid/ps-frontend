@@ -12,11 +12,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "sonner";
 import { useAcm } from "@/provider/acm-provider";
 
+import { CalendarDays } from "lucide-react";
+
 export default function ReturnPage() {
   const [activeReceipt, setActiveReceipt] = useState<ReturnReceipt | null>(null);
   const [searchAwb, setSearchAwb] = useState("");
   const [barcodeScan, setBarcodeScan] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Date range filter states
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   
   // ACM Permissions
   const { canCreate } = useAcm("retur_barang");
@@ -136,10 +142,49 @@ export default function ReturnPage() {
 
   return (
     <div className="flex flex-col gap-6 p-6 h-full select-none">
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col gap-4">
+        {/* Date Range Filters */}
+        <div className="flex flex-wrap items-center gap-4 bg-card p-4 border rounded-lg">
+          <div className="flex items-center gap-2">
+            <CalendarDays className="size-4 text-muted-foreground" />
+            <span className="text-sm font-medium">Filter Tanggal:</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="max-w-[160px]"
+            />
+            <span className="text-sm text-muted-foreground">s/d</span>
+            <Input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="max-w-[160px]"
+            />
+          </div>
+          {(startDate || endDate) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+              }}
+            >
+              Reset
+            </Button>
+          )}
+        </div>
+
         <OverviewPage
           columns={columns}
           source={Services.TransactionReturnReceipt}
+          customParams={{
+            start_date: startDate,
+            end_date: endDate,
+          }}
           rowActions={({ row }) => (
             <Button
               variant="outline"

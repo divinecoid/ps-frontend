@@ -20,6 +20,7 @@ interface OverviewProps<TData, TValue> {
     setId: React.Dispatch<React.SetStateAction<string | undefined>>;
   }) => React.ReactNode;
   onLoadedRef?: (refreshFn: () => void) => void;
+  customParams?: Record<string, any>;
 }
 
 export default function OverviewPage<TData, TValue>({
@@ -29,6 +30,7 @@ export default function OverviewPage<TData, TValue>({
   actions,
   rowActions,
   onLoadedRef,
+  customParams,
 }: OverviewProps<TData, TValue>) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -69,7 +71,7 @@ export default function OverviewPage<TData, TValue>({
               : "";
           })()
         : "";
-      const result = await source.master?.(page, pageSize, filter, sort);
+      const result = await source.master?.(page, pageSize, filter, sort, customParams);
       const json = await result?.json();
       if (result?.ok) {
         setData(json.data);
@@ -87,7 +89,7 @@ export default function OverviewPage<TData, TValue>({
       requestInFlightRef.current = false;
       setLoading(false);
     }
-  }, [page, pageSize, filter, sorting, source, tableInstance]);
+  }, [page, pageSize, filter, sorting, source, tableInstance, customParams]);
 
   const refresh = useCallback(async () => {
     if (page !== 1) {
