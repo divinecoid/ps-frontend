@@ -44,6 +44,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   "outbound-manual": "Outbound Manual",
   "small-inventory": "Gudang Kecil",
   "large-inventory": "Gudang Besar",
+  "return": "Retur Barang",
 };
 
 export default function NavigationLayout() {

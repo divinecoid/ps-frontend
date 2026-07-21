@@ -27,6 +27,7 @@ export type BaseApiCallIndexProps = (
   per_page?: number,
   search?: string,
   sort?: string,
+  params?: Record<string, any>,
 ) => Promise<Response>;
 
 export type BaseApiCallCreateProps<T> = (values: T) => Promise<Response>;

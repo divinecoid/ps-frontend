@@ -39,7 +39,7 @@ export default function OrderPage() {
   const handleFetchTiktok = async (onSubmit: () => void) => {
     try {
       setFetchingTiktok(true);
-      const res = await Services.TransactionTiktokOrder.fetchOrders();
+      const res = await Services.TransactionTiktokOrder.fetchOrders(100);
       if (res?.ok) {
         toast.success("Berhasil fetch order Tiktok", { richColors: true });
         onSubmit();
@@ -63,7 +63,8 @@ export default function OrderPage() {
       case "shopee":
         return Services.TransactionShopeeOrder.downloadShippingDocument;
       case "tiktok":
-        return;
+      case "tiktok_shop":
+        return Services.TransactionTiktokOrder.downloadShippingDocument;
       case "lazada":
         return;
       default:
@@ -76,7 +77,13 @@ export default function OrderPage() {
       // shipping_document_type: 'NORMAL_AIR_WAYBILL'
     };
     try {
-      const res = await checkMarketplace(data)?.(values);
+      const downloadFunc = checkMarketplace(data);
+      if (!downloadFunc) {
+        toast.error(`Marketplace ${data.marketplace.code} belum didukung untuk download dokumen`, { richColors: true });
+        return;
+      }
+      
+      const res = await downloadFunc(values);
       if (res?.ok) {
         const filePath = await downloadFile(res);
         if (filePath) {
@@ -93,12 +100,40 @@ export default function OrderPage() {
           toast.error("File path not valid", { richColors: true });
         }
       } else {
-        const json = await res?.json();
-        //Shopee API Error: {\"error\":\"logistics.shipping_document_should_print_first\",\"message\":\"The package should print first. Detail: these orders: 260321N9H94XJ7 should print\",\"request_id\":\"e3e3e7f34e15b2d401b6e0da57c7a800:010003c503470939:000000a08e9b68b4\"}
-        const test = JSON.parse(
-          String(json.message).substring(json.message.indexOf(": ") + 1),
-        );
-        toast.error(test.message, { richColors: true });
+        const json = await res?.json().catch(() => null);
+        const text = await res?.text().catch(() => null);
+        let message = "Gagal mengunduh dokumen";
+
+        if (json?.error) {
+          message = String(json.error);
+          // If there's a TikTok code, append it for debugging
+          if (json?.code) {
+            message += ` (Code: ${json.code})`;
+          }
+        } else if (json?.message) {
+          const rawMessage = String(json.message);
+          const colonIndex = rawMessage.indexOf(": ");
+          if (colonIndex !== -1) {
+            const afterColon = rawMessage.substring(colonIndex + 2);
+            try {
+              const parsed = JSON.parse(afterColon);
+              message = parsed?.message || rawMessage;
+            } catch {
+              message = rawMessage;
+            }
+          } else {
+            message = rawMessage;
+          }
+        } else if (text) {
+          const trimmed = String(text).trim();
+          if (trimmed !== "") {
+            message = trimmed;
+          }
+        } else if (res) {
+          message = res.statusText || message;
+        }
+
+        toast.error(message, { richColors: true });
       }
     } catch (error) {
       if (error instanceof Error) {
