@@ -83,6 +83,8 @@ export interface ViewOrderDetail {
     | "read"
     | "prepared"
     | "ready_to_ship"
+    | "ready_to_pickup"
+    | "retry_ship"
     | "shipped"
     | "delivered"
     | "cancelled"
