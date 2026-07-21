@@ -279,13 +279,20 @@ export default function FormOrder(_props: BaseForm) {
         const res = await Services.MasterProduct?.index?.(1, 100, sku);
         const json = await res?.json();
         if (res?.ok && json?.success && json?.data) {
-          const matchedProducts = json.data.filter((product: any) => {
+          json.data.forEach((product: any) => {
             const parts = product.barcode.split('|');
-            return parts[2] === sku;
+            // Format barcode: ID|KodeUnik|SKU|Warna|Ukuran|NoGudang
+            if (parts[2] === sku) {
+              const warnaKey = (parts[3] || "").toLowerCase();
+              const ukuranKey = (parts[4] || "").toLowerCase();
+              const key = `${sku.toLowerCase()}-${warnaKey}-${ukuranKey}`;
+              
+              if (!recommendations[key]) {
+                recommendations[key] = [];
+              }
+              recommendations[key].push(product.barcode);
+            }
           });
-          recommendations[sku] = matchedProducts.map((p: any) => p.barcode);
-        } else {
-          recommendations[sku] = [];
         }
       }
       setBarcodeRecommendations(recommendations);
@@ -306,8 +313,21 @@ export default function FormOrder(_props: BaseForm) {
   const handleUseAllRecommendations = () => {
     const newBarcodes: Record<string, string> = {};
     expandedItems.forEach((item, index) => {
-      const indexInGroup = expandedItems.slice(0, index).filter((i) => i.sku === item.sku).length;
-      const recs = barcodeRecommendations[item.sku] || [];
+      const itemSku = (item.sku || "").toLowerCase();
+      const itemWarna = (item.warna || "").toLowerCase();
+      const itemUkuran = (item.ukuran || "").toLowerCase();
+      const recKey = `${itemSku}-${itemWarna}-${itemUkuran}`;
+
+      const indexInGroup = expandedItems
+        .slice(0, index)
+        .filter(
+          (i) =>
+            (i.sku || "").toLowerCase() === itemSku &&
+            (i.warna || "").toLowerCase() === itemWarna &&
+            (i.ukuran || "").toLowerCase() === itemUkuran
+        ).length;
+
+      const recs = barcodeRecommendations[recKey] || [];
       const recommended = recs[indexInGroup] || "";
       const key = `${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`;
       if (recommended) {
@@ -1211,8 +1231,21 @@ export default function FormOrder(_props: BaseForm) {
                   </thead>
                   <tbody className="divide-y">
                     {expandedItems.map((item, index) => {
-                      const indexInGroup = expandedItems.slice(0, index).filter((i) => i.sku === item.sku).length;
-                      const recs = barcodeRecommendations[item.sku] || [];
+                      const itemSku = (item.sku || "").toLowerCase();
+                      const itemWarna = (item.warna || "").toLowerCase();
+                      const itemUkuran = (item.ukuran || "").toLowerCase();
+                      const recKey = `${itemSku}-${itemWarna}-${itemUkuran}`;
+
+                      const indexInGroup = expandedItems
+                        .slice(0, index)
+                        .filter(
+                          (i) =>
+                            (i.sku || "").toLowerCase() === itemSku &&
+                            (i.warna || "").toLowerCase() === itemWarna &&
+                            (i.ukuran || "").toLowerCase() === itemUkuran
+                        ).length;
+
+                      const recs = barcodeRecommendations[recKey] || [];
                       const recommended = recs[indexInGroup] || "";
                       const key = `${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`;
                       const scannedValue = scannedBarcodes[key] || "";
