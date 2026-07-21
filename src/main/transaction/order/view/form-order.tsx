@@ -49,6 +49,7 @@ import {
   PackageX,
 } from "lucide-react";
 
+// Gabungkan validasi skema: address_id dan pickup_time_id dibuat opsional agar fleksibel di kedua kondisi status
 const schema = z.object({
   address_id: z.string().optional(),
   pickup_time_id: z.string().optional(),
@@ -141,6 +142,7 @@ export default function FormOrder(_props: BaseForm) {
   const [items, setItems] = useState<OrderItem[]>([]);
   const [shippingParameter, setShippingParameter] = useState<AddressList[]>();
   const [pickupTime, setPickupTime] = useState<TimeSlot[]>();
+  const [tiktokPackageId, setTiktokPackageId] = useState<string>();
   const [totalAmount, setTotalAmount] = useState<number | undefined>(
     location.state?.total_amount,
   );
@@ -148,7 +150,7 @@ export default function FormOrder(_props: BaseForm) {
 
   const [disabled, setDisabled] = useState<boolean>(true);
 
-  // States for barcode pickup
+  // States untuk barcode pickup (Fitur Kode Kedua)
   const [barcodeRecommendations, setBarcodeRecommendations] = useState<Record<string, string[]>>({});
   const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(false);
   const [scannedBarcodes, setScannedBarcodes] = useState<Record<string, string>>({});
@@ -162,6 +164,7 @@ export default function FormOrder(_props: BaseForm) {
     name: "address_id",
   });
 
+  // Fungsi Fetch Produk & Barcode untuk Fitur Pickup
   const fetchProductsForSkus = async (skus: string[]) => {
     setLoadingRecommendations(true);
     try {
@@ -170,7 +173,6 @@ export default function FormOrder(_props: BaseForm) {
         const res = await Services.MasterProduct?.index?.(1, 100, sku);
         const json = await res?.json();
         if (res?.ok && json?.success && json?.data) {
-          // Filter matching SKU exactly since search uses LIKE and might return partial matches
           const matchedProducts = json.data.filter((product: any) => {
             const parts = product.barcode.split('|');
             return parts[2] === sku;
@@ -219,6 +221,7 @@ export default function FormOrder(_props: BaseForm) {
     return Object.entries(summary).map(([sku, quantity]) => ({ sku, quantity }));
   };
 
+  // Pemicu Fetch Barcode jika status ready_to_pickup
   React.useEffect(() => {
     if (items.length > 0 && data?.status === "ready_to_pickup") {
       const uniqueSkus = Array.from(new Set(items.map((item) => item.sku)));
@@ -226,6 +229,7 @@ export default function FormOrder(_props: BaseForm) {
     }
   }, [items, data?.status]);
 
+  // Main Effect: Fetch Data Order & Parameter Pengiriman Marketplace
   React.useEffect(() => {
     const getShopeeShippingParameter = async (orderSn: string) => {
       const res =
@@ -255,6 +259,78 @@ export default function FormOrder(_props: BaseForm) {
       }
     };
 
+    const getTiktokShippingParameter = async (orderSn: string) => {
+      try {
+        const orderResponse = await Services.TransactionTiktokOrder?.getOrderDetail?.(
+          orderSn,
+        );
+        const orderJson = await orderResponse?.json();
+
+        if (!orderResponse?.ok || !orderJson?.data) {
+          throw new Error(
+            orderJson?.message || "Gagal mengambil detail order TikTok",
+          );
+        }
+
+        const packageId =
+          orderJson.data.orders?.[0]?.packages?.[0]?.id ??
+          orderJson.data.orders?.[0]?.line_items?.[0]?.package_id;
+        if (!packageId) {
+          throw new Error("Tidak dapat menemukan TikTok package ID untuk order ini");
+        }
+
+        setTiktokPackageId(packageId);
+
+        const slotResponse =
+          await Services.TransactionTiktokOrder?.getPackageHandoverTimeSlots?.(
+            packageId,
+          );
+        const slotJson = await slotResponse?.json();
+
+        if (!slotResponse?.ok || !slotJson?.data) {
+          throw new Error(
+            slotJson?.message || "Gagal mengambil timeslot pengambilan TikTok",
+          );
+        }
+
+        const rawSlots = slotJson.data.pickup_slots ?? [];
+        const slots = rawSlots
+          .map((slot: any) => {
+            const available =
+              Boolean(slot.available ?? slot.avaliable ?? false);
+            const startTime = Number(slot.start_time ?? 0);
+            const endTime = Number(slot.end_time ?? 0);
+            return {
+              ...slot,
+              pickup_time_id: `${startTime}-${endTime}`,
+              start_time: startTime,
+              end_time: endTime,
+              available,
+              flags: [available ? "recommended" : "unavailable"],
+              time_text:
+                startTime && endTime
+                  ? `${formatDateTime(new Date(startTime * 1000))} - ${formatDateTime(
+                    new Date(endTime * 1000),
+                  )}`
+                  : "",
+            } as TimeSlot;
+          })
+          .filter((slot: TimeSlot) => slot.available);
+
+        if (slots.length === 0) {
+          throw new Error("Tidak ada timeslot pengambilan TikTok yang tersedia");
+        }
+
+        setPickupTime(slots);
+        setDisabled(false);
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message, { richColors: true });
+        }
+        setDisabled(true);
+      }
+    };
+
     const fetchOrderItems = async (orderId: string) => {
       try {
         const res = await Services.TransactionOrder?.getOrderItems?.(orderId);
@@ -279,12 +355,15 @@ export default function FormOrder(_props: BaseForm) {
             );
             setTotalShipping(json.data.total_shipping);
             fetchOrderItems(id);
-            if (json.data.status == "ready_to_ship") {
+
+            // Jika status ready_to_ship, load parameter kurir
+            if (json.data.status === "ready_to_ship") {
               switch (json.data.marketplace.code) {
                 case "shopee":
                   getShopeeShippingParameter(json.data.order_sn);
                   break;
                 case "tiktok":
+                  getTiktokShippingParameter(json.data.order_sn);
                   break;
                 case "lazada":
                   break;
@@ -311,7 +390,7 @@ export default function FormOrder(_props: BaseForm) {
   React.useEffect(() => {
     if (addressId) {
       setPickupTime(
-        shippingParameter?.find((item) => String(item.address_id) == addressId)
+        shippingParameter?.find((item) => String(item.address_id) === addressId)
           ?.time_slot_list,
       );
     }
@@ -323,29 +402,59 @@ export default function FormOrder(_props: BaseForm) {
       String(
         shippingParameter?.find((item) =>
           item.address_flag.includes("default_address"),
-        )?.address_id,
+        )?.address_id || "",
       ),
     );
   }, [shippingParameter]);
 
   React.useEffect(() => {
-    form.setValue(
-      "pickup_time_id",
-      String(
-        pickupTime?.find((item) => item.flags.includes("recommended"))
-          ?.pickup_time_id,
-      ),
-    );
+    const defaultSlot =
+      pickupTime?.find((item) => item.flags.includes("recommended")) ??
+      pickupTime?.[0];
+
+    if (defaultSlot) {
+      form.setValue("pickup_time_id", String(defaultSlot.pickup_time_id));
+    }
   }, [pickupTime]);
 
-  const submitShipping = async (values: ShopeeShipOrder) => {
+  // Fungsi pengiriman gabungan untuk Shopee & TikTok
+  const submitShipping = async (
+    values: ShopeeShipOrder | {
+      order_sn: string;
+      pickup_time_id: string;
+      address_id?: string;
+    },
+  ) => {
     switch (data?.marketplace.code) {
       case "shopee":
-        return await Services.TransactionShopeeOrder.shipOrderShopee(values);
-      case "tiktok":
-      //TODO:
-      case "lazada":
+        return await Services.TransactionShopeeOrder.shipOrderShopee(
+          values as ShopeeShipOrder,
+        );
+      case "tiktok": {
+        if (!tiktokPackageId) {
+          throw new Error("Tidak ada package TikTok yang tersedia untuk dikirim");
+        }
 
+        const selectedSlot = pickupTime?.find(
+          (item) => item.pickup_time_id === values.pickup_time_id,
+        );
+
+        if (!selectedSlot?.start_time || !selectedSlot?.end_time) {
+          throw new Error("Pilih waktu pengambilan TikTok terlebih dahulu");
+        }
+
+        return await Services.TransactionTiktokOrder.shipPackage(
+          tiktokPackageId,
+          {
+            handover_method: "PICKUP",
+            pickup_slot: {
+              start_time: selectedSlot.start_time,
+              end_time: selectedSlot.end_time,
+            },
+          },
+        );
+      }
+      case "lazada":
       default:
         return;
     }
@@ -354,6 +463,7 @@ export default function FormOrder(_props: BaseForm) {
   const submitForm = async (values: any) => {
     setLoading(true);
     try {
+      // Kondisi 1: Jika status order adalah ready_to_pickup (Proses Scan Barang)
       if (data?.status === "ready_to_pickup") {
         if (!data?.id) {
           toast.error("ID Order tidak ditemukan");
@@ -416,18 +526,25 @@ export default function FormOrder(_props: BaseForm) {
             richColors: true,
           });
         }
-      } else {
+      }
+      // Kondisi 2: Jika status order ready_to_ship (Proses Atur Pengiriman Marketplace)
+      else {
         if (data?.order_sn) {
           const res = await submitShipping({
             order_sn: data.order_sn,
             ...values,
           });
-          const json = await res?.json();
-          if (res?.ok) {
+
+          if (!res) {
+            throw new Error("Gagal memproses pengiriman");
+          }
+
+          const json = await res.json();
+          if (res.ok) {
             toast.message(json.message);
             navigate(-1);
           } else {
-            toast.error(String(json.message.replaceAll("_", " ")), {
+            toast.error(String(json.message?.replaceAll("_", " ") ?? ""), {
               richColors: true,
             });
           }
@@ -448,6 +565,7 @@ export default function FormOrder(_props: BaseForm) {
         onSubmit={form.handleSubmit(submitForm, console.log)}
         className={`flex flex-col flex-1 h-0 select-none gap-3 bg-muted/20 ${loading ? "cursor-progress" : undefined}`}
       >
+        {/* Detail Ringkasan Atas */}
         <div className="px-6 md:px-8 py-5 bg-card border-b">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -474,9 +592,7 @@ export default function FormOrder(_props: BaseForm) {
                     variant="ghost"
                     size="icon"
                     className="h-6 w-6 shrink-0"
-                    onClick={() =>
-                      copyText(data.order_sn, "Nomor Seri Pesanan")
-                    }
+                    onClick={() => copyText(data.order_sn, "Nomor Seri Pesanan")}
                   >
                     <Copy className="h-3.5 w-3.5" />
                   </Button>
@@ -506,9 +622,7 @@ export default function FormOrder(_props: BaseForm) {
               {data?.item_count || 0}
             </InfoField>
             <InfoField icon={Wallet} label="Total Harga">
-              {formatCurrency(
-                totalAmount ?? data?.total_amount ?? data?.total_price,
-              )}
+              {formatCurrency(totalAmount ?? data?.total_amount ?? data?.total_price)}
             </InfoField>
             <InfoField icon={Truck} label="Biaya Kirim">
               {formatCurrency(totalShipping ?? data?.total_shipping)}
@@ -519,16 +633,13 @@ export default function FormOrder(_props: BaseForm) {
             <InfoField icon={Phone} label="No. Telepon">
               {data?.customer_phone || "-"}
             </InfoField>
-            <InfoField
-              icon={MapPin}
-              label="Alamat Pengiriman"
-              className="col-span-2 md:col-span-4"
-            >
+            <InfoField icon={MapPin} label="Alamat Pengiriman" className="col-span-2 md:col-span-4">
               {data?.customer_address || "-"}
             </InfoField>
           </div>
         </div>
 
+        {/* List Detail Item */}
         <div className="px-6 md:px-8 py-4 flex-1 overflow-y-auto">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-base">Detail Item</h3>
@@ -548,65 +659,31 @@ export default function FormOrder(_props: BaseForm) {
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2 mb-3 pb-3 border-b">
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold wrap-break-word">
-                        {item.item_name}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        SKU: {item.sku}
-                      </p>
+                      <p className="text-sm font-semibold wrap-break-word">{item.item_name}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">SKU: {item.sku}</p>
                     </div>
                     <div className="flex gap-1.5 shrink-0">
-                      {item.color && (
-                        <Badge
-                          variant="outline"
-                          className="text-sm px-3 py-1.5"
-                        >
-                          {item.color}
-                        </Badge>
-                      )}
-                      {item.size && (
-                        <Badge
-                          variant="outline"
-                          className="text-sm px-3 py-1.5"
-                        >
-                          {item.size}
-                        </Badge>
-                      )}
+                      {item.color && <Badge variant="outline" className="text-sm px-3 py-1.5">{item.color}</Badge>}
+                      {item.size && <Badge variant="outline" className="text-sm px-3 py-1.5">{item.size}</Badge>}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                     <div>
-                      <p className="text-muted-foreground text-[11px] uppercase tracking-wide">
-                        Harga
-                      </p>
-                      <p className="font-medium">
-                        {formatCurrency(item.price)}
-                      </p>
+                      <p className="text-muted-foreground text-[11px] uppercase tracking-wide">Harga</p>
+                      <p className="font-medium">{formatCurrency(item.price)}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground text-[11px] uppercase tracking-wide">
-                        Diskon
-                      </p>
-                      <p className="font-medium text-destructive">
-                        {formatCurrency(item.price - item.discounted_price)}
-                      </p>
+                      <p className="text-muted-foreground text-[11px] uppercase tracking-wide">Diskon</p>
+                      <p className="font-medium text-destructive">{formatCurrency(item.price - item.discounted_price)}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground text-[11px] uppercase tracking-wide">
-                        Harga Final
-                      </p>
-                      <p className="font-semibold">
-                        {formatCurrency(item.discounted_price)}
-                      </p>
+                      <p className="text-muted-foreground text-[11px] uppercase tracking-wide">Harga Final</p>
+                      <p className="font-semibold">{formatCurrency(item.discounted_price)}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground text-[11px] uppercase tracking-wide">
-                        Jumlah
-                      </p>
-                      <p className="font-medium">
-                        {item.total_quantity || item.quantity_purchased || "-"}
-                      </p>
+                      <p className="text-muted-foreground text-[11px] uppercase tracking-wide">Jumlah</p>
+                      <p className="font-medium">{item.total_quantity || item.quantity_purchased || "-"}</p>
                     </div>
                   </div>
                 </div>
@@ -620,235 +697,178 @@ export default function FormOrder(_props: BaseForm) {
           )}
         </div>
 
-        {data?.marketplace.code === "shopee" &&
-          data.status === "ready_to_ship" && (
-            <div className="px-6 md:px-8 py-5 bg-card border-y">
-              <div className="flex items-center gap-2 mb-4">
-                <Truck className="h-4 w-4 text-muted-foreground" />
-                <h3 className="font-bold text-base">Pengiriman Shopee</h3>
-              </div>
-              <div className="space-y-4">
-                {!disabled ? (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="address_id"
-                      render={({ field, fieldState }) => (
-                        <FormItem className="py-2 flex-1">
-                          <FormLabel className="flex items-center gap-1.5">
-                            <MapPinned className="h-3.5 w-3.5" />
-                            Alamat Pengambilan
-                          </FormLabel>
-                          <FormControl>
-                            <Select
-                              value={String(field.value)}
-                              onValueChange={field.onChange}
-                              name={field.name}
-                              disabled={disabled}
-                            >
-                              <SelectTrigger
-                                aria-invalid={fieldState.invalid}
-                                className="w-full"
-                              >
-                                <div className="flex w-full text-left">
-                                  {(() => {
-                                    const value = shippingParameter?.find(
-                                      (item) =>
-                                        String(item.address_id) == field.value,
-                                    );
-                                    return value ? (
-                                      <div className="flex gap-2">
-                                        <p>
-                                          {value.address}, {value.state},{" "}
-                                          {value.city}, {value.district},{" "}
-                                          {value.town}, {value.zipcode}
-                                        </p>
-                                      </div>
-                                    ) : (
-                                      <p className="text-muted-foreground">
-                                        Pilih alamat
-                                      </p>
-                                    );
-                                  })()}
-                                </div>
-                              </SelectTrigger>
-                              <SelectContent>
-                                {shippingParameter &&
-                                  shippingParameter.map((item, index) => {
-                                    return (
-                                      <SelectItem
-                                        key={index}
-                                        value={String(item.address_id)}
-                                        className="[&>span]:flex-1"
-                                      >
-                                        <div className="flex-1 flex gap-3">
-                                          <div className="flex flex-col flex-1 gap-0.5">
-                                            <div>
-                                              <span className="text-muted-foreground">
-                                                Alamat:{" "}
-                                              </span>
-                                              {item.address != ""
-                                                ? item.address
-                                                : "-"}
-                                            </div>
-                                            <div>
-                                              <span className="text-muted-foreground">
-                                                Provinsi:{" "}
-                                              </span>
-                                              {item.state != ""
-                                                ? item.state
-                                                : "-"}
-                                            </div>
-                                            <div>
-                                              <span className="text-muted-foreground">
-                                                Kota:{" "}
-                                              </span>
-                                              {item.city != ""
-                                                ? item.city
-                                                : "-"}
-                                            </div>
-                                            <div>
-                                              <span className="text-muted-foreground">
-                                                Kecamatan:{" "}
-                                              </span>
-                                              {item.district != ""
-                                                ? item.district
-                                                : "-"}
-                                            </div>
-                                            <div>
-                                              <span className="text-muted-foreground">
-                                                Kelurahan:{" "}
-                                              </span>
-                                              {item.town != ""
-                                                ? item.town
-                                                : "-"}
-                                            </div>
-                                            <div>
-                                              <span className="text-muted-foreground">
-                                                Kode Pos:{" "}
-                                              </span>
-                                              {item.zipcode != ""
-                                                ? item.zipcode
-                                                : "-"}
-                                            </div>
-                                          </div>
-                                          <div className="flex flex-0 flex-col gap-1.5">
-                                            {item.address_flag.map(
-                                              (item, index) => (
-                                                <Badge
-                                                  variant="success"
-                                                  key={index}
-                                                >
-                                                  {item.replaceAll("_", " ")}
-                                                </Badge>
-                                              ),
-                                            )}
-                                          </div>
-                                        </div>
-                                      </SelectItem>
-                                    );
-                                  })}
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>
-                            Alamat pengambilan barang
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="pickup_time_id"
-                      render={({ field, fieldState }) => (
-                        <FormItem className="py-2">
-                          <FormLabel className="flex items-center gap-1.5">
-                            <Clock className="h-3.5 w-3.5" />
-                            Waktu Pengambilan
-                          </FormLabel>
-                          <FormControl>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                              name={field.name}
-                              disabled={!pickupTime || disabled}
-                            >
-                              <SelectTrigger
-                                aria-invalid={fieldState.invalid}
-                                className="w-full"
-                              >
-                                <div className="flex w-full text-left">
-                                  {(() => {
-                                    const value = pickupTime?.find(
-                                      (item) =>
-                                        item.pickup_time_id == field.value,
-                                    );
-                                    return value ? (
-                                      <div className="flex gap-2">
-                                        <p>{value.time_text}</p>
-                                      </div>
-                                    ) : (
-                                      <p className="text-muted-foreground">
-                                        Waktu pengambilan
-                                      </p>
-                                    );
-                                  })()}
-                                </div>
-                              </SelectTrigger>
-                              <SelectContent>
-                                {pickupTime &&
-                                  pickupTime.map((item, index) => {
-                                    return (
-                                      <SelectItem
-                                        key={index}
-                                        value={item.pickup_time_id}
-                                        className="[&>span]:flex-1"
-                                      >
-                                        <div className="flex-1 flex">
-                                          <div className="flex flex-col flex-1">
-                                            <div>
-                                              {item.time_text != ""
-                                                ? item.time_text
-                                                : "-"}
-                                            </div>
-                                          </div>
-                                          <div className="flex flex-0 flex-col gap-1.5">
-                                            {item.flags.map((item, index) => (
-                                              <Badge
-                                                variant="success"
-                                                key={index}
-                                              >
-                                                {item.replaceAll("_", " ")}
-                                              </Badge>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      </SelectItem>
-                                    );
-                                  })}
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>
-                            Waktu pengambilan barang
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                ) : (
-                  <div className="flex items-center gap-2 rounded-md border border-dashed p-4 text-muted-foreground">
-                    <PackageX className="h-4 w-4 shrink-0" />
-                    <p className="text-sm">
-                      Tidak dapat memproses pengiriman untuk order ini
-                    </p>
-                  </div>
-                )}
-              </div>
+        {/* FORM 1: Pengiriman Shopee (Hanya jika status ready_to_ship & marketplace Shopee) */}
+        {data?.marketplace.code === "shopee" && data.status === "ready_to_ship" && (
+          <div className="px-6 md:px-8 py-5 bg-card border-y">
+            <div className="flex items-center gap-2 mb-4">
+              <Truck className="h-4 w-4 text-muted-foreground" />
+              <h3 className="font-bold text-base">Pengiriman Shopee</h3>
             </div>
-          )}
+            <div className="space-y-4">
+              {!disabled ? (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="address_id"
+                    render={({ field, fieldState }) => (
+                      <FormItem className="py-2 flex-1">
+                        <FormLabel className="flex items-center gap-1.5">
+                          <MapPinned className="h-3.5 w-3.5" /> Alamat Pengambilan
+                        </FormLabel>
+                        <FormControl>
+                          <Select value={String(field.value)} onValueChange={field.onChange} name={field.name} disabled={disabled}>
+                            <SelectTrigger aria-invalid={fieldState.invalid} className="w-full">
+                              <div className="flex w-full text-left">
+                                {(() => {
+                                  const value = shippingParameter?.find((item) => String(item.address_id) === field.value);
+                                  return value ? (
+                                    <div className="flex gap-2">
+                                      <p>{value.address}, {value.state}, {value.city}, {value.district}, {value.town}, {value.zipcode}</p>
+                                    </div>
+                                  ) : (
+                                    <p className="text-muted-foreground">Pilih alamat</p>
+                                  );
+                                })()}
+                              </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {shippingParameter?.map((item, index) => (
+                                <SelectItem key={index} value={String(item.address_id)} className="[&>span]:flex-1">
+                                  <div className="flex-1 flex gap-3">
+                                    <div className="flex flex-col flex-1 gap-0.5">
+                                      <div><span className="text-muted-foreground">Alamat: </span>{item.address || "-"}</div>
+                                      <div><span className="text-muted-foreground">Provinsi: </span>{item.state || "-"}</div>
+                                      <div><span className="text-muted-foreground">Kota: </span>{item.city || "-"}</div>
+                                    </div>
+                                    <div className="flex flex-0 flex-col gap-1.5">
+                                      {item.address_flag.map((flag, idx) => (
+                                        <Badge variant="success" key={idx}>{flag.replaceAll("_", " ")}</Badge>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormDescription>Alamat pengambilan barang</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="pickup_time_id"
+                    render={({ field, fieldState }) => (
+                      <FormItem className="py-2">
+                        <FormLabel className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5" /> Waktu Pengambilan
+                        </FormLabel>
+                        <FormControl>
+                          <Select value={field.value} onValueChange={field.onChange} name={field.name} disabled={!pickupTime || disabled}>
+                            <SelectTrigger aria-invalid={fieldState.invalid} className="w-full">
+                              <div className="flex w-full text-left">
+                                {(() => {
+                                  const value = pickupTime?.find((item) => item.pickup_time_id === field.value);
+                                  return value ? <div className="flex gap-2"><p>{value.time_text}</p></div> : <p className="text-muted-foreground">Waktu pengambilan</p>;
+                                })()}
+                              </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {pickupTime?.map((item, index) => (
+                                <SelectItem key={index} value={item.pickup_time_id} className="[&>span]:flex-1">
+                                  <div className="flex-1 flex">
+                                    <div className="flex flex-col flex-1">
+                                      <div>{item.time_text || "-"}</div>
+                                    </div>
+                                    <div className="flex flex-0 flex-col gap-1.5">
+                                      {item.flags.map((flag, idx) => (
+                                        <Badge variant="success" key={idx}>{flag.replaceAll("_", " ")}</Badge>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormDescription>Waktu pengambilan barang</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              ) : (
+                <div className="flex items-center gap-2 rounded-md border border-dashed p-4 text-muted-foreground">
+                  <PackageX className="h-4 w-4 shrink-0" />
+                  <p className="text-sm">Tidak dapat memproses pengiriman untuk order ini</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* FORM 2: Pengiriman TikTok (Hanya jika status ready_to_ship & marketplace TikTok) */}
+        {data?.marketplace.code === "tiktok" && data.status === "ready_to_ship" && (
+          <div className="px-6 md:px-8 py-5 bg-card border-y">
+            <div className="flex items-center gap-2 mb-4">
+              <Truck className="h-4 w-4 text-muted-foreground" />
+              <h3 className="font-bold text-base">Pengiriman TikTok</h3>
+            </div>
+            <div className="space-y-4">
+              {!disabled && pickupTime?.length ? (
+                <FormField
+                  control={form.control}
+                  name="pickup_time_id"
+                  render={({ field, fieldState }) => (
+                    <FormItem className="py-2">
+                      <FormLabel className="flex items-center gap-1.5">
+                        <Clock className="h-3.5 w-3.5" /> Waktu Pengambilan
+                      </FormLabel>
+                      <FormControl>
+                        <Select value={field.value} onValueChange={field.onChange} name={field.name} disabled={!pickupTime || disabled}>
+                          <SelectTrigger aria-invalid={fieldState.invalid} className="w-full">
+                            <div className="flex w-full text-left">
+                              {(() => {
+                                const value = pickupTime?.find((item) => item.pickup_time_id === field.value);
+                                return value ? <div className="flex gap-2"><p>{value.time_text}</p></div> : <p className="text-muted-foreground">Waktu pengambilan</p>;
+                              })()}
+                            </div>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {pickupTime?.map((item, index) => (
+                              <SelectItem key={index} value={item.pickup_time_id} className="[&>span]:flex-1">
+                                <div className="flex-1 flex">
+                                  <div className="flex flex-col flex-1">
+                                    <div>{item.time_text || "-"}</div>
+                                  </div>
+                                  <div className="flex flex-0 flex-col gap-1.5">
+                                    {item.flags.map((flag, idx) => (
+                                      <Badge variant="success" key={idx}>{flag.replaceAll("_", " ")}</Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormDescription>Pilih jadwal pengambilan untuk TikTok Shipping.</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                <div className="flex items-center gap-2 rounded-md border border-dashed p-4 text-muted-foreground">
+                  <PackageX className="h-4 w-4 shrink-0" />
+                  <p className="text-sm">Tidak dapat memproses pengiriman TikTok untuk order ini</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* FORM 3: Tabel Pickup & Scan Barcode (Hanya jika status ready_to_pickup) */}
         {data?.status === "ready_to_pickup" && (
           <div className="px-6 md:px-8 py-5 bg-card border-y space-y-6">
             <div>
@@ -958,8 +978,10 @@ export default function FormOrder(_props: BaseForm) {
           </div>
         )}
 
+        {/* Bagian Tombol Aksi Bawah */}
         <div className="sticky bottom-0 border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-6 md:px-8 py-3">
-          {(disabled && data?.status !== "ready_to_pickup") || (data?.status !== "ready_to_ship" && data?.status !== "ready_to_pickup") ? (
+          {/* Tombol akan berubah menjadi "Tutup" hanya jika order dinilai tidak bisa diproses di kedua status */}
+          {((disabled && data?.status !== "ready_to_pickup") || (data?.status !== "ready_to_ship" && data?.status !== "ready_to_pickup")) ? (
             <Button
               type="button"
               onClick={(e) => {
