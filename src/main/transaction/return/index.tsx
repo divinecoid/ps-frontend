@@ -201,7 +201,7 @@ export default function ReturnPage() {
                   Terima Retur
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+              <DialogContent className="sm:max-w-4xl max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Penerimaan Barang Retur Baru</DialogTitle>
                 </DialogHeader>
