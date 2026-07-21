@@ -15,6 +15,15 @@ export const index: BaseApiCallIndexProps = async (
   return await GET(ENDPOINT.RETURN_RECEIPT, { page, per_page, search, sort });
 };
 
+export const master: BaseApiCallIndexProps = async (
+  page,
+  per_page,
+  search,
+  sort,
+) => {
+  return await GET(ENDPOINT.RETURN_RECEIPT, { page, per_page, search, sort });
+};
+
 export const show: BaseApiCallViewProps = async (id) => {
   return await GET(`${ENDPOINT.RETURN_RECEIPT}/${id}`);
 };
