@@ -105,7 +105,7 @@ function parseSku(
   const sku = match[4];
   const extra = match[5] ?? null;
 
-  const warna = warnaString ? warnaString.split("|") : [];
+  const warna = warnaString ? warnaString.split(/[|=]/) : [];
   const result: Omit<ParsedSkuItem, "sourceOrderItemId" | "sourceItemIndex" | "parsedIndex">[] = [];
 
   for (let i = 0; i < jumlah; i++) {
@@ -352,7 +352,7 @@ export default function FormOrder(_props: BaseForm) {
       ) {
         setDisabled(false);
         if (json.data.response.info_needed.dropoff != undefined) {
-          submitShipping({ order_sn: orderSn, dropoff: json.data.response.dropoff })
+          submitShipping({ order_sn: orderSn, dropoff: json.data.response.dropoff, marketplace_code: "shopee" })
         } else {
           setShippingParameter(json.data.response.pickup.address_list);
         }
@@ -599,9 +599,11 @@ export default function FormOrder(_props: BaseForm) {
         pickup_time_id?: string;
         address_id?: string;
         dropoff?: object;
+        marketplace_code?: string;
       },
   ) => {
-    switch (data?.marketplace.code) {
+    const marketplaceCode = values.marketplace_code || data?.marketplace?.code;
+    switch (marketplaceCode) {
       case "shopee":
         if (values.dropoff != undefined) {
           return await Services.TransactionShopeeOrder.shipOrderShopee(
@@ -1201,22 +1203,28 @@ export default function FormOrder(_props: BaseForm) {
                 <table className="w-full text-sm text-left animate-in fade-in duration-300">
                   <thead className="bg-muted text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
                     <tr>
+                      <th className="px-4 py-3 w-[60px] text-center">No</th>
                       <th className="px-4 py-3 w-1/4">SKU</th>
                       <th className="px-4 py-3 w-1/2">Rekomendasi Barcode (Gudang Kecil)</th>
                       <th className="px-4 py-3 w-1/4">Barcode Scan/Input</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {items.map((item, index) => {
-                      const indexInGroup = items.slice(0, index).filter((i) => i.sku === item.sku).length;
+                    {expandedItems.map((item, index) => {
+                      const indexInGroup = expandedItems.slice(0, index).filter((i) => i.sku === item.sku).length;
                       const recs = barcodeRecommendations[item.sku] || [];
                       const recommended = recs[indexInGroup] || "";
-                      const key = `${item.id}-${item.item_index}`;
+                      const key = `${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`;
                       const scannedValue = scannedBarcodes[key] || "";
 
                       return (
                         <tr key={key} className="hover:bg-muted/30 align-middle">
-                          <td className="px-4 py-3 font-medium">{item.sku}</td>
+                          <td className="px-4 py-3 text-center text-muted-foreground font-medium">{index + 1}</td>
+                          <td className="px-4 py-3 font-medium">
+                            {item.sku}
+                            {item.logo && <span className="text-[10px] text-muted-foreground ml-1.5">({item.logo})</span>}
+                            {item.warna && <span className="text-[10px] text-muted-foreground ml-1.5">({item.warna})</span>}
+                          </td>
                           <td className="px-4 py-3">
                             {loadingRecommendations ? (
                               <span className="text-muted-foreground text-xs italic animate-pulse">Memuat rekomendasi...</span>
