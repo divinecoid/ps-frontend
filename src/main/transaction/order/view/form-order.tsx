@@ -603,7 +603,7 @@ export default function FormOrder(_props: BaseForm) {
   ) => {
     switch (data?.marketplace.code) {
       case "shopee":
-        if (values.pickup_time_id == undefined && values.address_id == undefined && values.dropoff != undefined) {
+        if (values.dropoff != undefined) {
           return await Services.TransactionShopeeOrder.shipOrderShopee(
             {
               order_sn: values.order_sn,
