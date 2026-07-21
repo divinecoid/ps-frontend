@@ -250,6 +250,12 @@ export const Menu = {
       icon: ArrowUpRight,
       role: ["preparist", "admin"],
     },
+    {
+      name: "Retur Barang",
+      url: "/transaction/return",
+      icon: Repeat2,
+      role: ["admin"],
+    },
   ],
   navMaster: [
     {
