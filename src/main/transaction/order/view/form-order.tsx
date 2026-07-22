@@ -236,32 +236,42 @@ export default function FormOrder(_props: BaseForm) {
   /**
    * expandedItems: hasil parse SKU dari setiap OrderItem.
    * Setiap OrderItem bisa menghasilkan beberapa ParsedSkuItem (paket / extra).
-   * Jika qty > 1, seluruh hasil parse dikalikan qty.
+   * Backend getOrderItems sudah mengembalikan data yang diekspansi berdasarkan kuantitas,
+   * sehingga kita tidak perlu mengalikannya lagi dengan qty di sini.
    */
   const expandedItems = React.useMemo<ParsedSkuItem[]>(() => {
     const result: ParsedSkuItem[] = [];
     items.forEach((item) => {
-      const qty = item.total_quantity || item.quantity_purchased || 1;
       const parsed = parseSku(
         item.sku,
         item.color ?? "",
         item.size ?? null,
       );
-      for (let q = 0; q < qty; q++) {
-        parsed.forEach((p) => {
-          result.push({
-            ...p,
-            sourceOrderItemId: String(item.id),
-            sourceItemIndex: item.item_index,
-            parsedIndex: result.length,
-          });
+      parsed.forEach((p) => {
+        result.push({
+          ...p,
+          sourceOrderItemId: String(item.id),
+          sourceItemIndex: item.item_index,
+          parsedIndex: result.length,
         });
-      }
+      });
     });
     return result;
   }, [items]);
 
+  const uniqueOrderItems = React.useMemo<OrderItem[]>(() => {
+    const seen = new Set<string>();
+    return items.filter((item) => {
+      if (seen.has(item.id)) {
+        return false;
+      }
+      seen.add(item.id);
+      return true;
+    });
+  }, [items]);
+
   const form = useForm({
+
     resolver: zodResolver(schema),
   });
 
@@ -888,16 +898,16 @@ export default function FormOrder(_props: BaseForm) {
         <div className="px-6 md:px-8 py-4 flex-1 overflow-y-auto">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-base">Detail Item</h3>
-            {items.length > 0 && (
+            {uniqueOrderItems.length > 0 && (
               <span className="text-xs text-muted-foreground">
-                {items.length} item{items.length > 1 ? "s" : ""}
+                {uniqueOrderItems.length} item{uniqueOrderItems.length > 1 ? "s" : ""}
               </span>
             )}
           </div>
 
-          {items.length > 0 ? (
+          {uniqueOrderItems.length > 0 ? (
             <div className="space-y-3">
-              {items.map((item, index) => (
+              {uniqueOrderItems.map((item, index) => (
                 <div
                   key={`${item.id}-${index}`}
                   className="rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
@@ -934,6 +944,7 @@ export default function FormOrder(_props: BaseForm) {
                 </div>
               ))}
             </div>
+
           ) : (
             <div className="flex flex-col items-center justify-center gap-2 py-12 text-muted-foreground">
               <PackageX className="h-8 w-8" />
