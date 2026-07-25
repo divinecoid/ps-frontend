@@ -176,6 +176,7 @@ export interface ShopeeShipOrder {
   address_id?: string;
   pickup_time_id?: string;
   dropoff?: object
+  marketplace_code?: string
 }
 
 export interface ShopeeDocument {

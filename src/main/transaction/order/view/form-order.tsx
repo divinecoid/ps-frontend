@@ -226,7 +226,7 @@ export default function FormOrder(_props: BaseForm) {
   );
   const [totalShipping, setTotalShipping] = useState<number | undefined>();
 
-  const [disabled, setDisabled] = useState<boolean>(true);
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   // States untuk barcode pickup (Fitur Kode Kedua)
   const [barcodeRecommendations, setBarcodeRecommendations] = useState<Record<string, string[]>>({});
@@ -296,7 +296,7 @@ export default function FormOrder(_props: BaseForm) {
               const warnaKey = (parts[3] || "").toLowerCase();
               const ukuranKey = (parts[4] || "").toLowerCase();
               const key = `${sku.toLowerCase()}-${warnaKey}-${ukuranKey}`;
-              
+
               if (!recommendations[key]) {
                 recommendations[key] = [];
               }
@@ -380,7 +380,7 @@ export default function FormOrder(_props: BaseForm) {
         json.data.error == "" &&
         json.data.warning == ""
       ) {
-        setDisabled(false);
+
         if (json.data.response.info_needed.dropoff != undefined) {
           submitShipping({ order_sn: orderSn, dropoff: json.data.response.dropoff, marketplace_code: "shopee" })
         } else {
@@ -396,7 +396,7 @@ export default function FormOrder(_props: BaseForm) {
         if (json.data.error) {
           toast.error(json.data.error, { richColors: true });
         }
-        setDisabled(true);
+
       }
     };
 
@@ -440,7 +440,6 @@ export default function FormOrder(_props: BaseForm) {
           const errMsg = slotJson?.error ?? slotJson?.message ?? "Gagal mengambil timeslot pengambilan";
           // Still allow shipping without a slot (DROP_OFF / no-slot flow)
           setPickupTime([]);
-          setDisabled(false);
           setTiktokShipError(`Timeslot tidak tersedia: ${errMsg}. Pengiriman mungkin tetap bisa diproses tanpa memilih slot.`);
           return;
         }
@@ -473,18 +472,18 @@ export default function FormOrder(_props: BaseForm) {
         if (slots.length === 0) {
           // No pickup slots — could be DROP_OFF handover method; still allow submit
           setPickupTime([]);
-          setDisabled(false);
+
           setTiktokShipError("Tidak ada timeslot pengambilan tersedia. Pengiriman akan diproses tanpa memilih jadwal pickup.");
           return;
         }
 
         setPickupTime(slots);
-        setDisabled(false);
+
       } catch (error) {
         if (error instanceof Error) {
           setTiktokShipError(error.message);
         }
-        setDisabled(true);
+
       }
     };
 
@@ -814,6 +813,10 @@ export default function FormOrder(_props: BaseForm) {
     }
   };
 
+  const setOutbound = () => {
+    toast("Test")
+  }
+
   return (
     <Form {...form}>
       <form
@@ -961,7 +964,7 @@ export default function FormOrder(_props: BaseForm) {
               <h3 className="font-bold text-base">Pengiriman Shopee</h3>
             </div>
             <div className="space-y-4">
-              {!disabled ? (
+              {shippingParameter ? (
                 <>
                   <FormField
                     control={form.control}
@@ -1089,7 +1092,7 @@ export default function FormOrder(_props: BaseForm) {
                 )}
               </div>
               <div className="space-y-4">
-                {disabled ? (
+                {tiktokShipError ? (
                   <div className="flex items-center gap-2 rounded-md border border-dashed p-4 text-muted-foreground">
                     <PackageX className="h-4 w-4 shrink-0" />
                     <p className="text-sm">
@@ -1339,6 +1342,20 @@ export default function FormOrder(_props: BaseForm) {
                 <Download className="h-3.5 w-3.5 mr-1.5" />
                 {downloadingDoc ? "Mengunduh..." : "Cetak Resi"}
               </Button>
+            </>
+          ) : data?.status === "ready_to_pickup" ? (
+            <>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(-1);
+                }}
+              >
+                Batal
+              </Button>
+              <Button type="button" onClick={setOutbound}>Simpan</Button>
             </>
           ) : disabled || data?.status !== "ready_to_ship" ? (
             <Button
