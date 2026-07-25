@@ -61,6 +61,7 @@ export default function OrderPage() {
   const checkMarketplace = (data: Order) => {
     switch (data.marketplace.code) {
       case "shopee":
+        Services.TransactionShopeeOrder.createShippingDocument({order_sn: data.order_sn});
         return Services.TransactionShopeeOrder.downloadShippingDocument;
       case "tiktok":
       case "tiktok_shop":

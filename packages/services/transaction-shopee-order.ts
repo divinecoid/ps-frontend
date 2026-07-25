@@ -11,6 +11,10 @@ export const shipOrderShopee: BaseApiCallCreateProps<ShopeeShipOrder> = async (d
     return await POST(`${ENDPOINT.SHOPEE}/ship-order`, data);
 }
 
+export const createShippingDocument: BaseApiCallCreateProps<ShopeeDocument> = async (data) => {
+    return await POST(`${ENDPOINT.SHOPEE}/create-shipping-document`, data);
+}
+
 export const downloadShippingDocument: BaseApiCallCreateProps<ShopeeDocument> = async (data) => {
     return await POST(`${ENDPOINT.SHOPEE}/download-shipping-document`, data);
 }

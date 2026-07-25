@@ -10,6 +10,11 @@ export const columns: ColumnDef<Order>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: "online_store.store_name",
+    header: "Online Store",
+    enableSorting: true,
+  },
+  {
     accessorKey: "order_sn",
     header: "Nomor order",
     enableSorting: true,
