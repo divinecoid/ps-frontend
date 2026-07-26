@@ -1336,104 +1336,106 @@ export default function FormOrder(_props: BaseForm) {
               </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Hash className="h-4 w-4 text-muted-foreground" />
-                  <h3 className="font-bold text-base">Rekomendasi Barcode & Pickup</h3>
+            {!data.is_outbounded && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Hash className="h-4 w-4 text-muted-foreground" />
+                    <h3 className="font-bold text-base">Rekomendasi Barcode & Pickup</h3>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleUseAllRecommendations}
+                    disabled={loadingRecommendations || items.length === 0}
+                    className="text-xs h-8"
+                  >
+                    Gunakan Semua Rekomendasi
+                  </Button>
                 </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleUseAllRecommendations}
-                  disabled={loadingRecommendations || items.length === 0}
-                  className="text-xs h-8"
-                >
-                  Gunakan Semua Rekomendasi
-                </Button>
+
+                <div className="rounded-lg border overflow-hidden bg-background">
+                  <table className="w-full text-sm text-left animate-in fade-in duration-300">
+                    <thead className="bg-muted text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
+                      <tr>
+                        <th className="px-4 py-3 w-[60px] text-center">No</th>
+                        <th className="px-4 py-3 w-1/4">SKU</th>
+                        <th className="px-4 py-3 w-1/2">Rekomendasi Barcode (Gudang Kecil)</th>
+                        <th className="px-4 py-3 w-1/4">Barcode Scan/Input</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {expandedItems.map((item, index) => {
+                        const itemSku = (item.sku || "").toLowerCase();
+                        const itemWarna = (item.warna || "").toLowerCase();
+                        const itemUkuran = (item.ukuran || "").toLowerCase();
+                        const recKey = `${itemSku}-${itemWarna}-${itemUkuran}`;
+
+                        const indexInGroup = expandedItems
+                          .slice(0, index)
+                          .filter(
+                            (i) =>
+                              (i.sku || "").toLowerCase() === itemSku &&
+                              (i.warna || "").toLowerCase() === itemWarna &&
+                              (i.ukuran || "").toLowerCase() === itemUkuran
+                          ).length;
+
+                        const recs = barcodeRecommendations[recKey] || [];
+                        const recommended = recs[indexInGroup] || "";
+                        const key = `${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`;
+                        const scannedValue = scannedBarcodes[key] || "";
+
+                        return (
+                          <tr key={key} className="hover:bg-muted/30 align-middle">
+                            <td className="px-4 py-3 text-center text-muted-foreground font-medium">{index + 1}</td>
+                            <td className="px-4 py-3 font-medium">
+                              {item.sku}
+                              {item.logo && <span className="text-[10px] text-muted-foreground ml-1.5">({item.logo})</span>}
+                              {item.warna && <span className="text-[10px] text-muted-foreground ml-1.5">({item.warna})</span>}
+                            </td>
+                            <td className="px-4 py-3">
+                              {loadingRecommendations ? (
+                                <span className="text-muted-foreground text-xs italic animate-pulse">Memuat rekomendasi...</span>
+                              ) : recommended ? (
+                                <div className="flex items-center gap-2">
+                                  <code className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs text-primary">{recommended}</code>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleUseRecommendation(key, recommended)}
+                                    className="h-6 px-1.5 text-[10px] text-primary hover:bg-primary/10"
+                                  >
+                                    Gunakan
+                                  </Button>
+                                </div>
+                              ) : (
+                                <span className="text-destructive text-xs italic font-medium">Tidak ada stok di Gudang Kecil</span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3">
+                              <input
+                                type="text"
+                                value={scannedValue}
+                                placeholder="Scan / Ketik Barcode"
+                                onChange={(e) => {
+                                  setScannedBarcodes((prev) => ({
+                                    ...prev,
+                                    [key]: e.target.value,
+                                  }));
+                                }}
+                                className="w-full px-3 py-1.5 rounded-md border bg-background text-sm font-mono placeholder:font-sans focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary border-input"
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-
-              <div className="rounded-lg border overflow-hidden bg-background">
-                <table className="w-full text-sm text-left animate-in fade-in duration-300">
-                  <thead className="bg-muted text-muted-foreground uppercase text-[10px] tracking-wider font-semibold">
-                    <tr>
-                      <th className="px-4 py-3 w-[60px] text-center">No</th>
-                      <th className="px-4 py-3 w-1/4">SKU</th>
-                      <th className="px-4 py-3 w-1/2">Rekomendasi Barcode (Gudang Kecil)</th>
-                      <th className="px-4 py-3 w-1/4">Barcode Scan/Input</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y">
-                    {expandedItems.map((item, index) => {
-                      const itemSku = (item.sku || "").toLowerCase();
-                      const itemWarna = (item.warna || "").toLowerCase();
-                      const itemUkuran = (item.ukuran || "").toLowerCase();
-                      const recKey = `${itemSku}-${itemWarna}-${itemUkuran}`;
-
-                      const indexInGroup = expandedItems
-                        .slice(0, index)
-                        .filter(
-                          (i) =>
-                            (i.sku || "").toLowerCase() === itemSku &&
-                            (i.warna || "").toLowerCase() === itemWarna &&
-                            (i.ukuran || "").toLowerCase() === itemUkuran
-                        ).length;
-
-                      const recs = barcodeRecommendations[recKey] || [];
-                      const recommended = recs[indexInGroup] || "";
-                      const key = `${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`;
-                      const scannedValue = scannedBarcodes[key] || "";
-
-                      return (
-                        <tr key={key} className="hover:bg-muted/30 align-middle">
-                          <td className="px-4 py-3 text-center text-muted-foreground font-medium">{index + 1}</td>
-                          <td className="px-4 py-3 font-medium">
-                            {item.sku}
-                            {item.logo && <span className="text-[10px] text-muted-foreground ml-1.5">({item.logo})</span>}
-                            {item.warna && <span className="text-[10px] text-muted-foreground ml-1.5">({item.warna})</span>}
-                          </td>
-                          <td className="px-4 py-3">
-                            {loadingRecommendations ? (
-                              <span className="text-muted-foreground text-xs italic animate-pulse">Memuat rekomendasi...</span>
-                            ) : recommended ? (
-                              <div className="flex items-center gap-2">
-                                <code className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs text-primary">{recommended}</code>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleUseRecommendation(key, recommended)}
-                                  className="h-6 px-1.5 text-[10px] text-primary hover:bg-primary/10"
-                                >
-                                  Gunakan
-                                </Button>
-                              </div>
-                            ) : (
-                              <span className="text-destructive text-xs italic font-medium">Tidak ada stok di Gudang Kecil</span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            <input
-                              type="text"
-                              value={scannedValue}
-                              placeholder="Scan / Ketik Barcode"
-                              onChange={(e) => {
-                                setScannedBarcodes((prev) => ({
-                                  ...prev,
-                                  [key]: e.target.value,
-                                }));
-                              }}
-                              className="w-full px-3 py-1.5 rounded-md border bg-background text-sm font-mono placeholder:font-sans focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary border-input"
-                            />
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -1464,7 +1466,7 @@ export default function FormOrder(_props: BaseForm) {
                 {downloadingDoc ? "Mengunduh..." : "Cetak Resi"}
               </Button>
             </>
-          ) : data?.status === "ready_to_pickup" ? (
+          ) : data?.status === "ready_to_pickup" && !data.is_outbounded ? (
             <>
               <Button
                 variant="outline"
