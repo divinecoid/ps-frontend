@@ -361,11 +361,11 @@ export default function FormOrder(_props: BaseForm) {
 
   // Pemicu Fetch Barcode jika status ready_to_pickup
   React.useEffect(() => {
-    if (expandedItems.length > 0 && data?.status === "ready_to_pickup") {
+    if (expandedItems.length > 0 && data?.status === "ready_to_pickup" && !data?.is_outbounded) {
       const uniqueSkus = Array.from(new Set(expandedItems.map((item) => item.sku)));
       fetchProductsForSkus(uniqueSkus);
     }
-  }, [expandedItems, data?.status]);
+  }, [expandedItems, data?.status, data?.is_outbounded]);
 
   // Main Effect: Fetch Data Order & Parameter Pengiriman Marketplace
   React.useEffect(() => {
@@ -1308,8 +1308,8 @@ export default function FormOrder(_props: BaseForm) {
             </div>
           )}
 
-        {/* FORM 3: Tabel Pickup & Scan Barcode (Hanya jika status ready_to_pickup) */}
-        {data?.status === "ready_to_pickup" && (
+        {/* FORM 3: Tabel Pickup & Scan Barcode (Hanya jika status ready_to_pickup dan belum outbound) */}
+        {data?.status === "ready_to_pickup" && !data?.is_outbounded && (
           <div className="px-6 md:px-8 py-5 bg-card border-y space-y-6">
             <div>
               <div className="flex items-center gap-2 mb-3">
@@ -1464,7 +1464,7 @@ export default function FormOrder(_props: BaseForm) {
                 {downloadingDoc ? "Mengunduh..." : "Cetak Resi"}
               </Button>
             </>
-          ) : data?.status === "ready_to_pickup" ? (
+          ) : data?.status === "ready_to_pickup" && !data?.is_outbounded ? (
             <>
               <Button
                 variant="outline"
@@ -1478,7 +1478,7 @@ export default function FormOrder(_props: BaseForm) {
               </Button>
               <Button type="button" onClick={setOutbound}>Simpan</Button>
             </>
-          ) : disabled || data?.status !== "ready_to_ship" ? (
+          ) : disabled || data?.status !== "ready_to_ship" || data?.is_outbounded ? (
             <Button
               type="button"
               onClick={(e) => {
