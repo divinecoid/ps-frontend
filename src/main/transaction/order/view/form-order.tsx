@@ -924,6 +924,11 @@ export default function FormOrder(_props: BaseForm) {
                   {data.marketplace.code}
                 </Badge>
               )}
+              {data?.is_outbounded && (
+                <Badge variant="success" className="gap-1.5">
+                  Sudah Outbound
+                </Badge>
+              )}
             </div>
             <p className="text-xs text-muted-foreground">
               {data?.order_sn ? `#${data.order_sn}` : ""}
