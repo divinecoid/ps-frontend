@@ -485,10 +485,8 @@ export default function FormOrder(_props: BaseForm) {
               available,
               flags: [available ? "recommended" : "unavailable"],
               time_text:
-                startTime && endTime
-                  ? `${formatDateTime(new Date(startTime * 1000))} - ${formatDateTime(
-                    new Date(endTime * 1000),
-                  )}`
+                startTime
+                  ? formatDateTime(new Date(startTime * 1000))
                   : "",
             } as TimeSlot;
           })
