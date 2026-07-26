@@ -435,6 +435,7 @@ export default function FormOrder(_props: BaseForm) {
           const detailJson = await detailResponse?.json();
           if (detailResponse?.ok && detailJson?.data) {
             const pkg = detailJson.data;
+            console.log("TikTok Get Package Detail Response Data:", pkg);
             if (pkg.pickup_slot) {
               setScheduledPickupSlot({
                 start_time: Number(pkg.pickup_slot.start_time ?? 0),
@@ -1289,7 +1290,9 @@ export default function FormOrder(_props: BaseForm) {
                             <p>
                               <span className="text-muted-foreground">Waktu Penjemputan: </span>
                               <span className="font-medium text-foreground">
-                                {formatDateTime(new Date(scheduledPickupSlot.start_time * 1000))} - {formatDateTime(new Date(scheduledPickupSlot.end_time * 1000))}
+                                {scheduledPickupSlot.start_time === scheduledPickupSlot.end_time
+                                  ? formatDateTime(new Date(scheduledPickupSlot.start_time * 1000))
+                                  : `${formatDateTime(new Date(scheduledPickupSlot.start_time * 1000))} - ${formatDateTime(new Date(scheduledPickupSlot.end_time * 1000))}`}
                               </span>
                             </p>
                           ) : null}
