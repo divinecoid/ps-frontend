@@ -218,6 +218,7 @@ export default function FormOrder(_props: BaseForm) {
   const [items, setItems] = useState<OrderItem[]>([]);
   const [shippingParameter, setShippingParameter] = useState<AddressList[]>();
   const [pickupTime, setPickupTime] = useState<TimeSlot[]>();
+  const [scheduledPickupSlot, setScheduledPickupSlot] = useState<{ start_time: number; end_time: number; handover_method?: string } | null>(null);
   const [tiktokPackageId, setTiktokPackageId] = useState<string>();
   const [tiktokShipError, setTiktokShipError] = useState<string>();
   const [downloadingDoc, setDownloadingDoc] = useState(false);
@@ -400,7 +401,7 @@ export default function FormOrder(_props: BaseForm) {
       }
     };
 
-    const getTiktokShippingParameter = async (orderSn: string) => {
+    const getTiktokShippingParameter = async (orderSn: string, status?: string) => {
       setTiktokShipError(undefined);
       try {
         const orderResponse =
@@ -427,6 +428,29 @@ export default function FormOrder(_props: BaseForm) {
         }
 
         setTiktokPackageId(packageId);
+
+        const orderStatus = status || data?.status;
+        if (orderStatus === "ready_to_pickup") {
+          const detailResponse = await Services.TransactionTiktokOrder?.getPackageDetail?.(packageId);
+          const detailJson = await detailResponse?.json();
+          if (detailResponse?.ok && detailJson?.data) {
+            const pkg = detailJson.data;
+            if (pkg.pickup_slot) {
+              setScheduledPickupSlot({
+                start_time: Number(pkg.pickup_slot.start_time ?? 0),
+                end_time: Number(pkg.pickup_slot.end_time ?? 0),
+                handover_method: pkg.handover_method || "PICKUP",
+              });
+            } else {
+              setScheduledPickupSlot({
+                start_time: 0,
+                end_time: 0,
+                handover_method: pkg.handover_method || "DROP_OFF",
+              });
+            }
+          }
+          return;
+        }
 
         const slotResponse =
           await Services.TransactionTiktokOrder?.getPackageHandoverTimeSlots?.(
@@ -524,7 +548,7 @@ export default function FormOrder(_props: BaseForm) {
                   break;
                 case "tiktok":
                 case "tiktok_shop":
-                  getTiktokShippingParameter(json.data.order_sn);
+                  getTiktokShippingParameter(json.data.order_sn, json.data.status);
                   break;
                 case "lazada":
                   break;
@@ -1174,7 +1198,7 @@ export default function FormOrder(_props: BaseForm) {
                         <p className="text-sm">{tiktokShipError}</p>
                       </div>
                     )}
-                    {pickupTime && pickupTime.length > 0 && (
+                    {data.status === "ready_to_ship" && pickupTime && pickupTime.length > 0 && (
                       <FormField
                         control={form.control}
                         name="pickup_time_id"
@@ -1247,6 +1271,30 @@ export default function FormOrder(_props: BaseForm) {
                           </FormItem>
                         )}
                       />
+                    )}
+                    {data.status === "ready_to_pickup" && (
+                      <div className="rounded-md border p-4 bg-muted/40 space-y-2">
+                        <p className="text-sm font-semibold flex items-center gap-1.5 text-foreground">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          Informasi Pengiriman Terjadwal
+                        </p>
+                        <div className="text-sm space-y-1">
+                          <p>
+                            <span className="text-muted-foreground">Metode Handover: </span>
+                            <span className="font-medium text-foreground">
+                              {scheduledPickupSlot?.handover_method === "DROP_OFF" ? "Drop Off" : "Pickup (Penjemputan)"}
+                            </span>
+                          </p>
+                          {scheduledPickupSlot?.handover_method !== "DROP_OFF" && scheduledPickupSlot?.start_time && scheduledPickupSlot?.end_time ? (
+                            <p>
+                              <span className="text-muted-foreground">Waktu Penjemputan: </span>
+                              <span className="font-medium text-foreground">
+                                {formatDateTime(new Date(scheduledPickupSlot.start_time * 1000))} - {formatDateTime(new Date(scheduledPickupSlot.end_time * 1000))}
+                              </span>
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
                     )}
                   </>
                 )}
