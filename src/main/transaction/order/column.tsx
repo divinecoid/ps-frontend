@@ -78,5 +78,17 @@ export const columns: ColumnDef<Order>[] = [
       }
     })
   },
-
+  {
+    accessorKey: "is_outbounded",
+    header: "Outbound",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const data = row.original;
+      return data.is_outbounded ? (
+        <Badge variant="success">Sudah</Badge>
+      ) : (
+        <Badge variant="outline">Belum</Badge>
+      );
+    })
+  },
 ]
