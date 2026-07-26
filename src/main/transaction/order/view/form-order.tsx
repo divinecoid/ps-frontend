@@ -813,9 +813,76 @@ export default function FormOrder(_props: BaseForm) {
     }
   };
 
-  const setOutbound = () => {
-    toast("Test")
-  }
+  const setOutbound = async () => {
+    setLoading(true);
+    try {
+      if (!data?.id) {
+        toast.error("ID Order tidak ditemukan");
+        return;
+      }
+
+      const missingBarcodes = expandedItems.some(
+        (item) => !scannedBarcodes[`${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`]
+      );
+      if (missingBarcodes) {
+        toast.error("Harap isi semua barcode barang!");
+        return;
+      }
+
+      const barcodeValues = expandedItems.map(
+        (item) => scannedBarcodes[`${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`]
+      );
+      const uniqueBarcodes = new Set(barcodeValues);
+      if (uniqueBarcodes.size !== barcodeValues.length) {
+        toast.error("Terdapat barcode duplikat!");
+        return;
+      }
+
+      const orderItemsMap: Record<string, string[]> = {};
+      expandedItems.forEach((item) => {
+        const barcode = scannedBarcodes[`${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`];
+        if (!orderItemsMap[item.sourceOrderItemId]) {
+          orderItemsMap[item.sourceOrderItemId] = [];
+        }
+        orderItemsMap[item.sourceOrderItemId].push(barcode);
+      });
+
+      const orderItemsPayload = Object.entries(orderItemsMap).map(
+        ([id, barcodes]) => ({
+          id,
+          scanned_barcodes: barcodes,
+        })
+      );
+
+      const formatToLaravelDatetime = (date: Date) => {
+        const pad = (n: number) => String(n).padStart(2, "0");
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+      };
+
+      const payload = {
+        order_id: data.id,
+        prepared_at: formatToLaravelDatetime(new Date()),
+        order_items: orderItemsPayload,
+      };
+
+      const res = await Services.TransactionOrder.submitPreparation(payload);
+      const json = await res?.json();
+      if (res?.ok) {
+        toast.success(json.message || "Berhasil memproses pickup barang!");
+        navigate(-1);
+      } else {
+        toast.error(String(json.message?.replaceAll("_", " ") || "Gagal memproses pickup barang!"), {
+          richColors: true,
+        });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message, { richColors: true });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Form {...form}>
