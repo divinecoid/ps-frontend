@@ -218,6 +218,7 @@ export default function FormOrder(_props: BaseForm) {
   const [items, setItems] = useState<OrderItem[]>([]);
   const [shippingParameter, setShippingParameter] = useState<AddressList[]>();
   const [pickupTime, setPickupTime] = useState<TimeSlot[]>();
+  const [scheduledPickupSlot, setScheduledPickupSlot] = useState<{ start_time: number; end_time: number; handover_method?: string } | null>(null);
   const [tiktokPackageId, setTiktokPackageId] = useState<string>();
   const [tiktokShipError, setTiktokShipError] = useState<string>();
   const [downloadingDoc, setDownloadingDoc] = useState(false);
@@ -400,7 +401,7 @@ export default function FormOrder(_props: BaseForm) {
       }
     };
 
-    const getTiktokShippingParameter = async (orderSn: string) => {
+    const getTiktokShippingParameter = async (orderSn: string, status?: string) => {
       setTiktokShipError(undefined);
       try {
         const orderResponse =
@@ -427,6 +428,30 @@ export default function FormOrder(_props: BaseForm) {
         }
 
         setTiktokPackageId(packageId);
+
+        const orderStatus = status || data?.status;
+        if (orderStatus === "ready_to_pickup") {
+          const detailResponse = await Services.TransactionTiktokOrder?.getPackageDetail?.(packageId);
+          const detailJson = await detailResponse?.json();
+          if (detailResponse?.ok && detailJson?.data) {
+            const pkg = detailJson.data;
+            console.log("TikTok Get Package Detail Response Data:", pkg);
+            if (pkg.pickup_slot) {
+              setScheduledPickupSlot({
+                start_time: Number(pkg.pickup_slot.start_time ?? 0),
+                end_time: Number(pkg.pickup_slot.end_time ?? 0),
+                handover_method: pkg.handover_method || "PICKUP",
+              });
+            } else {
+              setScheduledPickupSlot({
+                start_time: 0,
+                end_time: 0,
+                handover_method: pkg.handover_method || "DROP_OFF",
+              });
+            }
+          }
+          return;
+        }
 
         const slotResponse =
           await Services.TransactionTiktokOrder?.getPackageHandoverTimeSlots?.(
@@ -460,10 +485,8 @@ export default function FormOrder(_props: BaseForm) {
               available,
               flags: [available ? "recommended" : "unavailable"],
               time_text:
-                startTime && endTime
-                  ? `${formatDateTime(new Date(startTime * 1000))} - ${formatDateTime(
-                    new Date(endTime * 1000),
-                  )}`
+                startTime
+                  ? formatDateTime(new Date(startTime * 1000))
                   : "",
             } as TimeSlot;
           })
@@ -524,7 +547,7 @@ export default function FormOrder(_props: BaseForm) {
                   break;
                 case "tiktok":
                 case "tiktok_shop":
-                  getTiktokShippingParameter(json.data.order_sn);
+                  getTiktokShippingParameter(json.data.order_sn, json.data.status);
                   break;
                 case "lazada":
                   break;
@@ -813,9 +836,76 @@ export default function FormOrder(_props: BaseForm) {
     }
   };
 
-  const setOutbound = () => {
-    toast("Test")
-  }
+  const setOutbound = async () => {
+    setLoading(true);
+    try {
+      if (!data?.id) {
+        toast.error("ID Order tidak ditemukan");
+        return;
+      }
+
+      const missingBarcodes = expandedItems.some(
+        (item) => !scannedBarcodes[`${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`]
+      );
+      if (missingBarcodes) {
+        toast.error("Harap isi semua barcode barang!");
+        return;
+      }
+
+      const barcodeValues = expandedItems.map(
+        (item) => scannedBarcodes[`${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`]
+      );
+      const uniqueBarcodes = new Set(barcodeValues);
+      if (uniqueBarcodes.size !== barcodeValues.length) {
+        toast.error("Terdapat barcode duplikat!");
+        return;
+      }
+
+      const orderItemsMap: Record<string, string[]> = {};
+      expandedItems.forEach((item) => {
+        const barcode = scannedBarcodes[`${item.sourceOrderItemId}-${item.sourceItemIndex}-${item.parsedIndex}`];
+        if (!orderItemsMap[item.sourceOrderItemId]) {
+          orderItemsMap[item.sourceOrderItemId] = [];
+        }
+        orderItemsMap[item.sourceOrderItemId].push(barcode);
+      });
+
+      const orderItemsPayload = Object.entries(orderItemsMap).map(
+        ([id, barcodes]) => ({
+          id,
+          scanned_barcodes: barcodes,
+        })
+      );
+
+      const formatToLaravelDatetime = (date: Date) => {
+        const pad = (n: number) => String(n).padStart(2, "0");
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+      };
+
+      const payload = {
+        order_id: data.id,
+        prepared_at: formatToLaravelDatetime(new Date()),
+        order_items: orderItemsPayload,
+      };
+
+      const res = await Services.TransactionOrder.submitPreparation(payload);
+      const json = await res?.json();
+      if (res?.ok) {
+        toast.success(json.message || "Berhasil memproses pickup barang!");
+        navigate(-1);
+      } else {
+        toast.error(String(json.message?.replaceAll("_", " ") || "Gagal memproses pickup barang!"), {
+          richColors: true,
+        });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message, { richColors: true });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -1107,7 +1197,7 @@ export default function FormOrder(_props: BaseForm) {
                         <p className="text-sm">{tiktokShipError}</p>
                       </div>
                     )}
-                    {pickupTime && pickupTime.length > 0 && (
+                    {data.status === "ready_to_ship" && pickupTime && pickupTime.length > 0 && (
                       <FormField
                         control={form.control}
                         name="pickup_time_id"
@@ -1180,6 +1270,32 @@ export default function FormOrder(_props: BaseForm) {
                           </FormItem>
                         )}
                       />
+                    )}
+                    {data.status === "ready_to_pickup" && (
+                      <div className="rounded-md border p-4 bg-muted/40 space-y-2">
+                        <p className="text-sm font-semibold flex items-center gap-1.5 text-foreground">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          Informasi Pengiriman Terjadwal
+                        </p>
+                        <div className="text-sm space-y-1">
+                          <p>
+                            <span className="text-muted-foreground">Metode Handover: </span>
+                            <span className="font-medium text-foreground">
+                              {scheduledPickupSlot?.handover_method === "DROP_OFF" ? "Drop Off" : "Pickup (Penjemputan)"}
+                            </span>
+                          </p>
+                          {scheduledPickupSlot?.handover_method !== "DROP_OFF" && scheduledPickupSlot?.start_time && scheduledPickupSlot?.end_time ? (
+                            <p>
+                              <span className="text-muted-foreground">Waktu Penjemputan: </span>
+                              <span className="font-medium text-foreground">
+                                {scheduledPickupSlot.start_time === scheduledPickupSlot.end_time
+                                  ? formatDateTime(new Date(scheduledPickupSlot.start_time * 1000))
+                                  : `${formatDateTime(new Date(scheduledPickupSlot.start_time * 1000))} - ${formatDateTime(new Date(scheduledPickupSlot.end_time * 1000))}`}
+                              </span>
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
                     )}
                   </>
                 )}
