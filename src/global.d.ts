@@ -5,14 +5,14 @@ export { };
 declare global {
   interface Window {
     electronAPI: {
-      saveToken: (token: string) => Promise<void>;
+      saveToken: (token: string) => Promise<boolean>;
       getToken: () => Promise<string | null>;
       getRefreshToken: () => Promise<string | null>;
-      saveRefreshToken: (token: string) => Promise<void>;
+      saveRefreshToken: (token: string) => Promise<boolean>;
       deleteToken: () => Promise<boolean>;
       deleteRefreshToken: () => Promise<boolean>;
       onNavigate: (callback: (path: string) => void) => void;
-      getInitialToken: () => Promise<string | null>;
+      getInitialToken?: () => Promise<string | null>;
       startOauth: (url: string, successUrl: string) => Promise<void>;
       onOauthDone: (callback: () => void) => void;
       removeOauthListener: () => void;

@@ -24,7 +24,7 @@ export const update: BaseApiCallUpdateProps<FabricCutting> = async (id, values) 
         ...values,
         receive_detail: values.receive_detail.map(detail => {
             const filteredVariant = detail.variant_detail?.filter(variant => {
-                return (variant.qty || 0) > 0
+                return (variant.dozen_qty || 0) > 0 || (variant.piece_qty || 0) > 0
             })
             return {
                 ...detail,
@@ -47,7 +47,7 @@ export const multiDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
     return await DELETE(`${ENDPOINT.FABRIC_CUTTING}`, ids)
 }
 
-export const setReceived = async (id: string, values: any) => {
+export const setReceived = async (id: string, values?: any) => {
     return await PATCH(`${ENDPOINT.FABRIC_CUTTING}/${id}`, values);
 }
 

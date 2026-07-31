@@ -19,7 +19,13 @@ export default function MasterRacks() {
 
     const handlePrint = async (code: string) => {
         await window.electronAPI.printPreview({
-            barcodes: [code],
+            barcodes: [{
+                code: code,
+                count: 1,
+                serial_number: code,
+                cutting: "",
+                sizes: ""
+            }],
             dozenBarcodes: [],
             paper: {
                 width: paperWidthMm,

@@ -102,6 +102,7 @@ if (typeof window !== "undefined" && !window.electronAPI) {
     },
     openFile: async (filePath: string) => {
       console.log("File downloaded to browser storage:", filePath);
+      return "";
     },
   };
 }

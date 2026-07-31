@@ -358,7 +358,7 @@ export default function OutboundManual() {
                     <OverviewPage
                         columns={listColumns}
                         source={Services.TransactionManualOutbound}
-                        rowActions={({ row }) => (
+                        rowActions={({ row }: { row: any }) => (
                             <TooltipHover tooltip="Lihat Detail">
                                 <Button
                                     variant="outline"

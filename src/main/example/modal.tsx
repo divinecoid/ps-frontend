@@ -8,8 +8,8 @@ const testing = true;
 
 export default function ModalRack(props: BaseModalForm) {
 
-    const test = <ModalItem
-        services={Services.MasterRack}
+    const test = <ModalItem<any>
+        services={Services.MasterRack as any}
         title={props.isEdit ? "Edit Rack" : "Add Rack"}
         description={props.isEdit ? "Edit Rack" : "Add new rack"}
         {...props}

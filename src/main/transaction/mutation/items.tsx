@@ -5,7 +5,7 @@ import { DeleteRowProps, Item } from ".";
 
 interface ItemProps<T> {
     rows: T[];
-    removeRow: (deleteRow: DeleteRowProps) => void;
+    removeRow?: (deleteRow: DeleteRowProps) => void;
 }
 
 export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
@@ -22,7 +22,7 @@ export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
                     <TableHead>Warna</TableHead>
                     <TableHead>Ukuran</TableHead>
                     <TableHead className="w-[50px]">Jumlah</TableHead>
-                    <TableHead className="w-[50px]">Aksi</TableHead>
+                    {removeRow && <TableHead className="w-[50px]">Aksi</TableHead>}
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -34,9 +34,11 @@ export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
                         <TableCell>{row.color}</TableCell>
                         <TableCell>{row.size}</TableCell>
                         <TableCell>{row.rec_qty}</TableCell>
-                        <TableCell>
-                            <Button type="button" variant="destructive" onClick={() => removeRow({ rack_id: row.rack_id, barcode: row.barcode })}><Trash /></Button>
-                        </TableCell>
+                        {removeRow && (
+                            <TableCell>
+                                <Button type="button" variant="destructive" onClick={() => removeRow({ rack_id: row.rack_id, barcode: row.barcode })}><Trash /></Button>
+                            </TableCell>
+                        )}
                     </TableRow>
                 ))}
             </TableBody>

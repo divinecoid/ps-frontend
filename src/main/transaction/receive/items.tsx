@@ -5,7 +5,7 @@ import { Item } from ".";
 
 interface ItemProps<T> {
     rows: T[];
-    removeRow: (barcode: string) => void;
+    removeRow?: (barcode: string) => void;
 }
 
 export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
@@ -22,7 +22,7 @@ export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
                 <TableHead>Ukuran</TableHead>
                 <TableHead className="w-[50px]">Jumlah (Lusin)</TableHead>
                 <TableHead className="w-[50px]">Jumlah (Satuan)</TableHead>
-                <TableHead className="w-[50px]">Aksi</TableHead>
+                {removeRow && <TableHead className="w-[50px]">Aksi</TableHead>}
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -34,9 +34,11 @@ export const Items = ({ rows, removeRow }: ItemProps<Item>) => {
                     <TableCell>{row.size}</TableCell>
                     <TableCell>{row.rec_dozen_qty}</TableCell>
                     <TableCell>{row.rec_piece_qty}</TableCell>
-                    <TableCell>
-                        <Button type="button" variant="destructive" onClick={() => removeRow(row.barcode)}><Trash /></Button>
-                    </TableCell>
+                    {removeRow && (
+                        <TableCell>
+                            <Button type="button" variant="destructive" onClick={() => removeRow(row.barcode)}><Trash /></Button>
+                        </TableCell>
+                    )}
                 </TableRow>
             ))}
         </TableBody>

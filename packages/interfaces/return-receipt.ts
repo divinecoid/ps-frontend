@@ -17,6 +17,7 @@ export interface ReturnReceipt extends MasterData {
   order_id: string;
   awb_code: string;
   received_at: string | null;
+  created_at?: string;
   return_status: "pending" | "partial" | "received";
   notes: string | null;
   user: {

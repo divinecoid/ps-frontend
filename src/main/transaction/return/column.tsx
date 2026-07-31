@@ -25,14 +25,14 @@ export const columns: ColumnDef<ReturnReceipt>[] = [
     accessorKey: "created_at",
     header: "Tanggal Retur",
     enableSorting: true,
-    cell: ({ row }) => formatDate(row.original.created_at),
+    cell: ({ row }) => row.original.created_at ? formatDate(new Date(row.original.created_at)) : "-",
   },
   {
     accessorKey: "received_at",
     header: "Tanggal Terima",
     enableSorting: true,
     cell: ({ row }) =>
-      row.original.received_at ? formatDate(row.original.received_at) : "-",
+      row.original.received_at ? formatDate(new Date(row.original.received_at)) : "-",
   },
   {
     accessorKey: "return_status",

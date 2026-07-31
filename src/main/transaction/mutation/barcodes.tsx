@@ -5,7 +5,7 @@ import { Barcode, DeleteRowProps } from ".";
 
 interface BarcodeProps<T> {
     rows: T[];
-    removeRow: (deleteRow: DeleteRowProps) => void;
+    removeRow?: (deleteRow: DeleteRowProps) => void;
 }
 
 export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
@@ -17,7 +17,7 @@ export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
                 <TableRow>
                     <TableHead>Barcode</TableHead>
                     <TableHead>Rak</TableHead>
-                    <TableHead className="w-[50px]">Aksi</TableHead>
+                    {removeRow && <TableHead className="w-[50px]">Aksi</TableHead>}
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -25,9 +25,11 @@ export const Barcodes = ({ rows, removeRow }: BarcodeProps<Barcode>) => {
                     <TableRow key={index}>
                         <TableCell>{row.barcode}</TableCell>
                         <TableCell>{row.rack.name}</TableCell>
-                        <TableCell>
-                            <Button type="button" variant="destructive" onClick={() => removeRow({ rack_id: row.rack_id, barcode: row.barcode })}><Trash /></Button>
-                        </TableCell>
+                        {removeRow && (
+                            <TableCell>
+                                <Button type="button" variant="destructive" onClick={() => removeRow({ rack_id: row.rack_id, barcode: row.barcode })}><Trash /></Button>
+                            </TableCell>
+                        )}
                     </TableRow>
                 ))}
             </TableBody>
