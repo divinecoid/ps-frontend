@@ -11,6 +11,8 @@ import {
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import React, { useEffect } from "react";
 import { ReceiveLogDetail } from "@/interfaces/request";
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
 
 interface ViewReceiveLogDetailProps {
     data: ReceiveLogDetail[] | undefined
@@ -49,7 +51,22 @@ export default function ViewReceiveLogDetail({ data, open, setOpen }: ViewReceiv
                                 <TableCell>{row.model.name}</TableCell>
                                 <TableCell>{row.color.name}</TableCell>
                                 <TableCell>{row.size.name}</TableCell>
-                                <TableCell>{row.barcode}</TableCell>
+                                <TableCell>
+                                    <div className="flex items-center gap-2">
+                                        <span>{row.barcode}</span>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-6 w-6"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(row.barcode);
+                                                toast.success("Barcode berhasil disalin", { richColors: true });
+                                            }}
+                                        >
+                                            <Copy className="h-3 w-3" />
+                                        </Button>
+                                    </div>
+                                </TableCell>
                                 <TableCell>{row.qty}</TableCell>
                             </TableRow>
                         ))}
