@@ -7,6 +7,7 @@ import { Request } from "@/interfaces/request";
 import DetailList from "./form-request-detail-variant-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReceivedLogList from "./form-received-log-list";
+import PendingBarcodeList from "./form-pending-barcode-list";
 import React from "react";
 import SerialNumberPicker from "../new/form-request-serial-number-picker";
 
@@ -130,17 +131,25 @@ export default function ViewFormRequest(props: BaseForm) {
                 type: "hidden",
                 schema: schema.receive_log,
             },
+            {
+                key: "pending_barcodes",
+                type: "hidden",
+            },
         ]} >
         <Tabs defaultValue={tabValue} onValueChange={setTabValue} className="px-7 py-2">
             <TabsList>
                 <TabsTrigger value="detail">Rincian permintaan</TabsTrigger>
                 <TabsTrigger value="history">Riwayat penerimaan</TabsTrigger>
+                <TabsTrigger value="pending">Barcode belum diterima</TabsTrigger>
             </TabsList>
             <TabsContent value="detail" forceMount className={tabValue === "detail" ? "" : "hidden"}>
                 <DetailList rowKey="request_detail" disabled={props.disabled} />
             </TabsContent>
             <TabsContent value="history" forceMount className={tabValue === "history" ? "" : "hidden"}>
                 <ReceivedLogList />
+            </TabsContent>
+            <TabsContent value="pending" forceMount className={tabValue === "pending" ? "" : "hidden"}>
+                <PendingBarcodeList />
             </TabsContent>
         </Tabs>
 

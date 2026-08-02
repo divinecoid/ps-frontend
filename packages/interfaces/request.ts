@@ -38,6 +38,14 @@ export interface ReceiveLogDetail {
   qty: number
 }
 
+export interface PendingBarcode {
+  barcode: string
+  type: "Dozen" | "Piece"
+  model: string
+  color: string
+  size: string
+}
+
 export interface Request {
   id: string
   serial_number: string
@@ -47,6 +55,7 @@ export interface Request {
   created_at: Date
   request_detail: RequestDetail[]
   receive_log: ReceiveLog[]
+  pending_barcodes?: PendingBarcode[]
 }
 
 export interface RequestDetail {
