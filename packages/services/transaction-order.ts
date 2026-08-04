@@ -68,4 +68,8 @@ export const validateProductBarcode = async (barcode: string) => {
   return await POST(`${ENDPOINT.OUTBOUND}/validate-product-barcode`, { barcode });
 };
 
+export const markAsPrinted = async (id: string) => {
+  return await POST(`${ENDPOINT.OUTBOUND}/orders/${id}/mark-as-printed`);
+};
+
 
