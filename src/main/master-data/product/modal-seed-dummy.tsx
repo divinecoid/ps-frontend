@@ -32,7 +32,7 @@ const schema = z.object({
   model_id: z.string().nonempty("Model dibutuhkan."),
   color_id: z.string().nonempty("Warna dibutuhkan."),
   size_id: z.string().nonempty("Ukuran dibutuhkan."),
-  rack_id: z.string().optional(),
+  rack_id: z.string().nonempty("Rak dibutuhkan."),
   type: z.enum(["D", "P"], { required_error: "Tipe dibutuhkan." }),
   number: z.coerce.number().min(1, "Nomor urut minimal 1."),
   qty: z.coerce.number().min(1, "Jumlah minimal 1.").max(100, "Maksimal 100."),
@@ -217,7 +217,7 @@ export default function ModalSeedDummy({ onSubmit }: ModalSeedDummyProps) {
                   name="rack_id"
                   render={({ field, fieldState }) => (
                     <FormItem>
-                      <FormLabel>Rak (Opsional)</FormLabel>
+                      <FormLabel>Rak</FormLabel>
                       <FormControl>
                         <DynamicInput
                           aria-invalid={fieldState.invalid}
