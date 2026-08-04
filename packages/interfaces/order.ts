@@ -37,6 +37,7 @@ export interface Order extends MasterData {
   marketplace: Marketplace;
   is_outbounded?: boolean;
   is_label_printed?: boolean;
+  created_at?: string;
 }
 
 export interface OrderItem {

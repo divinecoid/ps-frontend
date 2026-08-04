@@ -1,9 +1,17 @@
 import { Badge } from "@/components/ui/badge";
 import { Order } from "@/interfaces/order";
-import { formatDateTime } from "@/lib/format-date";
+import { formatDateTime, formatOrderTime } from "@/lib/format-date";
 import { ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Order>[] = [
+  {
+    accessorKey: "created_at",
+    header: "Order Time",
+    enableSorting: true,
+    cell: (({ row }) => {
+      return row.original.created_at ? formatOrderTime(row.original.created_at) : "-";
+    })
+  },
   {
     accessorKey: "marketplace.name",
     header: "Marketplace",
