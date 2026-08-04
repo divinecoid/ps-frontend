@@ -91,4 +91,17 @@ export const columns: ColumnDef<Order>[] = [
       );
     })
   },
+  {
+    accessorKey: "is_label_printed",
+    header: "Print Resi",
+    enableSorting: true,
+    cell: (({ row }) => {
+      const data = row.original;
+      return data.is_label_printed ? (
+        <Badge variant="success">Sudah</Badge>
+      ) : (
+        <Badge variant="outline">Belum</Badge>
+      );
+    })
+  },
 ]

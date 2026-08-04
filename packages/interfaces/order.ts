@@ -36,6 +36,7 @@ export interface Order extends MasterData {
   marketplace_id: string;
   marketplace: Marketplace;
   is_outbounded?: boolean;
+  is_label_printed?: boolean;
 }
 
 export interface OrderItem {
@@ -108,6 +109,7 @@ export interface ViewOrderDetail {
   //items
   items?: OrderItem[];
   is_outbounded?: boolean;
+  is_label_printed?: boolean;
 }
 
 export interface OrderResponse extends IndexResponse {

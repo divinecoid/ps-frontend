@@ -3,7 +3,7 @@ import Services from "@/services";
 import OverviewPage from "@/components/custom/overview-page";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Clipboard, Download, Eye } from "lucide-react";
+import { Clipboard, Download, Eye, Printer } from "lucide-react";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 import { Order } from "@/interfaces/order";
 import { toast } from "sonner";
@@ -87,6 +87,9 @@ export default function OrderPage() {
       if (res?.ok) {
         const filePath = await downloadFile(res);
         if (filePath) {
+          if (data.id) {
+            Services.TransactionOrder.markAsPrinted(data.id).catch(console.error);
+          }
           toast.info(`Download completed on ${filePath}`, {
             action: {
               label: "Open",
@@ -176,10 +179,12 @@ export default function OrderPage() {
             </Button>
           </TooltipHover>
           {(row.status.toLowerCase() === "ready_to_pickup" ||
-            row.status.toLowerCase() === "ready_to_ship") && (
-            <TooltipHover tooltip="Unduh">
+            row.status.toLowerCase() === "ready_to_ship" ||
+            row.status.toLowerCase() === "shipped" ||
+            row.status.toLowerCase() === "retry_ship") && (
+            <TooltipHover tooltip="Print Resi">
               <Button variant="outline" onClick={() => downloadDocument(row)}>
-                <Download />
+                <Printer className="h-4 w-4" />
               </Button>
             </TooltipHover>
           )}

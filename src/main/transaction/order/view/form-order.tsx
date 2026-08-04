@@ -613,6 +613,9 @@ export default function FormOrder(_props: BaseForm) {
       if (res?.ok) {
         const filePath = await downloadFile(res);
         if (filePath) {
+          if (data?.id) {
+            Services.TransactionOrder.markAsPrinted(data.id).catch(console.error);
+          }
           toast.success(`Download selesai: ${filePath}`, {
             action: {
               label: "Buka",
