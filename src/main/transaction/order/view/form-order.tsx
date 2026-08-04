@@ -121,7 +121,7 @@ function parseSku(
     result.push({
       sku: extra,
       logo: null,
-      warna: null,
+      warna: "Hitam",
       ukuran,
     });
   }
