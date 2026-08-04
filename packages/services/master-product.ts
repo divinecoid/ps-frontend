@@ -42,3 +42,16 @@ export const forceDestroy: BaseApiCallDeleteProps = async (id) => {
 export const multiForceDestroy: BaseApiCallMultiDeleteProps = async (ids) => {
     return await DELETE(`${ENDPOINT.PRODUCT}/force`, ids)
 }
+
+export const seedDummy = async (values: {
+    model_id: string;
+    color_id: string;
+    size_id: string;
+    cmt_id: string;
+    rack_id?: string;
+    type: 'D' | 'P';
+    number: number;
+    qty: number;
+}) => {
+    return await POST(`${ENDPOINT.PRODUCT}/seed-dummy`, values);
+}
