@@ -38,6 +38,8 @@ const schema = z.object({
   qty: z.coerce.number().min(1, "Jumlah minimal 1.").max(100, "Maksimal 100."),
 });
 
+type FormValues = z.infer<typeof schema>;
+
 interface ModalSeedDummyProps {
   onSubmit?: () => void;
 }
@@ -46,7 +48,7 @@ export default function ModalSeedDummy({ onSubmit }: ModalSeedDummyProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       cmt_id: "",
@@ -60,12 +62,12 @@ export default function ModalSeedDummy({ onSubmit }: ModalSeedDummyProps) {
     },
   });
 
-  const submitForm = async (values: any) => {
+  const submitForm = async (values: FormValues) => {
     setLoading(true);
     try {
       const payload = {
         ...values,
-        rack_id: values.rack_id || null,
+        rack_id: values.rack_id || undefined,
       };
       const res = await Services.MasterProduct.seedDummy(payload);
       const json = await res?.json();
