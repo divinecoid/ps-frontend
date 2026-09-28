@@ -10,6 +10,9 @@ import VariantListItem from "./form-fabric-cutting-request-detail-variant-list-i
 import ConfirmDetail from "./form-fabric-cutting-request-detail-confirm";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 import { useModelSizes } from "@/hooks/use-model-sizes";
+import { BaseApiCallIndexProps } from "@/interfaces/base";
+import { ProductModel } from "@/interfaces/product-model";
+import { fetchUncutFabrics } from "@/lib/master-data-cache";
 
 interface DetailProductListProps<T> {
     form: UseFormReturn<FieldValues, T, FieldValues>
@@ -26,6 +29,47 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
         control: form.control,
         name: `${parentKey}.${index}.model_id`,
     });
+
+    const fabricDetail = useWatch({
+        control: form.control,
+        name: "fabric_detail",
+    });
+
+    const [fabricColorMap, setFabricColorMap] = React.useState<Map<string, string>>(new Map());
+
+    React.useEffect(() => {
+        fetchUncutFabrics()
+            .then(fabrics => setFabricColorMap(new Map(fabrics.map(f => [f.id, f.color_id]))))
+            .catch(() => setFabricColorMap(new Map()));
+    }, []);
+
+    const selectedColorIds = React.useMemo(() => {
+        const fabricIds = ((fabricDetail ?? []) as { fabric_id?: string }[])
+            .map(f => f.fabric_id)
+            .filter((id): id is string => Boolean(id));
+        const colorIds = fabricIds
+            .map(id => fabricColorMap.get(id))
+            .filter((id): id is string => Boolean(id));
+        return [...new Set(colorIds)];
+    }, [fabricDetail, fabricColorMap]);
+
+    const modelSource = React.useMemo<BaseApiCallIndexProps>(() => {
+        if (selectedColorIds.length === 0) return Services.MasterProductModel.index;
+
+        return (page, per_page, search, sort) =>
+            Services.MasterProductModel.index(page, per_page, search, sort).then(async res => {
+                if (!res.ok) return res;
+                const json = await res.json();
+                const filtered = (json.data as ProductModel[]).filter(m =>
+                    (m.color_id ?? []).some(id => selectedColorIds.includes(id))
+                );
+                return new Response(JSON.stringify({ ...json, data: filtered }), {
+                    status: res.status,
+                    headers: res.headers,
+                });
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedColorIds.join(",")]);
 
     const sizes = useModelSizes(modelId, !disabled || Boolean(modelId));
 
@@ -82,7 +126,7 @@ export default function ProductList<T>({ form, index, parentKey, handleDelete, d
                                             label="name"
                                             placeholder="Model"
                                             type={"single"}
-                                            source={Services.MasterProductModel.index}
+                                            source={modelSource}
                                             value={field.value}
                                             onValueChange={field.onChange}
                                             disabled={disabled} />
