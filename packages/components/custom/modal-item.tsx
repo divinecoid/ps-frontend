@@ -24,6 +24,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod/v3";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DynamicInput from "@/components/custom/dynamic-input";
+import { clearOptionsCache } from "./dynamic-combobox";
 import { BaseApiCallProps, FormShape } from "@/interfaces/base";
 import { toast } from "sonner";
 import React from "react";
@@ -97,6 +98,7 @@ export default function ModalItem<T extends FieldValues>({
             const res = await (id ? services?.update?.(id, values as T) : services?.store?.(values as T));
             const json = await res?.json();
             if (res?.ok) {
+                clearOptionsCache();
                 onSubmit?.();
                 setId?.(undefined);
                 setOpen(false);

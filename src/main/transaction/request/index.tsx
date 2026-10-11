@@ -4,13 +4,19 @@ import OverviewPage from "@/components/custom/overview-page";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Eye, Plus, Printer, QrCode, Trash } from "lucide-react";
+import { Eye, MoreHorizontal, Plus, QrCode, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { TooltipHover } from "@/components/custom/tooltip-hover";
 import ModalConfirm from "@/components/custom/modal-confirm";
 import DatatableSelectAction from "@/components/custom/datatable-select-action";
 import { Barcodes } from "@/interfaces/print";
 import { useAcm } from "@/provider/acm-provider";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 
 interface RequestDetail {
@@ -25,7 +31,7 @@ export default function Request() {
     const paperWidthMm = 240;
     const paperHeightMm = 300;
 
-    const handlePrint = async (id: string) => {
+    const handlePrint = async (id: string, type: 'dozen' | 'piece') => {
         try {
             const res = await Services.TransactionRequest.barcode(id);
             const json = await res.json();
@@ -46,14 +52,16 @@ export default function Request() {
                     temp.push({ ...barcode, code: `${barcode.code}|P|${i + 1}` });
                 }
             });
-            if (!temp?.length) {
-                toast.error("Tidak ada barcode untuk dicetak", { richColors: true });
+
+            const list = type === 'dozen' ? dozenTemp : temp;
+            if (!list?.length) {
+                toast.error(`Tidak ada barcode ${type === 'dozen' ? 'lusinan' : 'piece'} untuk dicetak`, { richColors: true });
                 return;
             }
 
             await window.electronAPI.printPreview({
-                barcodes: temp,
-                dozenBarcodes: dozenTemp,
+                barcodes: type === 'piece' ? temp : [],
+                dozenBarcodes: type === 'dozen' ? dozenTemp : [],
                 paper: {
                     width: paperWidthMm,
                     height: paperHeightMm,
@@ -80,7 +88,17 @@ export default function Request() {
                 <TooltipHover tooltip="Lihat"><Button asChild variant="outline"><Link to={`./${row.id}`}><Eye /></Link></Button></TooltipHover>
                 <TooltipHover tooltip="Lihat QR"><Button asChild variant="outline"><Link to={`./${row.id}/barcode`}><QrCode /></Link></Button></TooltipHover>
                 {row.status == 'OPEN' && <>
-                    <TooltipHover tooltip="Cetak QR"><Button variant="outline" className="cursor-pointer" onClick={() => handlePrint(row.id)}><Printer /></Button></TooltipHover>
+                    <DropdownMenu>
+                        <TooltipHover tooltip="Cetak QR">
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="cursor-pointer"><MoreHorizontal /></Button>
+                            </DropdownMenuTrigger>
+                        </TooltipHover>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onSelect={() => handlePrint(row.id, 'dozen')}>Cetak Barcode Lusinan</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => handlePrint(row.id, 'piece')}>Cetak Barcode Piece</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                     {canDelete && <TooltipHover tooltip="Hapus"><Button variant="destructive" className="cursor-pointer" onClick={() => setDeleteRow(row.id)}><Trash /></Button></TooltipHover>}
                 </>
                 }

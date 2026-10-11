@@ -21,9 +21,12 @@ const fetchWithTimeout = async (
   const token = await window.electronAPI.getToken();
   try {
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
       Accept: "application/json",
     };
+    // Let the browser set its own multipart boundary for file uploads.
+    if (!(init?.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
 
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
@@ -105,6 +108,19 @@ export const POST = async (path: string, body?: object) => {
   return await fetchWithTimeout(`${baseUrl}/api/` + path, {
     method: "POST",
     body: JSON.stringify(body),
+  });
+};
+
+export const POST_FORM = async (path: string, formData: FormData) => {
+  const baseUrl =
+    typeof window !== "undefined" &&
+    !window.electronAPI &&
+    window.location.origin
+      ? window.location.origin
+      : import.meta.env.VITE_APP_BASE_URL || "";
+  return await fetchWithTimeout(`${baseUrl}/api/` + path, {
+    method: "POST",
+    body: formData,
   });
 };
 

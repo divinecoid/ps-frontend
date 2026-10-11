@@ -16,6 +16,7 @@ export const ENDPOINT = {
   MODEL_COLOR: "model_color",
   MODEL_SIZE: "model_size",
   PRODUCT: "product",
+  PRODUCT_GROUP: "product-group",
   RACK: "rack",
   SIZE: "size",
   WAREHOUSE: "warehouse",

@@ -76,15 +76,31 @@ export default function DocumentBarcodePreview() {
         getData();
     }, []);
 
-    const handlePrint = async () => {
+    const handlePrintDozen = async () => {
+        if (!dozenBarcodes?.length) {
+            toast.error("Tidak ada barcode lusinan untuk dicetak", { richColors: true });
+            return;
+        }
+
+        await window.electronAPI.printPreview({
+            barcodes: [],
+            dozenBarcodes: dozenBarcodes,
+            paper: {
+                width: paperWidthMm,
+                height: paperHeightMm,
+            },
+        });
+    };
+
+    const handlePrintPiece = async () => {
         if (!barcodes?.length) {
-            toast.error("Tidak ada barcode untuk dicetak", { richColors: true });
+            toast.error("Tidak ada barcode piece untuk dicetak", { richColors: true });
             return;
         }
 
         await window.electronAPI.printPreview({
             barcodes: barcodes,
-            dozenBarcodes: dozenBarcodes,
+            dozenBarcodes: [],
             paper: {
                 width: paperWidthMm,
                 height: paperHeightMm,
@@ -119,9 +135,10 @@ export default function DocumentBarcodePreview() {
         )}
         <div className="select-none fixed bottom-0 right-0 w-full border-t backdrop-blur-md bg-background/70 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-end px-7 py-2">
             <Button variant="outline" type="button" onClick={(e) => { e.preventDefault(); navigate(-1) }}>Kembali</Button>
-            {!isClosed &&
-                <Button type="button" onClick={handlePrint}>Cetak</Button>
-            }
+            {!isClosed && <>
+                <Button variant="outline" type="button" disabled={!dozenBarcodes?.length} onClick={handlePrintDozen}>Cetak Barcode Lusinan{dozenBarcodes?.length ? ` (${dozenBarcodes.length})` : ""}</Button>
+                <Button type="button" disabled={!barcodes?.length} onClick={handlePrintPiece}>Cetak Barcode Piece{barcodes?.length ? ` (${barcodes.length})` : ""}</Button>
+            </>}
         </div>
     </div>
 

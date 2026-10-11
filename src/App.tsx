@@ -12,7 +12,8 @@ import MasterRoles from "./main/master-data/role";
 import MasterRacks from "./main/master-data/rack";
 import MasterWarehouse from "./main/master-data/warehouse";
 import MasterCMTs from "./main/master-data/cmt";
-import MasterProducts from "./main/master-data/product";
+import MasterProductGroups from "./main/master-data/product-group";
+import ProductGroupDetail from "./main/master-data/product-group/detail";
 import MasterProductModels from "./main/master-data/product-model";
 import MasterSizes from "./main/master-data/size";
 import MasterColors from "./main/master-data/color";
@@ -99,7 +100,8 @@ function App() {
                 element={<MasterWarehouse />}
               />
               <Route path="/master-data/cmt" element={<MasterCMTs />} />
-              <Route path="/master-data/product" element={<MasterProducts />} />
+              <Route path="/master-data/product" element={<MasterProductGroups />} />
+              <Route path="/master-data/product/:id" element={<ProductGroupDetail />} />
               <Route
                 path="/master-data/product-model"
                 element={<MasterProductModels />}

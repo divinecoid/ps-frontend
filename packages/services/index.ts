@@ -6,6 +6,7 @@ import * as MasterRack from "./master-rack";
 import * as MasterWarehouse from "./master-warehouse";
 import * as MasterCMT from "./master-cmt";
 import * as MasterProduct from "./master-product";
+import * as MasterProductGroup from "./master-product-group";
 import * as MasterProductModel from "./master-product-model";
 import * as MasterSize from "./master-size";
 import * as MasterColor from "./master-color";
@@ -39,6 +40,7 @@ const Services = {
   MasterWarehouse,
   MasterCMT,
   MasterProduct,
+  MasterProductGroup,
   MasterProductModel,
   MasterSize,
   MasterColor,

@@ -41,8 +41,15 @@ interface Options {
   raw: Record<string, unknown>;
 }
 
-const optionsCache = new WeakMap<BaseApiCallIndexProps, Map<string, Options[]>>();
-const optionsInflight = new WeakMap<BaseApiCallIndexProps, Map<string, Promise<Options[]>>>();
+let optionsCache = new WeakMap<BaseApiCallIndexProps, Map<string, Options[]>>();
+let optionsInflight = new WeakMap<BaseApiCallIndexProps, Map<string, Promise<Options[]>>>();
+
+// Combobox options are cached indefinitely for the life of the SPA session (see fetchOptions below).
+// Call this after any create/update/delete so dropdowns reflect fresh data instead of stale results.
+export function clearOptionsCache() {
+  optionsCache = new WeakMap();
+  optionsInflight = new WeakMap();
+}
 
 function getSourceCache(source: BaseApiCallIndexProps) {
   let cache = optionsCache.get(source);
@@ -65,7 +72,7 @@ function getSourceInflight(source: BaseApiCallIndexProps) {
 }
 
 function fetchOptions(source: BaseApiCallIndexProps, id: string, label: string, filter: string, noCache = false) {
-  const key = `${id}:${label}:1:10:${filter}`;
+  const key = `${id}:${label}:1:1000:${filter}`;
   const cache = getSourceCache(source);
 
   if (!noCache) {
@@ -77,7 +84,7 @@ function fetchOptions(source: BaseApiCallIndexProps, id: string, label: string, 
   const current = inflight.get(key);
   if (current) return current;
 
-  const promise = source(1, 10, filter)
+  const promise = source(1, 1000, filter)
     .then(async result => {
       if (!result?.ok) return [];
 

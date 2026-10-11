@@ -13,4 +13,5 @@ export interface PrintOptions {
     width: number;
     height: number;
   };
+  compact?: boolean;
 }

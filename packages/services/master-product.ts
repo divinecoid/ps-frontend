@@ -1,5 +1,5 @@
 import { BaseApiCallCreateProps, BaseApiCallDeleteProps, BaseApiCallIndexProps, BaseApiCallMultiDeleteProps, BaseApiCallRestoreProps, BaseApiCallUpdateProps, BaseApiCallViewProps } from "@/interfaces/base";
-import { DELETE, GET, PATCH, POST } from "./api"
+import { DELETE, GET, PATCH, POST, POST_FORM } from "./api"
 import { Product } from "@/interfaces/product";
 import { ENDPOINT } from "./endpoints";
 
@@ -48,10 +48,20 @@ export const seedDummy = async (values: {
     color_id: string;
     size_id: string;
     cmt_id: string;
-    rack_id?: string;
+    rack_id: string;
     type: 'D' | 'P';
     number: number;
     qty: number;
 }) => {
     return await POST(`${ENDPOINT.PRODUCT}/seed-dummy`, values);
+}
+
+export const seedDummyTemplate = async () => {
+    return await GET(`${ENDPOINT.PRODUCT}/seed-dummy/template`);
+}
+
+export const seedDummyImport = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return await POST_FORM(`${ENDPOINT.PRODUCT}/seed-dummy/import`, formData);
 }

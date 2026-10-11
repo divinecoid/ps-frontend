@@ -26,6 +26,8 @@ import DynamicInput from "@/components/custom/dynamic-input";
 import Services from "@/services";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SeedDummyImport from "./seed-dummy-import";
 
 const schema = z.object({
   cmt_id: z.string().nonempty("CMT dibutuhkan."),
@@ -65,11 +67,7 @@ export default function ModalSeedDummy({ onSubmit }: ModalSeedDummyProps) {
   const submitForm = async (values: FormValues) => {
     setLoading(true);
     try {
-      const payload = {
-        ...values,
-        rack_id: values.rack_id || undefined,
-      };
-      const res = await Services.MasterProduct.seedDummy(payload);
+      const res = await Services.MasterProduct.seedDummy(values);
       const json = await res?.json();
       if (res?.ok) {
         toast.success(json.message || "Berhasil menginput stok lama!", { richColors: true });
@@ -118,6 +116,15 @@ export default function ModalSeedDummy({ onSubmit }: ModalSeedDummyProps) {
             Generate barcode produk untuk input stok lama secara massal.
           </DialogDescription>
         </DialogHeader>
+        <Tabs defaultValue="manual" className="flex flex-col flex-1 h-0">
+          <TabsList className="mx-6 w-fit">
+            <TabsTrigger value="manual">Input Manual</TabsTrigger>
+            <TabsTrigger value="excel">Import Excel</TabsTrigger>
+          </TabsList>
+          <TabsContent value="excel" className="flex-1 overflow-y-auto px-6 py-4">
+            <SeedDummyImport onSubmit={onSubmit} onDone={() => setOpen(false)} />
+          </TabsContent>
+          <TabsContent value="manual" className="flex flex-col flex-1 h-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(submitForm)} className="flex flex-col flex-1 h-0">
             <ScrollArea className="flex-1 overflow-y-auto px-6 py-4">
@@ -319,6 +326,8 @@ export default function ModalSeedDummy({ onSubmit }: ModalSeedDummyProps) {
             </DialogFooter>
           </form>
         </Form>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

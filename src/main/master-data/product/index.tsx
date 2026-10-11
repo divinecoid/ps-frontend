@@ -34,6 +34,7 @@ export default function MasterProducts() {
                 width: paperWidthMm,
                 height: paperHeightMm,
             },
+            compact: true,
         });
     };
 
@@ -53,6 +54,7 @@ export default function MasterProducts() {
                 width: paperWidthMm,
                 height: paperHeightMm,
             },
+            compact: true,
         });
     };
 
